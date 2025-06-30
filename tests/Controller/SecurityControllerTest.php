@@ -2,12 +2,16 @@
 
 namespace App\Tests\Controller;
 
+use App\Tests\Trait\FixtureTrait;
+use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
 class SecurityControllerTest extends WebTestCase
 {
+    use RefreshDatabaseTrait;
+
     private KernelBrowser|null $client;
 
     protected function setUp(): void

@@ -1,0 +1,4 @@
+App\Entity\User:
+  user_credentials_ok:
+    username: 'username'
+    password: \$2y\$13\$t6TO/GRU.QYrNoOzfzbry.JQShYJHdJ/VKspEuoTTI90Ln99ZSDXO #password
