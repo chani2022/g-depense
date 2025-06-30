@@ -4,7 +4,6 @@ namespace App\Tests\Security;
 
 use App\Entity\User;
 use App\Security\AppAuthenticator;
-use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -17,16 +16,19 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 
 class AppAuthenticatorTest extends TestCase
 {
-    private MockObject|UrlGeneratorInterface|null $urlGenerator;
+    /** @var UrlGeneratorInterface&MockObject&null */
+    private $urlGenerator;
     private AppAuthenticator|null $appAuthenticator;
 
     protected function setUp(): void
     {
         $this->urlGenerator = $this->createMock(UrlGeneratorInterface::class);
-
         $this->appAuthenticator = new AppAuthenticator($this->urlGenerator);
     }
 
+    /**
+     * Teste la méthode authenticate() avec des données de formulaire valides.
+     */
     public function testAuthenticateSuccess(): void
     {
         $request = new Request([], [
@@ -41,10 +43,11 @@ class AppAuthenticatorTest extends TestCase
         $expected = $this->appAuthenticator->authenticate($request);
         $this->assertInstanceOf(Passport::class, $expected);
     }
-
+    /**
+     * Teste le succès de l'authentification lorsque la session contient un chemin de redirection.
+     */
     public function testOnAuthenticationSuccessWithTargetPath(): void
     {
-
         $request = new Request();
         $firewallName = 'main';
         $uri = '/test';
@@ -61,6 +64,9 @@ class AppAuthenticatorTest extends TestCase
         $this->assertEquals($uri, $response->getTargetUrl());
     }
 
+    /**
+     * Teste la redirection par défaut lorsque la session ne contient pas de target path.
+     */
     public function testOnAuthenticationSuccessWithOutTargetPath(): void
     {
         $request = new Request();
@@ -81,7 +87,9 @@ class AppAuthenticatorTest extends TestCase
         $response = $this->appAuthenticator->onAuthenticationSuccess($request, $token, $firewallName);
         $this->assertEquals($expected, $response->getTargetUrl());
     }
-
+    /**
+     * Teste la méthode protégée getLoginUrl() via Reflection.
+     */
     public function testGetLoginUrl(): void
     {
         $route_name = $this->appAuthenticator::LOGIN_ROUTE;
