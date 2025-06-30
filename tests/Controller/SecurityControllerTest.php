@@ -2,7 +2,6 @@
 
 namespace App\Tests\Controller;
 
-use App\Tests\Trait\FixtureTrait;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -16,6 +15,7 @@ class SecurityControllerTest extends WebTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
         $this->client = $this->createClient();
     }
 
@@ -36,13 +36,52 @@ class SecurityControllerTest extends WebTestCase
             ]);
 
         $this->client->submit($form);
-        $this->assertResponseIsSuccessful();
         $this->client->followRedirect();
         $this->assertPageTitleContains("Dashboard");
+    }
+    /**
+     * @dataProvider getBadCredentials
+     */
+    public function testLoginBadCredentials(array $badCredentials): void
+    {
+        /** @var Crawler */
+        $crawler = $this->client->request('GET', '/login');
+        $form = $crawler->selectButton('se connecter')
+            ->form($badCredentials);
+
+        $this->client->submit($form);
+        $this->assertResponseStatusCodeSame(302);
+        $this->client->followRedirect();
+        $this->assertSelectorExists('.alert');
+    }
+
+    public static function getBadCredentials(): array
+    {
+        return [
+            'username fake' => [
+                [
+                    'username' => 'fake username',
+                    'password' => 'password'
+                ]
+            ],
+            'password fake' => [
+                [
+                    'username' => 'username',
+                    'password' => 'fake password'
+                ]
+            ],
+            'username et password fake' => [
+                [
+                    'username' => 'fake username',
+                    'password' => 'fake password'
+                ]
+            ]
+        ];
     }
 
     protected function tearDown(): void
     {
+        parent::tearDown();
         $this->client = null;
     }
 }
