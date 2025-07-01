@@ -4,17 +4,19 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\ForgotPasswordType;
+use App\Service\GeneratorNewPassword;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ForgotPasswordController extends AbstractController
 {
+    const NEW_PASSWORD = 'test';
+
     #[Route('/forgot/password', name: 'app_security_forgot_password')]
-    public function generateNewPassword(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher): Response
+    public function generateNewPassword(Request $request, EntityManagerInterface $em, GeneratorNewPassword $generatorNewPassword): Response
     {
         $form = $this->createForm(ForgotPasswordType::class);
         $form->handleRequest($request);
@@ -31,14 +33,11 @@ class ForgotPasswordController extends AbstractController
                 return $this->redirectToRoute("app_security_forgot_password");
             }
 
-            $new_password = 'test';
-            $password_hash = $hasher->hashPassword($user, $new_password);
+            $generatorNewPassword
+                ->regeneratePwd($user, self::NEW_PASSWORD)
+                ->save();
 
-            $user->setPassword($password_hash);
-
-            $em->flush();
-
-            $this->addFlash('success', 'Votre nouveau mot de passe est ' . $new_password);
+            $this->addFlash('success', 'Votre nouveau mot de passe est ' . self::NEW_PASSWORD);
             return $this->redirectToRoute("app_security_forgot_password");
         }
         return $this->render('forgot_password/generate-new-password.html.twig', [

@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+use App\Controller\ForgotPasswordController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Hautelook\AliceBundle\PhpUnit\ReloadDatabaseTrait;
@@ -49,10 +50,9 @@ class ForgotPasswordControllerTest extends WebTestCase
             'username' => $username
         ]);
 
-        $new_password = 'test';
         /** @var UserPasswordHasherInterface */
         $hasher = $this->getContainer()->get(UserPasswordHasherInterface::class);
-        $expected = $hasher->isPasswordValid($user, $new_password);
+        $expected = $hasher->isPasswordValid($user, ForgotPasswordController::NEW_PASSWORD);
         $this->assertTrue($expected);
     }
 
