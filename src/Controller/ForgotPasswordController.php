@@ -22,6 +22,7 @@ class ForgotPasswordController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $username = $form->get('username')->getData();
             /** @var User */
             $user = $em->getRepository(User::class)->findOneBy([

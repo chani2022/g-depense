@@ -33,6 +33,7 @@ class ForgotPasswordTypeTest extends TestCase
             ->method('add')
             ->withConsecutive(
                 ['username', TextType::class, [
+                    'required' => false,
                     "constraints" => [
                         new NotBlank()
                     ]

@@ -56,6 +56,20 @@ class ForgotPasswordControllerTest extends WebTestCase
         $this->assertTrue($expected);
     }
 
+    public function testFormSubmitUsernameInvalid(): void
+    {
+        /** @var Crawler */
+        $crawler = $this->client->request('GET', '/forgot/password');
+        $form = $crawler->selectButton('forgot_password[envoyer]')->form([
+            'forgot_password[username]' => ''
+        ]);
+
+        $crawler = $this->client->submit($form);
+        $nb_expected_form_errors = $crawler->filter('li')->count();
+
+        $this->assertEquals(1, $nb_expected_form_errors);
+    }
+
     public function testGenerateNewPasswordUsernameNotFound(): void
     {
         /** @var Crawler */
@@ -70,6 +84,8 @@ class ForgotPasswordControllerTest extends WebTestCase
         $this->client->followRedirect();
         $this->assertSelectorExists('.alert-danger');
     }
+
+
 
     protected function tearDown(): void
     {
