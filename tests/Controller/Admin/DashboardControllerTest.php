@@ -32,7 +32,6 @@ class DashboardControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertPageTitleContains('Dashboard');
-        // $this->assertSelectorTextContains('h1', 'Dashboard');
     }
 
     protected function tearDown(): void
