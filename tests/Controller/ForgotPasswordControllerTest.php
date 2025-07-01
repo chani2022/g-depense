@@ -3,7 +3,8 @@
 namespace App\Tests\Controller;
 
 use App\Repository\UserRepository;
-use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
+use Doctrine\ORM\EntityManagerInterface;
+use Hautelook\AliceBundle\PhpUnit\ReloadDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
@@ -11,14 +12,16 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class ForgotPasswordControllerTest extends WebTestCase
 {
-    use RefreshDatabaseTrait;
+    use ReloadDatabaseTrait;
 
     private KernelBrowser|null $client;
+    private EntityManagerInterface|null $em;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->client = $this->createClient();
+        $this->em = $this->getContainer()->get(EntityManagerInterface::class);
     }
 
     public function testGenerateNewPasswordSuccess(): void
@@ -73,5 +76,6 @@ class ForgotPasswordControllerTest extends WebTestCase
         parent::tearDown();
 
         $this->client = null;
+        $this->em = null;
     }
 }

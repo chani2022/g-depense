@@ -2,8 +2,9 @@
 
 namespace App\Tests\Controller;
 
+use App\Tests\Trait\LoadFixtureTrait;;
+
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
-use LogicException;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
@@ -11,13 +12,16 @@ use Symfony\Component\DomCrawler\Crawler;
 class SecurityControllerTest extends WebTestCase
 {
     use RefreshDatabaseTrait;
+    use LoadFixtureTrait;
 
     private KernelBrowser|null $client;
+    protected array|null $all_fixtures;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->client = $this->createClient();
+        $this->all_fixtures = $this->getFixtures();
     }
 
     public function testPageLoginExist(): void
@@ -58,7 +62,6 @@ class SecurityControllerTest extends WebTestCase
 
     public function testRememberMeSetsCookieAndAutoLogin(): void
     {
-        // $client = static::createClient();
         $this->client->followRedirects(false);
         $this->client->getCookieJar()->clear(); // on part d’un jar vierge
 
@@ -81,10 +84,10 @@ class SecurityControllerTest extends WebTestCase
         $this->assertNotNull($cookie, 'Le cookie REMEMBERME doit être défini');
         $this->assertGreaterThan(time(), $cookie->getExpiresTime());
 
-        // 4) Simule une nouvelle visite en réutilisant le cookie
         $this->tearDown(); //initialisation du client
-        $this->setUp(); // on recrée un client
-
+        // $this->setUp(); // on recrée le client
+        $this->client = static::createClient();
+        // 4) Simule une nouvelle visite en réutilisant le cookie
         $this->client->getCookieJar()->clear();      // start clean
         $this->client->getCookieJar()->set($cookie); // injecte le cookie REMEMBERME
 
@@ -143,5 +146,6 @@ class SecurityControllerTest extends WebTestCase
     {
         parent::tearDown();
         $this->client = null;
+        $this->all_fixtures = null;
     }
 }
