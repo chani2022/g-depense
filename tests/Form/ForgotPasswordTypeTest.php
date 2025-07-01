@@ -9,6 +9,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ForgotPasswordTypeTest extends TestCase
 {
@@ -31,7 +32,11 @@ class ForgotPasswordTypeTest extends TestCase
         $this->builder->expects($this->exactly(2))
             ->method('add')
             ->withConsecutive(
-                ['username', TextType::class, []],
+                ['username', TextType::class, [
+                    "constraints" => [
+                        new NotBlank()
+                    ]
+                ]],
                 ['envoyer', SubmitType::class, []]
             )
             ->willReturnSelf();
