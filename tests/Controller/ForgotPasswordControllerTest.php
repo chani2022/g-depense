@@ -65,9 +65,8 @@ class ForgotPasswordControllerTest extends WebTestCase
         ]);
 
         $crawler = $this->client->submit($form);
-        $nb_expected_form_errors = $crawler->filter('li')->count();
-
-        $this->assertEquals(1, $nb_expected_form_errors);
+        $nb_invalid_form = $crawler->filter('.invalid-feedback')->count();
+        $this->assertEquals(1, $nb_invalid_form);
     }
 
     public function testGenerateNewPasswordUsernameNotFound(): void

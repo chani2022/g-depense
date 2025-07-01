@@ -22,7 +22,6 @@ class ForgotPasswordController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $username = $form->get('username')->getData();
             /** @var User */
             $user = $em->getRepository(User::class)->findOneBy([
@@ -41,6 +40,7 @@ class ForgotPasswordController extends AbstractController
             $this->addFlash('success', 'Votre nouveau mot de passe est ' . self::NEW_PASSWORD);
             return $this->redirectToRoute("app_security_forgot_password");
         }
+
         return $this->render('forgot_password/generate-new-password.html.twig', [
             'form' => $form->createView(),
         ]);
