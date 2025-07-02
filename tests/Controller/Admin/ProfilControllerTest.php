@@ -37,13 +37,13 @@ class ProfilControllerTest extends WebTestCase
         $this->client->request("GET", '/profil');
         static::assertResponseIsSuccessful();
 
-        $path = $this->mockFile();
+        $pathMock = $this->mockFile();
 
         $form = $crawler->selectButton('Modifier')->form([
             'profil[nom]' => 'nom',
             'profil[prenom]' => 'prenom',
             'profil[username]' => 'mon username',
-            'profil[file]' => new UploadedFile($path, 'test.png', 'images/png', null, true)
+            'profil[file]' => new UploadedFile($pathMock, 'test.png', 'images/png', null, true)
         ]);
 
         $this->client->submit($form);
@@ -53,9 +53,15 @@ class ProfilControllerTest extends WebTestCase
         $this->assertEquals('NOM', $user->getNom());
         $this->assertEquals('Prenom', $user->getPrenom());
         $this->assertEquals('mon username', $user->getUsername());
-        $this->assertFileExists($this->path_uploaded_file . DIRECTORY_SEPARATOR . $user->pathFile);
+        $this->assertFileExists($this->pathFileUploaded($user));
 
-        unlink($this->path_uploaded_file . DIRECTORY_SEPARATOR . $user->pathFile);
+        unlink($this->path_uploaded_file);
+        unlink($pathMock);
+    }
+
+    private function pathFileUploaded(User $user): string
+    {
+        return $this->path_uploaded_file . DIRECTORY_SEPARATOR . $user->getImageName();
     }
 
     private function mockFile(): string
