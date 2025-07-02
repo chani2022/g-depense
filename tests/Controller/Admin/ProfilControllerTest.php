@@ -24,7 +24,7 @@ class ProfilControllerTest extends WebTestCase
     {
         $this->client = $this->createClient();
         $this->userRepository = $this->getContainer()->get(UserRepository::class);
-        $this->path_uploaded_file = $this->getContainer()->getParameter('path_uploaded_image');
+        $this->path_uploaded_file = $this->getContainer()->getParameter('path_uploaded_image_users');
     }
 
     public function testProfilSuccess(): void
