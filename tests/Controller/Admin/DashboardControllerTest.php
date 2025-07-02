@@ -78,7 +78,11 @@ class DashboardControllerTest extends WebTestCase
         /** @var User */
         $userLogged = $this->all_fixtures['user_credentials_ok'];
 
-        $dashboardController =  new DashboardController();
+        self::bootKernel(); // ou $this->createClient() si tu veux aussi tester la requête
+        $container = self::getContainer();
+
+        /** @var DashboardController $dashboardController */
+        $dashboardController = $container->get(DashboardController::class);
         $userMenu = $dashboardController->configureUserMenu($userLogged);
 
         $this->assertEquals($userLogged->getFullName(), $userMenu->getAsDto()->getName());
