@@ -2,28 +2,69 @@
 
 namespace App\Tests\Controller\Admin;
 
-use PHPUnit\Framework\MockObject\MockObject;
+use App\Repository\UserRepository;
+use App\Tests\Trait\LoadFixtureTrait;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Entity\User;
 
 class ProfilControllerTest extends WebTestCase
 {
     use RefreshDatabaseTrait;
+    use LoadFixtureTrait;
 
     private KernelBrowser|null $client;
+    private UserRepository|null $userRepository;
+    private string|null $path_uploaded_file;
 
     protected function setUp(): void
     {
         $this->client = $this->createClient();
+        $this->userRepository = $this->getContainer()->get(UserRepository::class);
+        $this->path_uploaded_file = $this->getContainer()->getParameter('path_uploaded_image');
     }
 
     public function testProfilSuccess(): void
     {
-        // this examples doesn't use security; in your application you may
-        // need to ensure that the user is logged before the test
+        /** @var User */
+        $userLogged = $this->getFixtures()['user_credentials_ok'];
+        /** @var Crawler */
+        $crawler = $this->client->loginUser($userLogged);
+
         $this->client->request("GET", '/profil');
         static::assertResponseIsSuccessful();
+
+        $path = $this->mockFile();
+
+        $form = $crawler->selectButton('Modifier')->form([
+            'profil[nom]' => 'nom',
+            'profil[prenom]' => 'prenom',
+            'profil[username]' => 'mon username',
+            'profil[file]' => new UploadedFile($path, 'test.png', 'images/png', null, true)
+        ]);
+
+        $this->client->submit($form);
+        /** @var User */
+        $user = $this->userRepository->find($userLogged->getId());
+
+        $this->assertEquals('NOM', $user->getNom());
+        $this->assertEquals('Prenom', $user->getPrenom());
+        $this->assertEquals('mon username', $user->getUsername());
+        $this->assertFileExists($this->path_uploaded_file . DIRECTORY_SEPARATOR . $user->pathFile);
+
+        unlink($this->path_uploaded_file . DIRECTORY_SEPARATOR . $user->pathFile);
+    }
+
+    private function mockFile(): string
+    {
+        $filename = 'test.png';
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename;
+        file_put_contents($path, 'fake png');
+
+        return $path;
     }
 
     protected function tearDown(): void
