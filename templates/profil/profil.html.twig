@@ -2,7 +2,7 @@
 
 {% block body_class 'page-login' %}
 {% block page_title %}
-	{{ page_title is defined ? page_title|raw : (ea.hasContext ? ea.dashboardTitle|raw : 'Géneration de nouveau mot de passe') }}
+	{{ page_title is defined ? page_title|raw : (ea.hasContext ? ea.dashboardTitle|raw : 'Profil') }}
 {% endblock %}
 
 {% block head_favicon %}
@@ -42,11 +42,21 @@
 		{{form_start(form)}}
 		<div class="form-group">
 			<div class="form-widget">
+				{{form_row(form.file, {'attr':{'class':'form-control'}})}}
+			</div>
+			<div class="form-widget">
+				{{form_row(form.nom, {'attr':{'class':'form-control'}, 'label': 'Nom' })}}
+			</div>
+			<div class="form-widget">
+				{{form_row(form.prenom, {'attr':{'class':'form-control'}, 'label': 'Prénom' })}}
+			</div>
+			<div class="form-widget">
 				{{form_row(form.username, {'attr':{'class':'form-control'}, 'label': 'Nom d\'utilisateur' })}}
 			</div>
 		</div>
-		{{form_widget(form.envoyer, {'attr': {'class': 'btn btn-primary btn-lg btn-block'}})}}
-		{{form_end(form)}}
-		</section>
-	</div>
+            <button type="submit" class='btn btn-primary btn-lg btn-block'>Modifier</button>
+			{# {{form_widget(form.envoyer, {'attr': {'class': 'btn btn-primary btn-lg btn-block'}})}} #}
+			{{form_end(form)}}
+	</section>
+</div>
 {% endblock %}

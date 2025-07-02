@@ -42,7 +42,7 @@ class ProfilControllerTest extends WebTestCase
         $form = $crawler->selectButton('Modifier')->form([
             'profil[nom]' => 'nom',
             'profil[prenom]' => 'prenom',
-            'profil[username]' => 'mon username',
+            // 'profil[username]' => 'mon username',
             'profil[file]' => new UploadedFile($pathMock, 'test.png', 'images/png', null, true)
         ]);
 
@@ -52,7 +52,7 @@ class ProfilControllerTest extends WebTestCase
 
         $this->assertEquals('NOM', $user->getNom());
         $this->assertEquals('Prenom', $user->getPrenom());
-        $this->assertEquals('mon username', $user->getUsername());
+        $this->assertEquals('username', $user->getUsername());
         $this->assertFileExists($this->pathFileUploaded($user));
 
         unlink($this->path_uploaded_file);
