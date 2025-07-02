@@ -73,7 +73,16 @@ class DashboardControllerTest extends WebTestCase
         $this->assertEquals($expectedEntityFqcn, $crudMenuItemActual->getAsDto()->getRouteParameters()['entityFqcn']);
     }
 
+    public function testConfigureUserMenu(): void
+    {
+        /** @var User */
+        $userLogged = $this->all_fixtures['user_credentials_ok'];
 
+        $dashboardController =  new DashboardController();
+        $userMenu = $dashboardController->configureUserMenu($userLogged);
+
+        $this->assertEquals($userLogged->getFullName(), $userMenu->getAsDto()->getName());
+    }
 
 
     protected function tearDown(): void
