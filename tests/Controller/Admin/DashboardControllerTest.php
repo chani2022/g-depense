@@ -2,7 +2,13 @@
 
 namespace App\Tests\Controller\Admin;
 
+use App\Controller\Admin\DashboardController;
+use App\Entity\User;
 use App\Tests\Trait\LoadFixtureTrait;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\CrudMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\DashboardMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestIndexAsserts;
+use Generator;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -12,6 +18,7 @@ class DashboardControllerTest extends WebTestCase
 {
     use RefreshDatabaseTrait;
     use LoadFixtureTrait;
+    use CrudTestIndexAsserts;
 
     /** @var MockObject&KernelBrowser&null*/
     private $client;
@@ -24,7 +31,7 @@ class DashboardControllerTest extends WebTestCase
         $this->all_fixtures = $this->getFixtures();
     }
 
-    public function testPageIndexExist(): void
+    public function testPageIndexDashboardExist(): void
     {
         $userLogged = $this->all_fixtures['user_credentials_ok'];
         $this->client->loginUser($userLogged);
@@ -32,7 +39,45 @@ class DashboardControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertPageTitleContains('Dashboard');
+        $this->assertIndexPagesCount(1);
     }
+
+    public function testConfigureDashboard(): void
+    {
+        $dashboardController = new DashboardController();
+        $dashboardActual = $dashboardController->configureDashboard();
+
+        $this->assertEquals('Depense Mensuel', $dashboardActual->getAsDto()->getTitle());
+    }
+
+    public function testConfigureMenuItems(): void
+    {
+        $dashboardController = new DashboardController();
+        $menuItem = $dashboardController->configureMenuItems();
+
+        $this->assertTrue(is_array($menuItem));
+        $this->assertCount(2, $menuItem);
+        $this->simulateDashboardMenuItem($menuItem[0], 'Dashboard', 'fa fa-home');
+        $this->simulateCrudMenuItem($menuItem[1], 'User', 'fa fa-users', User::class);
+    }
+
+    private function simulateDashboardMenuItem(DashboardMenuItem $dashboardMenuItemActual, string $expectedLabel, string $expectedIcon): void
+    {
+        $this->assertInstanceOf(DashboardMenuItem::class, $dashboardMenuItemActual);
+        $this->assertEquals($expectedLabel, $dashboardMenuItemActual->getAsDto()->getLabel());
+        $this->assertEquals($expectedIcon, $dashboardMenuItemActual->getAsDto()->getIcon());
+    }
+
+    private function simulateCrudMenuItem(CrudMenuItem $crudMenuItemActual, string $expectedLabel, string $expectedIcon, string $expectedEntityFqcn): void
+    {
+        $this->assertInstanceOf(CrudMenuItem::class, $crudMenuItemActual);
+        $this->assertEquals($expectedLabel, $crudMenuItemActual->getAsDto()->getLabel());
+        $this->assertEquals($expectedIcon, $crudMenuItemActual->getAsDto()->getIcon());
+        $this->assertEquals($expectedEntityFqcn, $crudMenuItemActual->getAsDto()->getRouteParameters()['entityFqcn']);
+    }
+
+
+
 
     protected function tearDown(): void
     {
