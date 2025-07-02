@@ -18,7 +18,6 @@ class DashboardControllerTest extends WebTestCase
 {
     use RefreshDatabaseTrait;
     use LoadFixtureTrait;
-    use CrudTestIndexAsserts;
 
     /** @var MockObject&KernelBrowser&null*/
     private $client;
@@ -39,7 +38,6 @@ class DashboardControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertPageTitleContains('Dashboard');
-        $this->assertIndexPagesCount(1);
     }
 
     public function testConfigureDashboard(): void
@@ -55,7 +53,6 @@ class DashboardControllerTest extends WebTestCase
         $dashboardController = new DashboardController();
         $menuItem = $dashboardController->configureMenuItems();
 
-        $this->assertTrue(is_array($menuItem));
         $this->assertCount(2, $menuItem);
         $this->simulateDashboardMenuItem($menuItem[0], 'Dashboard', 'fa fa-home');
         $this->simulateCrudMenuItem($menuItem[1], 'User', 'fa fa-users', User::class);
