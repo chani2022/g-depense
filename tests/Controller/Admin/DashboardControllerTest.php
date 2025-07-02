@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Tests\Trait\LoadFixtureTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\CrudMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\DashboardMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\RouteMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestIndexAsserts;
 use Generator;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
@@ -78,14 +79,37 @@ class DashboardControllerTest extends WebTestCase
         /** @var User */
         $userLogged = $this->all_fixtures['user_credentials_ok'];
 
-        self::bootKernel(); // ou $this->createClient() si tu veux aussi tester la requête
+        self::bootKernel();
         $container = self::getContainer();
 
         /** @var DashboardController $dashboardController */
         $dashboardController = $container->get(DashboardController::class);
         $userMenu = $dashboardController->configureUserMenu($userLogged);
 
+        $items = $userMenu->getAsDto()->getItems();
+
         $this->assertEquals($userLogged->getFullName(), $userMenu->getAsDto()->getName());
+        $this->assertTrue($userMenu->getAsDto()->isAvatarDisplayed());
+        $this->assertTrue($userMenu->getAsDto()->getItems() > 0);
+
+        $this->simulateItemUserMenuLinkToRouteProfil($items[0]);
+        $this->simulateItemUserMenuLinkToRouteChangePassword($items[1]);
+    }
+
+    private function simulateItemUserMenuLinkToRouteProfil(RouteMenuItem $menuItemProfilActual): void
+    {
+        $dto = $menuItemProfilActual->getAsDto();
+        $this->assertInstanceOf(RouteMenuItem::class, $menuItemProfilActual);
+        $this->assertEquals("app_profil", $dto->getRouteName());
+        $this->assertEquals('ROLE_USER', $dto->getPermission());
+    }
+
+    private function simulateItemUserMenuLinkToRouteChangePassword(RouteMenuItem $menuItemPasswordActual): void
+    {
+        $dto = $menuItemPasswordActual->getAsDto();
+        $this->assertInstanceOf(RouteMenuItem::class, $menuItemPasswordActual);
+        $this->assertEquals("app_change_password", $dto->getRouteName());
+        $this->assertEquals('ROLE_USER', $dto->getPermission());
     }
 
 

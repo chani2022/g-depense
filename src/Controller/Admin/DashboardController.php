@@ -32,7 +32,11 @@ class DashboardController extends AbstractDashboardController
     public function configureUserMenu(UserInterface $user): UserMenu
     {
         return parent::configureUserMenu($user)
-            ->setName($user->getFullName());
+            ->setName($user->getFullName())
+            ->addMenuItems([
+                MenuItem::linkToRoute('My Profile', 'fa fa-id-card', 'app_profil')->setPermission('ROLE_USER'),
+                MenuItem::linkToRoute('Change password', 'fa fa-id-card', 'app_change_password')->setPermission('ROLE_USER')
+            ]);
     }
 
     public function configureMenuItems(): iterable
