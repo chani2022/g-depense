@@ -15,6 +15,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')]
 class DashboardController extends AbstractDashboardController
 {
+    public function __construct(private readonly string $pathUploadedFile) {}
+
     #[Route('/dashboard', name: 'app_dashboard')]
     public function index(): Response
     {
