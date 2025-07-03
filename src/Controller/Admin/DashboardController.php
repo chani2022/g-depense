@@ -41,7 +41,8 @@ class DashboardController extends AbstractDashboardController
 
         return $userMenu->addMenuItems([
             MenuItem::linkToRoute('My Profile', 'fa fa-id-card', 'app_profil')->setPermission('ROLE_USER'),
-            MenuItem::linkToRoute('Change password', 'fa fa-id-card', 'app_change_password')->setPermission('ROLE_USER')
+            MenuItem::linkToRoute('Change password', 'fa fa-id-card', 'app_change_password')->setPermission('ROLE_USER'),
+            MenuItem::linkToRoute('Logout', 'fa fa-logout', 'app_logout')
         ]);
     }
 

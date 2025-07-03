@@ -105,7 +105,7 @@ class DashboardControllerTest extends WebTestCase
         $items = $userMenu->getAsDto()->getItems();
         $this->simulateItemUserMenuLinkToRouteProfil($items[0]);
         $this->simulateItemUserMenuLinkToRouteChangePassword($items[1]);
-        $this->simulateItemUserLogout($items[2]);
+        $this->simulateItemUserMenuLinkToRouteLogout($items[2]);
     }
 
     private function simulateItemUserMenuLinkToRouteProfil(RouteMenuItem $menuItemProfilActual): void
@@ -124,9 +124,9 @@ class DashboardControllerTest extends WebTestCase
         $this->assertEquals('ROLE_USER', $dto->getPermission());
     }
 
-    private function simulateItemUserLogout(LogoutMenuItem $logoutMenuItem): void
+    private function simulateItemUserMenuLinkToRouteLogout(RouteMenuItem $menuItemLogout): void
     {
-        $dto = $logoutMenuItem->getAsDto();
+        $dto = $menuItemLogout->getAsDto();
         $this->assertEquals('app_logout', $dto->getRouteName());
     }
 
