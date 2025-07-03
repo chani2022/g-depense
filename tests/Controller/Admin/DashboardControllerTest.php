@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Tests\Trait\LoadFixtureTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\CrudMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\DashboardMenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\LogoutMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\RouteMenuItem;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -60,8 +61,11 @@ class DashboardControllerTest extends WebTestCase
         $this->simulateCrudMenuItem($menuItem[1], 'User', 'fa fa-users', User::class, 'ROLE_ADMIN');
     }
 
-    private function simulateDashboardMenuItem(DashboardMenuItem $dashboardMenuItemActual, string $expectedLabel, string $expectedIcon): void
-    {
+    private function simulateDashboardMenuItem(
+        DashboardMenuItem $dashboardMenuItemActual,
+        string $expectedLabel,
+        string $expectedIcon
+    ): void {
         $this->assertInstanceOf(DashboardMenuItem::class, $dashboardMenuItemActual);
         $this->assertEquals($expectedLabel, $dashboardMenuItemActual->getAsDto()->getLabel());
         $this->assertEquals($expectedIcon, $dashboardMenuItemActual->getAsDto()->getIcon());
@@ -97,10 +101,11 @@ class DashboardControllerTest extends WebTestCase
         $this->assertTrue($userMenu->getAsDto()->isAvatarDisplayed());
         $this->assertTrue($userMenu->getAsDto()->getItems() > 0);
 
-        /** test de simulation de menu item */
+        /** simulation de menu item */
         $items = $userMenu->getAsDto()->getItems();
         $this->simulateItemUserMenuLinkToRouteProfil($items[0]);
         $this->simulateItemUserMenuLinkToRouteChangePassword($items[1]);
+        $this->simulateItemUserLogout($items[2]);
     }
 
     private function simulateItemUserMenuLinkToRouteProfil(RouteMenuItem $menuItemProfilActual): void
@@ -117,6 +122,12 @@ class DashboardControllerTest extends WebTestCase
         $this->assertInstanceOf(RouteMenuItem::class, $menuItemPasswordActual);
         $this->assertEquals("app_change_password", $dto->getRouteName());
         $this->assertEquals('ROLE_USER', $dto->getPermission());
+    }
+
+    private function simulateItemUserLogout(LogoutMenuItem $logoutMenuItem): void
+    {
+        $dto = $logoutMenuItem->getAsDto();
+        $this->assertEquals('app_logout', $dto->getRouteName());
     }
 
 

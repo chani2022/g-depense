@@ -2,3 +2,7 @@ App\Entity\User:
   user_credentials_ok:
     username: 'username'
     password: \$2y\$13\$t6TO/GRU.QYrNoOzfzbry.JQShYJHdJ/VKspEuoTTI90Ln99ZSDXO #password
+  user_admin:
+    username: 'admin'
+    password: \$2y\$13\$t6TO/GRU.QYrNoOzfzbry.JQShYJHdJ/VKspEuoTTI90Ln99ZSDXO #password
+    roles: ['ROLE_ADMIN']
