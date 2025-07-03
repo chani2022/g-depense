@@ -97,8 +97,6 @@ class DashboardControllerTest extends WebTestCase
         $this->assertTrue($userMenu->getAsDto()->isAvatarDisplayed());
         $this->assertTrue($userMenu->getAsDto()->getItems() > 0);
 
-        $avatarUrlExpected = $userMenu->getAsDto()->getAvatarUrl();
-
         /** test de simulation de menu item */
         $items = $userMenu->getAsDto()->getItems();
         $this->simulateItemUserMenuLinkToRouteProfil($items[0]);

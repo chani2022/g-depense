@@ -33,13 +33,16 @@ class DashboardController extends AbstractDashboardController
      */
     public function configureUserMenu(UserInterface $user): UserMenu
     {
+        $userMenu = parent::configureUserMenu($user)
+            ->setName($user->getFullName());
+        if ($user->getImageName()) {
+            $userMenu->setAvatarUrl($this->pathUploadedFile . DIRECTORY_SEPARATOR . $user->getImageName());
+        }
 
-        return parent::configureUserMenu($user)
-            ->setName($user->getFullName())
-            ->addMenuItems([
-                MenuItem::linkToRoute('My Profile', 'fa fa-id-card', 'app_profil')->setPermission('ROLE_USER'),
-                MenuItem::linkToRoute('Change password', 'fa fa-id-card', 'app_change_password')->setPermission('ROLE_USER')
-            ]);
+        return $userMenu->addMenuItems([
+            MenuItem::linkToRoute('My Profile', 'fa fa-id-card', 'app_profil')->setPermission('ROLE_USER'),
+            MenuItem::linkToRoute('Change password', 'fa fa-id-card', 'app_change_password')->setPermission('ROLE_USER')
+        ]);
     }
 
     public function configureMenuItems(): iterable
