@@ -8,8 +8,6 @@ use App\Tests\Trait\LoadFixtureTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\CrudMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\DashboardMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\RouteMenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestIndexAsserts;
-use Generator;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -56,7 +54,7 @@ class DashboardControllerTest extends WebTestCase
 
         $this->assertCount(2, $menuItem);
         $this->simulateDashboardMenuItem($menuItem[0], 'Dashboard', 'fa fa-home');
-        $this->simulateCrudMenuItem($menuItem[1], 'User', 'fa fa-users', User::class);
+        $this->simulateCrudMenuItem($menuItem[1], 'User', 'fa fa-users', User::class, 'ROLE_ADMIN');
     }
 
     private function simulateDashboardMenuItem(DashboardMenuItem $dashboardMenuItemActual, string $expectedLabel, string $expectedIcon): void
@@ -66,12 +64,18 @@ class DashboardControllerTest extends WebTestCase
         $this->assertEquals($expectedIcon, $dashboardMenuItemActual->getAsDto()->getIcon());
     }
 
-    private function simulateCrudMenuItem(CrudMenuItem $crudMenuItemActual, string $expectedLabel, string $expectedIcon, string $expectedEntityFqcn): void
-    {
+    private function simulateCrudMenuItem(
+        CrudMenuItem $crudMenuItemActual,
+        string $expectedLabel,
+        string $expectedIcon,
+        string $expectedEntityFqcn,
+        string $expectedPermission = ''
+    ): void {
         $this->assertInstanceOf(CrudMenuItem::class, $crudMenuItemActual);
         $this->assertEquals($expectedLabel, $crudMenuItemActual->getAsDto()->getLabel());
         $this->assertEquals($expectedIcon, $crudMenuItemActual->getAsDto()->getIcon());
         $this->assertEquals($expectedEntityFqcn, $crudMenuItemActual->getAsDto()->getRouteParameters()['entityFqcn']);
+        $this->assertEquals($expectedPermission, $crudMenuItemActual->getAsDto()->getPermission());
     }
 
     public function testConfigureUserMenu(): void
