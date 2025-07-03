@@ -30,7 +30,8 @@ class DashboardControllerTest extends WebTestCase
         $this->client = $this->createClient();
         $this->all_fixtures = $this->getFixtures();
 
-        $this->dashboardController = new DashboardController();
+        $pathUploadedFile = $this->getContainer()->getParameter('path_uploaded_image_users');
+        $this->dashboardController = new DashboardController($pathUploadedFile);
     }
 
     public function testPageIndexDashboardExist(): void
