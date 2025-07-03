@@ -24,7 +24,6 @@ class ProfilController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $em->flush();
             $messageFlash->addFlash('success', 'Profil modifiée avec success');
             return $this->redirectToRoute("app_profil");

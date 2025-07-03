@@ -37,7 +37,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $prenom = null;
 
     #[Vich\UploadableField(mapping: 'users', fileNameProperty: 'imageName', size: 'imageSize')]
-    private ?File $imageFile = null;
+    private ?File $file = null;
 
     #[ORM\Column(nullable: true)]
     private ?string $imageName = null;
@@ -125,7 +125,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setNom(?string $nom): static
     {
-        $this->nom = $nom;
+        $this->nom = strtoupper($nom);
 
         return $this;
     }
@@ -137,7 +137,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setPrenom(?string $prenom): static
     {
-        $this->prenom = $prenom;
+        $this->prenom = ucfirst($prenom);
 
         return $this;
     }
@@ -156,9 +156,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $imageFile
      */
-    public function setImageFile(?File $imageFile = null): void
+    public function setFile(?File $imageFile = null): void
     {
-        $this->imageFile = $imageFile;
+        $this->file = $imageFile;
 
         if (null !== $imageFile) {
             // It is required that at least one field changes if you are using doctrine
@@ -167,9 +167,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
     }
 
-    public function getImageFile(): ?File
+    public function getFile(): ?File
     {
-        return $this->imageFile;
+        return $this->file;
     }
 
     public function setImageName(?string $imageName): void

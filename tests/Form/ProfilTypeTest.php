@@ -61,10 +61,13 @@ class ProfilTypeTest extends TestCase
                     'file',
                     VichFileType::class,
                     [
+                        'required' => false,
                         'constraints' => [
                             new File(
-                                mimeTypes: ['images/png', 'images/jpeg', 'images/jpg'],
-                                maxSize: '4028K'
+                                mimeTypes: ['image/png', 'image/jpeg'],
+                                mimeTypesMessage: 'Veuillez uploader une image PNG ou JPEG.',
+                                maxSize: '4M',
+                                maxSizeMessage: 'Le fichier ne doit pas dépasser 4 Mo.'
                             )
                         ]
                     ]

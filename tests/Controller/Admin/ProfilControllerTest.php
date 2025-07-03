@@ -19,44 +19,65 @@ class ProfilControllerTest extends WebTestCase
     private KernelBrowser|null $client;
     private UserRepository|null $userRepository;
     private string|null $path_uploaded_file;
+    private User|null $userToLogged;
 
     protected function setUp(): void
     {
         $this->client = $this->createClient();
         $this->userRepository = $this->getContainer()->get(UserRepository::class);
         $this->path_uploaded_file = $this->getContainer()->getParameter('path_uploaded_image_users');
+        $this->userToLogged = $this->getFixtures()['user_credentials_ok'];
     }
 
-    public function testProfilSuccess(): void
+    public function testPageProfilExist(): void
     {
-        /** @var User */
-        $userLogged = $this->getFixtures()['user_credentials_ok'];
-        /** @var Crawler */
-        $crawler = $this->client->loginUser($userLogged);
+        $this->simulateAccessPageProfil();
 
-        $this->client->request("GET", '/profil');
         static::assertResponseIsSuccessful();
+        $this->assertPageTitleSame('Profil');
+    }
+    /**
+     * @dataProvider extensionValid
+     */
+    public function testProfilSuccess(string $filename, string $mimeType): void
+    {
+        $crawler = $this->simulateAccessPageProfil();
 
-        $pathMock = $this->mockFile();
+        $pathMock = $this->simulateSubmitForm($crawler, $filename, $mimeType);
 
-        $form = $crawler->selectButton('Modifier')->form([
-            'profil[nom]' => 'nom',
-            'profil[prenom]' => 'prenom',
-            // 'profil[username]' => 'mon username',
-            'profil[file]' => new UploadedFile($pathMock, 'test.png', 'images/png', null, true)
-        ]);
-
-        $this->client->submit($form);
         /** @var User */
-        $user = $this->userRepository->find($userLogged->getId());
+        $user = $this->userRepository->find($this->userToLogged->getId());
 
         $this->assertEquals('NOM', $user->getNom());
         $this->assertEquals('Prenom', $user->getPrenom());
         $this->assertEquals('username', $user->getUsername());
         $this->assertFileExists($this->pathFileUploaded($user));
 
-        unlink($this->path_uploaded_file);
+        unlink($this->pathFileUploaded($user));
         unlink($pathMock);
+    }
+
+    private function simulateSubmitForm(Crawler $crawler, string $filename, string $mimeType): string
+    {
+        $pathMock = $this->mockFile($filename);
+
+        $form = $crawler->selectButton('Modifier')->form();
+        $form['profil[nom]'] = 'nom';
+        $form['profil[prenom]'] = 'prenom';
+        $form['profil[username]'] = 'username';
+
+        $uplodedFile = new UploadedFile($pathMock, $filename, $mimeType, null, true);
+        $form['profil[file][file]'] = $uplodedFile;
+
+        $this->client->submit($form);
+
+        return $pathMock;
+    }
+
+    private function simulateAccessPageProfil(): Crawler
+    {
+        $this->client->loginUser($this->userToLogged);
+        return $this->client->request("GET", '/profil');
     }
 
     private function pathFileUploaded(User $user): string
@@ -64,18 +85,40 @@ class ProfilControllerTest extends WebTestCase
         return $this->path_uploaded_file . DIRECTORY_SEPARATOR . $user->getImageName();
     }
 
-    private function mockFile(): string
+    private function mockFile(string $filename): string
     {
-        $filename = 'test.png';
+        $callableCreateImage = function ($image, $path) use ($filename) {
+            $extension = explode('.', $filename)[1];
+            match ($extension) {
+                'jpeg' => imagejpeg($image, $path),
+                'png' => imagepng($image, $path)
+            };
+            imagedestroy($image);
+        };
+
         $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename;
-        file_put_contents($path, 'fake png');
+        $image = imagecreatetruecolor(10, 10); // 10x10 pixels
+        $callableCreateImage($image, $path);
 
         return $path;
+    }
+    /**
+     * @return array<array{string, string}>>
+     */
+    public static function extensionValid(): array
+    {
+        return [
+            ['filename' => 'test.jpeg', 'mimeType' => 'image/jpeg'],
+            ['filename' => 'test.png', 'mimeType' => 'image/png']
+        ];
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
         $this->client = null;
+        $this->userRepository = null;
+        $this->userToLogged = null;
+        $this->path_uploaded_file = null;
     }
 }
