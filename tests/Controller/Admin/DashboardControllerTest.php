@@ -23,10 +23,14 @@ class DashboardControllerTest extends WebTestCase
 
     private array|null $all_fixtures;
 
+    private ?DashboardController $dashboardController;
+
     protected function setUp(): void
     {
         $this->client = $this->createClient();
         $this->all_fixtures = $this->getFixtures();
+
+        $this->dashboardController = new DashboardController();
     }
 
     public function testPageIndexDashboardExist(): void
@@ -41,16 +45,14 @@ class DashboardControllerTest extends WebTestCase
 
     public function testConfigureDashboard(): void
     {
-        $dashboardController = new DashboardController();
-        $dashboardActual = $dashboardController->configureDashboard();
+        $dashboardActual = $this->dashboardController->configureDashboard();
 
         $this->assertEquals('Depense Mensuel', $dashboardActual->getAsDto()->getTitle());
     }
 
     public function testConfigureMenuItems(): void
     {
-        $dashboardController = new DashboardController();
-        $menuItem = $dashboardController->configureMenuItems();
+        $menuItem = $this->dashboardController->configureMenuItems();
 
         $this->assertCount(2, $menuItem);
         $this->simulateDashboardMenuItem($menuItem[0], 'Dashboard', 'fa fa-home');
@@ -81,21 +83,23 @@ class DashboardControllerTest extends WebTestCase
     public function testConfigureUserMenu(): void
     {
         /** @var User */
-        $userLogged = $this->all_fixtures['user_credentials_ok'];
+        $authenticatedUser = $this->all_fixtures['user_credentials_ok'];
 
         self::bootKernel();
         $container = self::getContainer();
 
         /** @var DashboardController $dashboardController */
-        $dashboardController = $container->get(DashboardController::class);
-        $userMenu = $dashboardController->configureUserMenu($userLogged);
+        $this->dashboardController = $container->get(DashboardController::class);
+        $userMenu = $this->dashboardController->configureUserMenu($authenticatedUser);
 
-        $items = $userMenu->getAsDto()->getItems();
-
-        $this->assertEquals($userLogged->getFullName(), $userMenu->getAsDto()->getName());
+        $this->assertEquals($authenticatedUser->getFullName(), $userMenu->getAsDto()->getName());
         $this->assertTrue($userMenu->getAsDto()->isAvatarDisplayed());
         $this->assertTrue($userMenu->getAsDto()->getItems() > 0);
 
+        $avatarUrlExpected = $userMenu->getAsDto()->getAvatarUrl();
+
+        /** test de simulation de menu item */
+        $items = $userMenu->getAsDto()->getItems();
         $this->simulateItemUserMenuLinkToRouteProfil($items[0]);
         $this->simulateItemUserMenuLinkToRouteChangePassword($items[1]);
     }
@@ -121,5 +125,7 @@ class DashboardControllerTest extends WebTestCase
     {
         parent::tearDown();
         $this->client = null;
+        $this->dashboardController = null;
+        $this->all_fixtures = null;
     }
 }
