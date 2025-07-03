@@ -21,6 +21,7 @@ class ProfilControllerTest extends WebTestCase
     private ?string $pathUploadedFile;
     private ?User $userToLogged;
     private ?array $temporaryFiles;
+    private ?Crawler $crawler;
 
     protected function setUp(): void
     {
@@ -29,11 +30,14 @@ class ProfilControllerTest extends WebTestCase
         $this->pathUploadedFile = $this->getContainer()->getParameter('path_uploaded_image_users');
         $this->userToLogged = $this->getFixtures()['user_credentials_ok'];
         $this->temporaryFiles = [];
+
+        $this->client->loginUser($this->userToLogged);
+        $this->crawler = $this->client->request("GET", '/profil');
     }
 
     public function testPageProfilExist(): void
     {
-        $this->simulateAccessPageProfil();
+        // $this->simulateAccessPageProfil();
 
         static::assertResponseIsSuccessful();
         $this->assertPageTitleSame('Profil');
@@ -43,9 +47,9 @@ class ProfilControllerTest extends WebTestCase
      */
     public function testProfilSuccess(array $dataForm): void
     {
-        $crawler = $this->simulateAccessPageProfil();
+        // $crawler = $this->simulateAccessPageProfil();
 
-        $pathMock = $this->simulateSubmitForm($crawler, $dataForm);
+        $pathMock = $this->simulateSubmitForm($dataForm);
 
         /** @var User */
         $user = $this->userRepository->find($this->userToLogged->getId());
@@ -58,26 +62,26 @@ class ProfilControllerTest extends WebTestCase
         $this->assertFileExists($this->pathFileUploaded($user));
     }
 
-    private function simulateSubmitForm(Crawler $crawler, array $dataForm): string
+    private function simulateSubmitForm(array $dataForm): ?string
     {
-        $filename = $dataForm['profil']['file_info']['filename'];
-        $mimeType = $dataForm['profil']['file_info']['mimeType'];
-        unset($dataForm['profil']['file_info']); //on supprime car c'est unitule dans le form et ça provoque une erreur
+        $pathMock = null;
+        /**
+         * traitement du fichier à uploader
+         */
+        if (array_key_exists('file_info', $dataForm['profil'])) {
+            $filename = $dataForm['profil']['file_info']['filename'];
+            $mimeType = $dataForm['profil']['file_info']['mimeType'];
+            unset($dataForm['profil']['file_info']); //on supprime car c'est unitule dans le form et ça provoque une erreur
 
-        $pathMock = $this->mockFileValid($filename);
+            $pathMock = $this->mockFileValid($filename);
 
-        $uploadedFile = new UploadedFile($pathMock, $filename, $mimeType, null, true);
-        $dataForm['profil']['file']['file'] = $uploadedFile;
-        $form = $crawler->selectButton('Modifier')->form($dataForm);
-        $this->client->submit($form);
+            $uploadedFile = new UploadedFile($pathMock, $filename, $mimeType, null, true);
+            $dataForm['profil']['file']['file'] = $uploadedFile;
+        }
+        $form = $this->crawler->selectButton('Modifier')->form($dataForm);
+        $this->crawler = $this->client->submit($form);
 
         return $pathMock;
-    }
-
-    private function simulateAccessPageProfil(): Crawler
-    {
-        $this->client->loginUser($this->userToLogged);
-        return $this->client->request("GET", '/profil');
     }
 
     private function pathFileUploaded(User $user): string
@@ -103,6 +107,57 @@ class ProfilControllerTest extends WebTestCase
         return $path;
     }
     /**
+     * @dataProvider formDataInvalidWithAndWithoutFile
+     */
+    public function testProfilFormDataInvalid(array $formData, int $nbExpected): void
+    {
+        $this->simulateSubmitForm($formData);
+
+        $this->assertResponseIsSuccessful();
+        $nbErrorActual = $this->crawler->filter('.invalid-feedback')->count();
+        $this->assertSelectorExists('.invalid-feedback');
+        $this->assertEquals($nbExpected, $nbErrorActual);
+    }
+
+    public static function formDataInvalidWithAndWithoutFile(): array
+    {
+        return [
+            'nom missing and no file' => [
+                "data" => [
+                    'profil' => [
+                        'prenom' => 'prenom',
+                        'username' => 'username',
+                    ]
+                ],
+                "nbExpected" => 1
+            ],
+            'prenom missing and no file' => [
+                'data' => [
+                    'profil' => [
+                        'nom' => 'nom',
+                        'username' => 'username',
+                    ]
+                ],
+                'nbExpected' => 1
+            ],
+            'username missing and no file' => [
+                'data' => [
+                    'profil' => [
+                        'nom' => 'nom',
+                        'prenom' => 'prenom',
+                    ]
+                ],
+                'nbExpected' => 1
+            ],
+            'nom, prenom, username missing and no file' => [
+                'data' => [
+                    'profil' => []
+                ],
+                'nbExpected' => 3
+            ],
+        ];
+    }
+    /**
      * @return array<string, array{profil: array{
      *     nom: string,
      *     prenom: string,
@@ -124,9 +179,6 @@ class ProfilControllerTest extends WebTestCase
                             'filename' => 'test.jpeg',
                             'mimeType' => 'image/jpeg',
                         ],
-                        'file' => [
-                            'file' => null
-                        ]
                     ]
                 ]
             ],
@@ -140,9 +192,6 @@ class ProfilControllerTest extends WebTestCase
                             'filename' => 'test.png',
                             'mimeType' => 'image/png'
                         ],
-                        'file' => [
-                            'file' => null
-                        ]
                     ]
                 ]
             ],
@@ -163,5 +212,6 @@ class ProfilControllerTest extends WebTestCase
         $this->userRepository = null;
         $this->userToLogged = null;
         $this->pathUploadedFile = null;
+        $this->crawler = null;
     }
 }

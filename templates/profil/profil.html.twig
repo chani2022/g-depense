@@ -1,62 +1,28 @@
-{% extends ea.hasContext ? ea.templatePath('layout') : '@EasyAdmin/page/login_minimal.html.twig' %}
+{% extends '@EasyAdmin/layout.html.twig' %}
+{% block page_title 'Profil' %}
 
-{% block body_class 'page-login' %}
-{% block page_title %}
-	{{ page_title is defined ? page_title|raw : (ea.hasContext ? ea.dashboardTitle|raw : 'Profil') }}
-{% endblock %}
+{% block main %}
 
-{% block head_favicon %}
-	{% if favicon_path|default(false) %}
-		<link rel="shortcut icon" href="{{ favicon_path }}">
-	{% else %}
-		{{ parent() }}
-	{% endif %}
-{% endblock %}
+<h1 class="text-info">Profil</h1>
 
-{% block wrapper_wrapper %}
-{% set page_title = block('page_title') %}
-
-{% include '@EasyAdmin/flash_messages.html.twig' %}
-
-<div class="login-wrapper">
-	<header class="main-header">
-		<div id="header-logo">
-			{% block header_logo %}
-				{% if page_title %}
-					{% if ea.hasContext %}
-						<a class="logo {{ page_title|length > 14 ? 'logo-long' }}" title="{{ page_title|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
-							{{ page_title|raw }}
-						</a>
-					{% else %}
-						<div class="logo {{ page_title|length > 14 ? 'logo-long' }}">
-							{{ page_title|raw }}
-						</div>
-					{% endif %}
-				{% endif %}
-			{% endblock header_logo %}
-		</div>
-	</header>
-
-	<section class="content">
-		{% form_theme form 'bootstrap_5_layout.html.twig' %}
-		{{form_start(form)}}
-		<div class="form-group">
-			<div class="form-widget">
-				{{form_row(form.file, {'attr':{'class':'form-control'}})}}
-			</div>
-			<div class="form-widget">
-				{{form_row(form.nom, {'attr':{'class':'form-control'}, 'label': 'Nom' })}}
-			</div>
-			<div class="form-widget">
-				{{form_row(form.prenom, {'attr':{'class':'form-control'}, 'label': 'Prénom' })}}
-			</div>
-			<div class="form-widget">
-				{{form_row(form.username, {'attr':{'class':'form-control'}, 'label': 'Nom d\'utilisateur' })}}
-			</div>
-		</div>
-            <button type="submit" class='btn btn-primary btn-lg btn-block'>Modifier</button>
-			{# {{form_widget(form.envoyer, {'attr': {'class': 'btn btn-primary btn-lg btn-block'}})}} #}
-			{{form_end(form)}}
-	</section>
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+{{form_start(form)}}
+<div class="form-group">
+	<div class="form-widget">
+		{{form_row(form.file, {'attr':{'class':'form-control'}, 'label': 'Choisir un fichier' })}}
+	</div>
+	<div class="form-widget">
+		{{form_row(form.nom, {'attr':{'class':'form-control'}, 'label': 'Nom' })}}
+	</div>
+	<div class="form-widget">
+		{{form_row(form.prenom, {'attr':{'class':'form-control'}, 'label': 'Prénom' })}}
+	</div>
+	<div class="form-widget">
+		{{form_row(form.username, {'attr':{'class':'form-control'}, 'label': 'Nom d\'utilisateur' })}}		
+	</div>
+    <button type="submit" class='btn btn-primary btn-lg btn-block'>Modifier</button>
 </div>
+{{form_end(form)}}
+	
+
 {% endblock %}

@@ -11,12 +11,13 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Entity\User;
 use App\Flash\MessageFlash;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 class ProfilController extends AbstractController
 {
     #[IsGranted('ROLE_USER')]
     #[Route('/profil', name: 'app_profil')]
-    public function index(Request $request, EntityManagerInterface $em, MessageFlash $messageFlash): Response
+    public function index(Request $request, EntityManagerInterface $em, MessageFlash $messageFlash, AdminUrlGenerator $adminUrlGenerator): Response
     {
         /** @var User */
         $user = $this->getUser();
@@ -26,7 +27,7 @@ class ProfilController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
             $messageFlash->addFlash('success', 'Profil modifiée avec success');
-            return $this->redirectToRoute("app_profil");
+            return $this->redirect($adminUrlGenerator->setRoute('app_profil')->generateUrl());
         }
 
         return $this->render('profil/profil.html.twig', [

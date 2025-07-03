@@ -17,16 +17,19 @@ class ProfilType extends AbstractType
     {
         $builder
             ->add('username', TextType::class, [
+                'required' => false,
                 'constraints' => [
                     new NotBlank()
                 ]
             ])
             ->add('nom', TextType::class, [
+                'required' => false,
                 'constraints' => [
                     new NotBlank()
                 ]
             ])
             ->add('prenom', TextType::class, [
+                'required' => false,
                 'constraints' => [
                     new NotBlank()
                 ]
