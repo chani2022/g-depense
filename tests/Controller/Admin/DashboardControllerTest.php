@@ -13,6 +13,7 @@ use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use PHPUnit\Framework\MockObject\MockObject;
+use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 class DashboardControllerTest extends WebTestCase
 {
@@ -31,8 +32,8 @@ class DashboardControllerTest extends WebTestCase
         $this->client = $this->createClient();
         $this->all_fixtures = $this->getFixtures();
 
-        $pathUploadedFile = $this->getContainer()->getParameter('path_uploaded_image_users');
-        $this->dashboardController = new DashboardController($pathUploadedFile);
+        $uploaderHelper = $this->getContainer()->get(UploaderHelper::class);
+        $this->dashboardController = new DashboardController($uploaderHelper);
     }
 
     public function testPageIndexDashboardExist(): void

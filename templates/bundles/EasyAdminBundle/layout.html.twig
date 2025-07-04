@@ -1,7 +1,9 @@
 {# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
 
 <!DOCTYPE html>
-<html lang="{{ ea.i18n.htmlLocale }}" dir="{{ ea.i18n.textDirection }}" data-turbo="false">
+<html
+	lang="{{ ea.i18n.htmlLocale }}" dir="{{ ea.i18n.textDirection }}" data-turbo="false">
+	{# <html> #}
 	<head>
 		{% block head_metas %}
 			<meta charset="utf-8">
@@ -185,7 +187,7 @@
 									<a
 										class="user-details" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
 										{# to make the site design consistent, always display the user avatar in responsive header
-																				                                   and hide the user name (because there's no space left) regardless of the user config #}
+																																								                                   and hide the user name (because there's no space left) regardless of the user config #}
 										{% if ea.userMenu.avatarDisplayed %}
 											{{ user_menu_avatar }}
 										{% else %}
