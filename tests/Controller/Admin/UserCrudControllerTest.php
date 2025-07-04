@@ -7,7 +7,7 @@ use App\Controller\Admin\UserCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 
-final class CategoryCrudControllerTest extends AbstractCrudTestCase
+final class UserCrudControllerTest extends AbstractCrudTestCase
 {
     use RefreshDatabaseTrait;
 
