@@ -26,33 +26,50 @@ class RegistrationControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testRegisterSuccess(): void
+    /**
+     * @dataProvider formDataValid
+     */
+    public function testRegisterSuccess(array $formData): void
     {
-        $uniqueUsernane = 'mon username';
-        $plainPassword = 'exact';
-        $form = $this->crawler->selectButton('Enregistrer')->form([
-            'registration_form[username]' => $uniqueUsernane,
-            'registration_form[password][first]' => $plainPassword,
-            'registration_form[password][second]' => $plainPassword,
-        ]);
-
-        $this->client->submit($form);
-        $this->client->followRedirects();
+        $this->submitForm($formData);
         //assert user
         /** @var User */
-        $user = $this->getContainer()->get(UserRepository::class)->findOneByUsername($uniqueUsernane);
+        $user = $this->getContainer()->get(UserRepository::class)->findOneByUsername($formData['registration_form']['username']);
         $this->assertInstanceOf(User::class, $user);
-        $this->assertEquals($uniqueUsernane, $user->getUsername());
+        $this->assertEquals($formData['registration_form']['username'], $user->getUsername());
 
         //assert password
         /** @var UserPasswordHasherInterface */
         $hasher = $this->getContainer()->get(UserPasswordHasherInterface::class);
         $this->assertTrue(
-            $hasher->isPasswordValid($user, $plainPassword)
+            $hasher->isPasswordValid($user, $formData['registration_form']['password']['second'])
         );
     }
 
+    private function submitForm(array $formData): void
+    {
+        $form = $this->crawler->selectButton('Enregistrer')->form($formData);
 
+        $this->client->submit($form);
+        $this->client->followRedirects();
+    }
+
+    public static function formDataValid(): array
+    {
+        return [
+            [
+                [
+                    'registration_form' => [
+                        'username' => 'mon username',
+                        'password' => [
+                            'first' => 'exact',
+                            'second' => 'exact'
+                        ]
+                    ]
+                ]
+            ]
+        ];
+    }
 
     protected function tearDown(): void
     {
