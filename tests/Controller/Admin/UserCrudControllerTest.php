@@ -8,8 +8,6 @@ use App\Tests\Trait\LoadFixtureTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use App\Entity\User;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 final class UserCrudControllerTest extends AbstractCrudTestCase
 {
@@ -32,7 +30,6 @@ final class UserCrudControllerTest extends AbstractCrudTestCase
         $authenticatedUser = $this->getFixtures()['user_admin'];
         // this examples doesn't use security; in your application you may
         // need to ensure that the user is logged before the test
-
         $this->client->request("GET",  $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();

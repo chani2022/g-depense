@@ -75,6 +75,10 @@
 							<a href="{{ forgot_password_path|default('#') }}" class="forgot-password" id="{{ id_forgot_password }}">{{ _forgot_password_label }}</a>
 						</div>
 					{% endif %}
+
+					{# <div class="form-text">
+																<a href="{{ path ('app_register') }}" class="inscription">S'inscrire</a>
+															</div> #}
 				</div>
 
 				{% if remember_me_enabled|default(false) %}

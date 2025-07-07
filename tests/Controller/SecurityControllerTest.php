@@ -110,6 +110,20 @@ class SecurityControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    public function testClinkLinkInscriptionSuccess(): void
+    {
+        /** @var Crawler */
+        $crawler = $this->client->request('GET', '/');
+        $filter_link = $crawler->filter('.inscription');
+        $number_link = $filter_link->count();
+        $link = $filter_link->link();
+
+        $this->assertEquals($number_link, 1);
+        $this->client->click($link);
+
+        $this->assertResponseIsSuccessful();
+    }
+
     public static function getBadCredentials(): array
     {
         return [
