@@ -11,7 +11,6 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class RegistrationControllerTest extends WebTestCase
 {
-
     private ?KernelBrowser $client;
     private ?Crawler $crawler;
 
@@ -45,12 +44,22 @@ class RegistrationControllerTest extends WebTestCase
             $hasher->isPasswordValid($user, $formData['registration_form']['password']['second'])
         );
     }
+    /**
+     * @dataProvider formDataInvalid
+     */
+    public function testRegisterFailed(array $formData, int $expected): void
+    {
+        $this->submitForm($formData);
+        $actual = $this->crawler->filter('.invalid-feedback')->count();
+
+        $this->assertEquals($expected, $actual);
+    }
 
     private function submitForm(array $formData): void
     {
         $form = $this->crawler->selectButton('Enregistrer')->form($formData);
 
-        $this->client->submit($form);
+        $this->crawler = $this->client->submit($form);
         $this->client->followRedirects();
     }
 
@@ -67,6 +76,49 @@ class RegistrationControllerTest extends WebTestCase
                         ]
                     ]
                 ]
+            ]
+        ];
+    }
+
+    public static function formDataInValid(): array
+    {
+        return [
+            'username_already_exist' => [
+                [
+                    'registration_form' => [
+                        'username' => 'username',
+                        'password' => [
+                            'first' => 'exact',
+                            'second' => 'exact'
+                        ]
+                    ]
+                ],
+                'expected' => 1
+            ],
+            'password_not_match' => [
+                [
+                    'registration_form' => [
+                        'username' => 'other username',
+                        'password' => [
+                            'first' => 'exacte',
+                            'second' => 'exact'
+                        ]
+                    ]
+                ],
+                'expected' => 1
+            ],
+
+            'password_not_match and username already exist' => [
+                [
+                    'registration_form' => [
+                        'username' => 'username',
+                        'password' => [
+                            'first' => 'exacte',
+                            'second' => 'exact'
+                        ]
+                    ]
+                ],
+                'expected' => 2
             ]
         ];
     }
