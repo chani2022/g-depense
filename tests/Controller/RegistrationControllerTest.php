@@ -50,8 +50,6 @@ class RegistrationControllerTest extends WebTestCase
         $this->assertTrue(
             $hasher->isPasswordValid($user, $plainPassword)
         );
-
-        // $this->assertSelectorExists('.alert-success');
     }
 
 
