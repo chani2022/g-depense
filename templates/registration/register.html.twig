@@ -1,22 +1,64 @@
-{% extends 'base.html.twig' %}
+{% extends ea.hasContext ? ea.templatePath('layout') : '@EasyAdmin/page/login_minimal.html.twig' %}
 
-{% block title %}Register
-{% endblock %}
+{% block body_class 'page-login' %}
+	{% block page_title %}
+		{{ page_title is defined ? page_title|raw : (ea.hasContext ? ea.dashboardTitle|raw : 'Inscription') }}
+	{% endblock %}
 
-{% block body %}
-	{% for flash_error in app.flashes('verify_email_error') %}
-		<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-	{% endfor %}
+	{% block head_favicon %}
+		{% if favicon_path|default(false) %}
+			<link rel="shortcut icon" href="{{ favicon_path }}">
+		{% else %}
+			{{ parent() }}
+		{% endif %}
+	{% endblock %}
 
-	<h1>Register</h1>
+	{% block wrapper_wrapper %}
+		{% include '@EasyAdmin/flash_messages.html.twig' %}
 
-	{{ form_errors(registrationForm) }}
+		<div class="login-wrapper">
+			<header class="main-header">
+				<div id="header-logo">
+					{% block header_logo %}
+						{% if page_title %}
+							{% if ea.hasContext %}
+								<a class="logo {{ page_title|length > 14 ? 'logo-long' }}" title="{{ page_title|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
+									{{ page_title|raw }}
+								</a>
+							{% else %}
+								<div class="logo {{ page_title|length > 14 ? 'logo-long' }}">
+									{{ page_title|raw }}
+								</div>
+							{% endif %}
+						{% endif %}
+					{% endblock header_logo %}
+				</div>
+			</header>
 
-	{{ form_start(registrationForm) }}
-	{{ form_row(registrationForm.username) }}
-	{{ form_row(registrationForm.password.first) }}
-	{{ form_row(registrationForm.password.second) }}
+			<section class="content">
+				{{ form_start(registrationForm) }}
+				<div class="form-group">
+					<label class="form-control-label required" for="username">{{ _username_label }}</label>
+					<div class="form-widget">
+						{{ form_row(registrationForm.username) }}
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="form-control-label required" for="username">{{ _username_label }}</label>
+					<div class="form-widget">
+						{{ form_row(registrationForm.password.first) }}
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="form-control-label required" for="username">{{ _username_label }}</label>
+					<div class="form-widget">
+						{{ form_row(registrationForm.password.second) }}
+					</div>
+				</div>
 
-	<button type="submit" class="btn">Enregistrer</button>
-	{{ form_end(registrationForm) }}
+				<button type="submit" class="btn btn-primary btn-lg btn-block">Enregistrer</button>
+				{{ form_end(registrationForm) }}
+			</section>
+		</div>
+	{% endblock %}
 {% endblock %}
