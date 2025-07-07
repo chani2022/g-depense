@@ -89,6 +89,12 @@ class SecurityController extends AbstractController
 
             // the label displayed for the remember me checkbox (the |trans filter is applied to it)
             'remember_me_label' => 'Se souvenir de moi',
+
+            //sign up
+            'sign_up_enabled' => true,
+            'sign_up_label' => 'S\'inscrire',
+            'sign_up_path' => $this->generateUrl('app_register'),
+            'sign_up_id_attribut' => 'inscription'
         ]);
     }
 

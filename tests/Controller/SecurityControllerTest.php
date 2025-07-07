@@ -114,8 +114,9 @@ class SecurityControllerTest extends WebTestCase
     {
         /** @var Crawler */
         $crawler = $this->client->request('GET', '/');
-        $filter_link = $crawler->filter('.inscription');
+        $filter_link = $crawler->filter('#inscription');
         $number_link = $filter_link->count();
+
         $link = $filter_link->link();
 
         $this->assertEquals($number_link, 1);
