@@ -3,7 +3,6 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
-use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Locale;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -21,7 +20,8 @@ class DashboardController extends AbstractDashboardController
 {
     public function __construct(private UploaderHelper $uploaderHelper) {}
 
-    #[Route('/admin', name: 'admin', requirements: ['_locale' => 'en|fr'], defaults: ['_locale' => 'en'])]
+
+    #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
         return $this->render('admin/dashboard.html.twig');
