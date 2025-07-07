@@ -37,7 +37,7 @@ class RegistrationControllerTest extends WebTestCase
         ]);
 
         $this->client->submit($form);
-
+        $this->client->followRedirects();
         //assert user
         /** @var User */
         $user = $this->getContainer()->get(UserRepository::class)->findOneByUsername($uniqueUsernane);
@@ -50,6 +50,8 @@ class RegistrationControllerTest extends WebTestCase
         $this->assertTrue(
             $hasher->isPasswordValid($user, $plainPassword)
         );
+
+        // $this->assertSelectorExists('.alert-success');
     }
 
 
