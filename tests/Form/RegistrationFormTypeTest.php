@@ -9,6 +9,8 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Entity\User;
 
 class RegistrationFormTypeTest extends TestCase
 {
@@ -42,6 +44,17 @@ class RegistrationFormTypeTest extends TestCase
             ->willReturnSelf();
 
         $this->registrationFormType->buildForm($formBuilder, $options);
+    }
+
+    public function testConfigureOptionsRegister(): void
+    {
+        $optionResolver = new OptionsResolver();
+
+        $this->registrationFormType->configureOptions($optionResolver);
+
+        $this->assertEquals([
+            'data_class' => User::class
+        ], $optionResolver->resolve());
     }
 
 
