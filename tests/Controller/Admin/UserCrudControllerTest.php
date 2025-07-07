@@ -32,15 +32,8 @@ final class UserCrudControllerTest extends AbstractCrudTestCase
         $authenticatedUser = $this->getFixtures()['user_admin'];
         // this examples doesn't use security; in your application you may
         // need to ensure that the user is logged before the test
-        $this->client->loginUser($authenticatedUser);
-        /** @var AdminUrlGenerator */
-        $adminUrlGenerator = $this->getContainer()->get(AdminUrlGenerator::class);
-        $url = $adminUrlGenerator->setController(UserCrudController::class)
-            ->setAction(Action::INDEX)
-            ->set('_locale', 'en')
-            ->generateUrl();
 
-        $this->client->request("GET",  $url);
+        $this->client->request("GET",  $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
     }

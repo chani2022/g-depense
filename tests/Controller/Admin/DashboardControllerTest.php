@@ -130,6 +130,14 @@ class DashboardControllerTest extends WebTestCase
         $this->assertEquals('app_logout', $dto->getRouteName());
     }
 
+    public function testIndexNotAccessUserAnonymous(): void
+    {
+        $this->client->request('GET', '/admin');
+
+        $this->assertResponseStatusCodeSame(302);
+        $this->assertResponseRedirects('/'); //redirection vers la login
+    }
+
 
     protected function tearDown(): void
     {
