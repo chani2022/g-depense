@@ -5,14 +5,12 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Flash\MessageFlash;
 use App\Form\RegistrationFormType;
-use App\Security\AppAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 
 class RegistrationController extends AbstractController
 {
@@ -21,8 +19,6 @@ class RegistrationController extends AbstractController
     public function register(
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
-        UserAuthenticatorInterface $userAuthenticator,
-        AppAuthenticator $authenticator,
         EntityManagerInterface $entityManager,
         MessageFlash $messageFlash
     ): Response {
@@ -44,7 +40,7 @@ class RegistrationController extends AbstractController
 
             $messageFlash->addFlash('success', 'Vous êtes inscrit.');
 
-            return $this->redirectToRoute("app_login");
+            return $this->redirectToRoute("app_register");
             // return $this->redirectToRoute("app_login");
             // // do anything else you need here, like send an email
             // return $userAuthenticator->authenticateUser(
