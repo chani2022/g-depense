@@ -25,11 +25,12 @@ class RegistrationFormTypeTest extends TestCase
         $formBuilder = $this->createMock(FormBuilderInterface::class);
         $options = [];
 
-        $formBuilder->expects($this->exactly(3))
+        $formBuilder->expects($this->exactly(2))
             ->method('add')
             ->withConsecutive(
                 ['username', TextType::class],
                 ['password', RepeatedType::class, [
+                    'mapped' => false,
                     'type' => PasswordType::class,
                     'invalid_message' => 'The password fields must match.',
                     'options' => ['attr' => ['class' => 'password-field']],
