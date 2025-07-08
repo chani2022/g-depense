@@ -22,6 +22,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\EntityCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 
 class UserCrudController extends AbstractCrudController
 {
@@ -40,6 +41,10 @@ class UserCrudController extends AbstractCrudController
         ];
     }
 
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions->setPermission(Action::INDEX, 'ROLE_ADMIN');
+    }
 
     // public function configureCrud(Crud $crud): Crud
     // {
