@@ -11,7 +11,7 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Hautelook\AliceBundle\PhpUnit\ReloadDatabaseTrait;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
+
 
 class ProfilControllerTest extends WebTestCase
 {
@@ -20,6 +20,7 @@ class ProfilControllerTest extends WebTestCase
 
     private ?KernelBrowser $client;
     private ?array $pathMockFile;
+    private ?Crawler $crawler;
 
     protected function setUp(): void
     {
@@ -52,19 +53,21 @@ class ProfilControllerTest extends WebTestCase
      */
     public function testSubmitFormSuccess(array $formData): void
     {
-
         $formData = $this->handleFormData($formData);
 
-        $authenticatedUser = $this->getFixtures()['user_credentials_ok'];
-        $this->client->loginUser($authenticatedUser);
-        /** @var Crawler */
-        $crawler = $this->client->request('GET', '/profil');
-        $this->assertResponseIsSuccessful();
+        $this->simulateAccesPageProfil();
 
-        $form = $crawler->selectButton('Modifier')->form($formData);
-        $this->client->submit($form);
+        $this->simulateSubmitForm($formData);
 
+        $this->assertUserUpdated($formData);
 
+        $this->assertResponseStatusCodeSame(302);
+
+        $this->client->followRedirect();
+    }
+
+    private function assertUserUpdated(array $formData): void
+    {
         /** @var UserRepository */
         $userRepository = $this->getContainer()->get(UserRepository::class);
         /** @var User */
@@ -80,14 +83,15 @@ class ProfilControllerTest extends WebTestCase
             $this->pathMockFile[] = $pathFileUploaded;
             $this->assertFileExists($pathFileUploaded);
         }
+    }
 
-        $this->assertResponseStatusCodeSame(302);
-        $this->client->followRedirect();
-        // $this->assertResponseRedirects('/profil');
-        // $this->assertSelectorExists('.alert-success');
+    private function simulateSubmitForm(array $formData): void
+    {
+        $form = $this->crawler->selectButton('Modifier')->form($formData);
+        $this->client->submit($form);
     }
     /**
-     * modification de donnée et suppression du file_info
+     * modification de donnée en ajoutant la clés file et suppression du file_info
      */
     private function handleFormData(array $formData): array
     {
@@ -100,6 +104,14 @@ class ProfilControllerTest extends WebTestCase
             $this->pathMockFile[] = $path;
         }
         return $formData;
+    }
+
+    private function simulateAccesPageProfil(): void
+    {
+        $authenticatedUser = $this->getFixtures()['user_credentials_ok'];
+        $this->client->loginUser($authenticatedUser);
+        $this->crawler = $this->client->request('GET', '/profil');
+        $this->assertResponseIsSuccessful();
     }
 
     private function mockFile(string $mimeType, string $filename): string
@@ -174,5 +186,6 @@ class ProfilControllerTest extends WebTestCase
         }
         $this->pathMockFile = null;
         $this->client = null;
+        $this->crawler = null;
     }
 }
