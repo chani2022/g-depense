@@ -47,8 +47,7 @@ final class UserCrudControllerTest extends AbstractCrudTestCase
 
         $this->client->request("GET",  $this->generateIndexUrl());
 
-        static::assertResponseStatusCodeSame(302);
-        $this->assertResponseRedirects('/');
+        static::assertResponseStatusCodeSame(403);
     }
     /**
      * @return array<array{string, string}>
