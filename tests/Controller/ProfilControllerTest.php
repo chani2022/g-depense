@@ -26,14 +26,44 @@ class ProfilControllerTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame(302);
     }
-    public function testProfilePageExist(): void
+    /**
+     * @dataProvider userAuthorized
+     */
+    public function testAccessProfilePageOkWithUserValid(string $roles): void
     {
         $authenticatedUser = $this->getFixtures()['user_credentials_ok'];
+        if ($roles == 'admin') {
+            $authenticatedUser = $this->getFixtures()['user_admin'];
+        }
         $this->client->loginUser($authenticatedUser);
 
         $this->client->request('GET', '/profil');
         $this->assertResponseIsSuccessful();
     }
 
-    // public function
+    public function testSubmitFormSuccess(array $formData): void {}
+
+    public static function userAuthorized(): array
+    {
+        return [
+            ['user'],
+            ['admin']
+        ];
+    }
+
+    public function formDataValid(): array
+    {
+        return [
+            [
+                'profil' => [
+                    'nom' => 'nom',
+                    'prenom' => 'prenom',
+                    'username' => 'mon username',
+                    'file' => [
+                        'file' => ''
+                    ]
+                ]
+            ]
+        ];
+    }
 }

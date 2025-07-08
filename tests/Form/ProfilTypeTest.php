@@ -34,7 +34,6 @@ class ProfilTypeTest extends TestCase
                     'username',
                     TextType::class,
                     [
-                        'required' => false,
                         'constraints' => [
                             new NotBlank()
                         ]
@@ -44,7 +43,6 @@ class ProfilTypeTest extends TestCase
                     'nom',
                     TextType::class,
                     [
-                        'required' => false,
                         'constraints' => [
                             new NotBlank()
                         ]
@@ -54,7 +52,6 @@ class ProfilTypeTest extends TestCase
                     'prenom',
                     TextType::class,
                     [
-                        'required' => false,
                         'constraints' => [
                             new NotBlank()
                         ]
