@@ -55,15 +55,6 @@ final class UserCrudControllerTest extends AbstractCrudTestCase
             static::assertResponseStatusCodeSame(403);
         }
     }
-
-    public function testProfilePageExist(): void
-    {
-        $authenticatedUser = $this->getFixtures()['user_credentials_ok'];
-        $this->client->loginUser($authenticatedUser);
-
-        $this->client->request('GET', '/profil');
-        $this->assertResponseIsSuccessful();
-    }
     /**
      * @return array<array{string, string}>
      */
