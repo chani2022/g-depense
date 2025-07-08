@@ -8,8 +8,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-
+#[IsGranted('ROLE_ADMIN')]
 class UserCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
@@ -27,10 +28,10 @@ class UserCrudController extends AbstractCrudController
         ];
     }
 
-    public function configureActions(Actions $actions): Actions
-    {
-        return $actions->setPermission(Action::INDEX, 'ROLE_ADMIN');
-    }
+    // public function configureActions(Actions $actions): Actions
+    // {
+    //     return $actions->setPermission(Action::INDEX, 'ROLE_ADMIN');
+    // }
 
     // public function configureCrud(Crud $crud): Crud
     // {

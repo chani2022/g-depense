@@ -46,8 +46,11 @@ final class UserCrudControllerTest extends AbstractCrudTestCase
         }
 
         $this->client->request("GET",  $this->generateIndexUrl());
-
-        static::assertResponseStatusCodeSame(403);
+        if ($roles == 'anonymous') {
+            static::assertResponseStatusCodeSame(302);
+        } else {
+            static::assertResponseStatusCodeSame(403);
+        }
     }
     /**
      * @return array<array{string, string}>
