@@ -32,12 +32,20 @@ class UserCrudController extends AbstractCrudController
         ];
     }
 
-    public function configureActions(Actions $actions): Actions
-    {
-        $profilAction = Action::new('profil', 'Profil', 'fa fa-envelope')
-            ->linkToRoute('app_profil');
+    // public function configureActions(Actions $actions): Actions
+    // {
+    //     $profilAction = Action::new('profil', 'Profil', 'fa fa-envelope')
+    //         ->linkToRoute('app_profil');
 
-        return $actions
-            ->add(Crud::PAGE_EDIT, $profilAction)->setPermission(Action::EDIT, 'ROLE_USER');
+    //     return $actions
+    //         ->add(Crud::PAGE_EDIT, $profilAction)
+    //         ->setPermission(Action::EDIT, 'ROLE_USER');
+    // }
+
+    public function profile(AdminContext $adminContext): Response
+    {
+        return $this->render('profil/profil.html.twig', [
+            'controller_name' => 'ProfilController',
+        ]);
     }
 }

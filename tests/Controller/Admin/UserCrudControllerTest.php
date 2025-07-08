@@ -8,6 +8,9 @@ use App\Tests\Trait\LoadFixtureTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use App\Entity\User;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 
 final class UserCrudControllerTest extends AbstractCrudTestCase
 {
