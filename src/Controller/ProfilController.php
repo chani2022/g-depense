@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\ProfilType;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
@@ -16,11 +17,14 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ProfilController extends AbstractDashboardController
 {
     #[Route('/profil', name: 'app_profil')]
-    public function profil(Request $request): Response
+    public function profil(Request $request, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(ProfilType::class, $this->getUser());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $em->flush();
+            $this->redirectToRoute('app_profil');
         }
         return $this->render('profil/profil.html.twig', [
             'form' => $form->createView()
