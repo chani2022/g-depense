@@ -11,7 +11,7 @@ use App\Entity\User;
 
 final class UserCrudControllerTest extends AbstractCrudTestCase
 {
-    use RefreshDatabaseTrait;
+    // use RefreshDatabaseTrait;
     use LoadFixtureTrait;
 
     protected function getControllerFqcn(): string
@@ -33,5 +33,12 @@ final class UserCrudControllerTest extends AbstractCrudTestCase
         $this->client->request("GET",  $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
+    }
+
+    public function testAccessDeniedUserAnonymousIndexPageUser(): void
+    {
+        $this->client->request("GET",  $this->generateIndexUrl());
+
+        static::assertResponseStatusCodeSame(401);
     }
 }
