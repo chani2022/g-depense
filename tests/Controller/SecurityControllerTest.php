@@ -92,7 +92,7 @@ class SecurityControllerTest extends WebTestCase
         $this->client->getCookieJar()->set($cookie); // injecte le cookie REMEMBERME
 
         // 5) Accès à une page protégée sans se loguer explicitement
-        $this->client->request('GET', '/dashboard');
+        $this->client->request('GET', '/admin');
         $this->assertResponseIsSuccessful();
     }
 
