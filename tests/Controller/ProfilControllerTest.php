@@ -23,6 +23,7 @@ class ProfilControllerTest extends WebTestCase
     public function testPageProfilNotAccessIfUserIsAnonymous(): void
     {
         $this->client->request('GET', '/profil');
+
         $this->assertResponseStatusCodeSame(302);
     }
     public function testProfilePageExist(): void

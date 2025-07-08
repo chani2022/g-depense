@@ -8,6 +8,9 @@ use App\Tests\Trait\LoadFixtureTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use App\Entity\User;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 
 final class UserCrudControllerTest extends AbstractCrudTestCase
 {
@@ -51,15 +54,6 @@ final class UserCrudControllerTest extends AbstractCrudTestCase
         } else {
             static::assertResponseStatusCodeSame(403);
         }
-    }
-
-    public function testProfilePageExist(): void
-    {
-        $authenticatedUser = $this->getFixtures()['user_credentials_ok'];
-        $this->client->loginUser($authenticatedUser);
-
-        $this->client->request('GET', '/profil');
-        $this->assertResponseIsSuccessful();
     }
     /**
      * @return array<array{string, string}>
