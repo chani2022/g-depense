@@ -38,6 +38,6 @@ class UserCrudController extends AbstractCrudController
             ->linkToRoute('app_profil');
 
         return $actions
-            ->add(Crud::PAGE_EDIT, $profilAction);
+            ->add(Crud::PAGE_EDIT, $profilAction)->setPermission(Action::EDIT, 'ROLE_USER');
     }
 }
