@@ -11,7 +11,7 @@ use App\Entity\User;
 
 final class UserCrudControllerTest extends AbstractCrudTestCase
 {
-    // use RefreshDatabaseTrait;
+    use RefreshDatabaseTrait;
     use LoadFixtureTrait;
 
     protected function getControllerFqcn(): string
@@ -24,21 +24,40 @@ final class UserCrudControllerTest extends AbstractCrudTestCase
         return DashboardController::class;
     }
 
-    public function testIndexPageUser(): void
+    public function testIndexPageUserAuthorized(): void
     {
         /** @var User */
         $authenticatedUser = $this->getFixtures()['user_admin'];
         // this examples doesn't use security; in your application you may
         // need to ensure that the user is logged before the test
+        $this->client->loginUser($authenticatedUser);
         $this->client->request("GET",  $this->generateIndexUrl());
 
         static::assertResponseIsSuccessful();
     }
-
-    public function testAccessDeniedUserAnonymousIndexPageUser(): void
+    /**
+     * @dataProvider userAccessDenied
+     */
+    public function testAccessDeniedPageIndexIfUserAnonymousAndSimpleUser(string $roles): void
     {
+        if ($roles == 'roleUser') {
+            $authenticatedUser = $this->getFixtures()['user_credentials_ok'];
+            $this->client->loginUser($authenticatedUser);
+        }
+
         $this->client->request("GET",  $this->generateIndexUrl());
 
-        static::assertResponseStatusCodeSame(401);
+        static::assertResponseStatusCodeSame(302);
+        $this->assertResponseRedirects('/');
+    }
+    /**
+     * @return array<array{string, string}>
+     */
+    public static function userAccessDenied(): array
+    {
+        return [
+            ['anonymous'],
+            ['roleUser']
+        ];
     }
 }
