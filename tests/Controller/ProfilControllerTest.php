@@ -63,6 +63,7 @@ class ProfilControllerTest extends WebTestCase
         $this->client->loginUser($authenticatedUser);
         /** @var Crawler */
         $crawler = $this->client->request('GET', '/profil');
+
         $form = $crawler->selectButton('Modifier')->form($formData);
         $this->client->submit($form);
         /** @var UserRepository */
@@ -79,6 +80,10 @@ class ProfilControllerTest extends WebTestCase
         $this->pathMockFile[] = $pathFileUploaded;
         // $filenameInBdd = $userExpected->getImageName();
         $this->assertFileExists($path);
+        $this->assertResponseStatusCodeSame(302);
+        $this->client->followRedirect();
+
+        // $this->assertSelectorExists('.alert-success');
     }
 
     private function mockFile(string $mimeType, string $filename): string
