@@ -39,7 +39,7 @@ class DashboardControllerTest extends WebTestCase
     {
         $userLogged = $this->all_fixtures['user_credentials_ok'];
         $this->client->loginUser($userLogged);
-        $this->client->request('GET', '/dashboard');
+        $this->client->request('GET', '/admin');
 
         $this->assertResponseIsSuccessful();
         $this->assertPageTitleContains('Dashboard');

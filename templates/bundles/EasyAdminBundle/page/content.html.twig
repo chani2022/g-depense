@@ -5,13 +5,15 @@
 {% block body_class 'page-content' %}
 
 {# deprecated 'The "page_title" block is deprecated, use "content_title" instead.' #}
-{% block page_title %}
-{% endblock %}
+{% block page_title %}{% endblock %}
 
 {# deprecated 'The "page_content" block is deprecated, use "main" instead.' #}
-{% block page_content %}
+{% block page_content %}{% endblock %}
+
+{% block content_title %}
+	{{ block('page_title') }}
 {% endblock %}
 
-{% block content_title %}{{ block('page_title') }}{% endblock %}
-
-{% block main %}{{ block('page_content') }}{% endblock %}
+{% block main %}
+	{{ block('page_content') }}
+{% endblock %}
