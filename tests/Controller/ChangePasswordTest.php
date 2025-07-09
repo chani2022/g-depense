@@ -25,6 +25,13 @@ class ChangePasswordTest extends WebTestCase
         $this->userAuthenticated = $this->getSimpeUserAuthenticated();
     }
 
+    public function testPageChangePasswordExist(): void
+    {
+        $this->client->request('GET', '/change/password');
+
+        $this->assertResponseIsSuccessful();
+    }
+
     protected function tearDown(): void
     {
         parent::tearDown();
