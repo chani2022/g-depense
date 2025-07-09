@@ -2,6 +2,7 @@
 
 namespace App\Tests\Trait;
 
+use App\Entity\User;
 use Hautelook\AliceBundle\PhpUnit\FixtureStore;
 
 trait LoadFixtureTrait
