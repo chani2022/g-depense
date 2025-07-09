@@ -18,11 +18,13 @@ class ChangePasswordTest extends WebTestCase
     private ?KernelBrowser $client;
     private ?Crawler $crawler;
     private ?User $userAuthenticated;
+    private ?User $adminAuthenticated;
 
     protected function setUp(): void
     {
         $this->client = $this->createClient();
         $this->userAuthenticated = $this->getSimpeUserAuthenticated();
+        $this->adminAuthenticated = $this->getAdminAuthenticated();
     }
 
     public function testPageChangePasswordNotAccessAnonymous(): void
@@ -32,12 +34,26 @@ class ChangePasswordTest extends WebTestCase
         $this->assertResponseStatusCodeSame(302);
         $this->assertResponseRedirects('/');
     }
-
-    public function testPageChangePasswordExist(): void
+    /**
+     * @dataProvider userAuthorized
+     */
+    public function testUserAccessPageChangePasswordAuthorized(string $roles): void
     {
+        $this->client->loginUser($roles == 'user' ? $this->userAuthenticated : $this->adminAuthenticated);
         $this->client->request('GET', '/change/password');
 
         $this->assertResponseIsSuccessful();
+    }
+
+    /**
+     * @return string[][]
+     */
+    public static function userAuthorized(): array
+    {
+        return [
+            ['user'],
+            ['admin']
+        ];
     }
 
     protected function tearDown(): void
@@ -46,5 +62,6 @@ class ChangePasswordTest extends WebTestCase
         $this->client = null;
         $this->crawler = null;
         $this->userAuthenticated = null;
+        $this->adminAuthenticated = null;
     }
 }
