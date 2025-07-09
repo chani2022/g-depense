@@ -34,6 +34,7 @@ class ProfilTypeTest extends TestCase
                     'username',
                     TextType::class,
                     [
+                        'empty_data' => '',
                         'constraints' => [
                             new NotBlank()
                         ]
