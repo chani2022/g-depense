@@ -74,7 +74,7 @@ class ProfilControllerTest extends WebTestCase
 
         $this->simulateAccesPageProfil();
 
-        $this->assertUserNameNotBlank();
+        $this->assertFormContainsUserNameField();
 
         $this->simulateSubmitForm($formData);
 
@@ -83,7 +83,7 @@ class ProfilControllerTest extends WebTestCase
         $this->assertEquals($exptected, $actual);
     }
 
-    private function assertUserNameNotBlank(): void
+    private function assertFormContainsUserNameField(): void
     {
         $valueUsername = $this->crawler->filter('profil[username]')->extract(['value']);
         $this->assertNotNull($valueUsername);
@@ -136,7 +136,10 @@ class ProfilControllerTest extends WebTestCase
         $this->crawler = $this->client->request('GET', '/profil');
         $this->assertResponseIsSuccessful();
     }
-
+    /**
+     * simulé une creation de fichier
+     * @return string
+     */
     private function mockFile(string $mimeType, string $filename): string
     {
         $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename;
@@ -151,7 +154,9 @@ class ProfilControllerTest extends WebTestCase
 
         return $path;
     }
-
+    /**
+     * @return array<int, array{0, string}>
+     */
     public static function userAuthorized(): array
     {
         return [
@@ -159,7 +164,21 @@ class ProfilControllerTest extends WebTestCase
             ['admin']
         ];
     }
-
+    /**
+     * @return array<string, array {
+     *      formData: array {
+     *          profil: array {
+     *             nom: string,
+     *             prenom: string,
+     *             username: string,
+     *             file_info?: array {
+     *                  mimetype: string,
+     *                  filename: string
+     *             }
+     *          }
+     *      }
+     * }>
+     */
     public function formDataValid(): array
     {
         return [
@@ -200,7 +219,22 @@ class ProfilControllerTest extends WebTestCase
             ],
         ];
     }
-
+    /**
+     * @return array<string , array{
+     *      formData:array{
+     *          profil:array {
+     *              nom: string,
+     *              prenom: string,
+     *              username: string,
+     *              file_info?: array {
+     *                  'mimetype': string,
+     *                  'filename': string
+     *              }
+     *          }
+     *      },
+     *     }, expected: int
+     * >
+     */
     public function formDataInValid(): array
     {
         return [
@@ -339,7 +373,9 @@ class ProfilControllerTest extends WebTestCase
         parent::tearDown();
         if ($this->pathMockFile) {
             foreach ($this->pathMockFile as $path) {
-                unlink($path);
+                if (file_exists($path)) {
+                    unlink($path);
+                }
             }
         }
         $this->pathMockFile = null;

@@ -23,6 +23,7 @@ class ProfilController extends AbstractDashboardController
         $form = $this->createForm(ProfilType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
+            $user->setFile(null); //pour eviter le serialization du fichier
             if ($form->isValid()) {
                 $em->flush();
                 return $this->redirectToRoute('app_profil');
@@ -31,7 +32,6 @@ class ProfilController extends AbstractDashboardController
                 $em->refresh($user);
                 $em->clear();
             }
-            $user->setFile(null); //pour eviter le serialization du fichier
         }
 
         return $this->render('profil/profil.html.twig', [
