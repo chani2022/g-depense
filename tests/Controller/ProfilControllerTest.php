@@ -3,7 +3,6 @@
 namespace App\Tests\Controller;
 
 use App\Tests\Trait\LoadFixtureTrait;
-use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
@@ -66,6 +65,30 @@ class ProfilControllerTest extends WebTestCase
         $this->client->followRedirect();
     }
 
+    /**
+     * @dataProvider formDataInValid
+     */
+    public function testSubmitFormFailed(array $formData, int $exptected): void
+    {
+        $formData = $this->handleFormData($formData);
+
+        $this->simulateAccesPageProfil();
+
+        $this->assertUserNameNotBlank();
+
+        $this->simulateSubmitForm($formData);
+
+        $actual = $this->crawler->filter('.invalid-feedback')->count();
+
+        $this->assertEquals($exptected, $actual);
+    }
+
+    private function assertUserNameNotBlank(): void
+    {
+        $valueUsername = $this->crawler->filter('profil[username]')->extract(['value']);
+        $this->assertNotNull($valueUsername);
+    }
+
     private function assertUserUpdated(array $formData): void
     {
         /** @var UserRepository */
@@ -88,7 +111,7 @@ class ProfilControllerTest extends WebTestCase
     private function simulateSubmitForm(array $formData): void
     {
         $form = $this->crawler->selectButton('Modifier')->form($formData);
-        $this->client->submit($form);
+        $this->crawler = $this->client->submit($form);
     }
     /**
      * modification de donnée en ajoutant la clés file et suppression du file_info
@@ -99,7 +122,7 @@ class ProfilControllerTest extends WebTestCase
         if (array_key_exists('file_info', $formData['profil'])) {
             $path = $this->mockFile($formData['profil']['file_info']['mimetype'], $formData['profil']['file_info']['filename']);
             $filename = $formData['profil']['file_info']['filename'];
-            $formData['profil']['file']['file'] = new UploadedFile($path, $filename);
+            $formData['profil']['file']['file'] = new UploadedFile($path, $filename, $formData['profil']['file_info']['mimetype'], null, true);
             unset($formData['profil']['file_info']);
             $this->pathMockFile[] = $path;
         }
@@ -120,8 +143,10 @@ class ProfilControllerTest extends WebTestCase
         $image = imagecreatetruecolor(10, 10);
         if ($mimeType == 'image/png') {
             imagepng($image, $path);
-        } else {
+        } else if ($mimeType == 'image/jpeg') {
             imagejpeg($image, $path);
+        } else {
+            file_put_contents($path, '%PDF-1.4\n%Mock PDF file for testing purposes\n');
         }
 
         return $path;
@@ -172,6 +197,139 @@ class ProfilControllerTest extends WebTestCase
                         'username' => 'mon username',
                     ]
                 ]
+            ],
+        ];
+    }
+
+    public function formDataInValid(): array
+    {
+        return [
+            'nom missing ' => [
+                [
+                    'profil' => [
+                        'nom' => '',
+                        'prenom' => 'prenom',
+                        'username' => 'mon username',
+                        'file_info' => [
+                            'mimetype' => 'image/png',
+                            'filename' => 'test.png'
+                        ]
+                    ]
+                ],
+                'expected' => 1
+            ],
+            'prenom missing' => [
+                [
+                    'profil' => [
+                        'nom' => 'nom',
+                        'prenom' => '',
+                        'username' => 'mon username',
+                        'file_info' => [
+                            'mimetype' => 'image/jpeg',
+                            'filename' => 'test.jpeg'
+                        ]
+                    ]
+                ],
+                'expected' => 1
+
+            ],
+            'username missing' => [
+                [
+                    'profil' => [
+                        'nom' => 'nom',
+                        'prenom' => 'prenom',
+                        'username' => '',
+                        'file_info' => [
+                            'mimetype' => 'image/jpeg',
+                            'filename' => 'test.jpeg'
+                        ]
+                    ]
+                ],
+                'expected' => 1
+            ],
+            'nom and prenom missing' => [
+                [
+                    'profil' => [
+                        'nom' => '',
+                        'prenom' => '',
+                        'username' => 'mon username',
+                        'file_info' => [
+                            'mimetype' => 'image/jpeg',
+                            'filename' => 'test.jpeg'
+                        ]
+                    ]
+                ],
+                'expected' => 2
+            ],
+            'nom et username missing' => [
+                [
+                    'profil' => [
+                        'nom' => '',
+                        'prenom' => 'prenom',
+                        'username' => '',
+                        'file_info' => [
+                            'mimetype' => 'image/jpeg',
+                            'filename' => 'test.jpeg'
+                        ]
+                    ]
+                ],
+                'expected' => 2
+            ],
+            'username et prenom missing' => [
+                [
+                    'profil' => [
+                        'nom' => 'nom',
+                        'prenom' => '',
+                        'username' => '',
+                        'file_info' => [
+                            'mimetype' => 'image/jpeg',
+                            'filename' => 'test.jpeg'
+                        ]
+                    ]
+                ],
+                'expected' => 2
+            ],
+            'nom, prenom, username missing' => [
+                [
+                    'profil' => [
+                        'nom' => '',
+                        'prenom' => '',
+                        'username' => '',
+                        'file_info' => [
+                            'mimetype' => 'image/jpeg',
+                            'filename' => 'test.jpeg'
+                        ]
+                    ]
+                ],
+                'expected' => 3
+            ],
+            'username already exist' => [
+                [
+                    'profil' => [
+                        'nom' => 'nom',
+                        'prenom' => 'prenom',
+                        'username' => 'admin',
+                        'file_info' => [
+                            'mimetype' => 'image/jpeg',
+                            'filename' => 'test.jpeg'
+                        ]
+                    ]
+                ],
+                'expected' => 1
+            ],
+            'file not valid extension' => [
+                [
+                    'profil' => [
+                        'nom' => 'nom',
+                        'prenom' => 'prenom',
+                        'username' => 'mon username',
+                        'file_info' => [
+                            'mimetype' => 'application/pdf',
+                            'filename' => 'test.pdf'
+                        ]
+                    ]
+                ],
+                'expected' => 1
             ],
         ];
     }
