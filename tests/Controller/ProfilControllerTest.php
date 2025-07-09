@@ -155,7 +155,7 @@ class ProfilControllerTest extends WebTestCase
         return $path;
     }
     /**
-     * @return array<int, array{0, string}>
+     * @return string[][]
      */
     public static function userAuthorized(): array
     {
