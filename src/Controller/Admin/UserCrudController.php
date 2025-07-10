@@ -26,7 +26,7 @@ class UserCrudController extends AbstractCrudController
         $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
         $rootAlias = $qb->getRootAliases()[0];
         return $qb
-            ->where($rootAlias . '.username != :username')
+            ->where(sprintf('%s.username != :username', $rootAlias))
             ->setParameter('username', $this->getUser()->getUserIdentifier());
     }
 
