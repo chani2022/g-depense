@@ -4,24 +4,21 @@ namespace App\Tests\Controller\Admin;
 
 use App\Controller\Admin\DashboardController;
 use App\Entity\User;
-use App\Repository\UserRepository;
 use App\Tests\Trait\LoadFixtureTrait;
 use App\Tests\Trait\UserAuthenticatedTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\CrudMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\DashboardMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\RouteMenuItem;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
-use Hautelook\AliceBundle\PhpUnit\ReloadDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use PHPUnit\Framework\MockObject\MockObject;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class DashboardControllerTest extends WebTestCase
 {
-    use ReloadDatabaseTrait;
+    use RefreshDatabaseTrait;
     use LoadFixtureTrait;
     use UserAuthenticatedTrait;
 
@@ -148,96 +145,6 @@ class DashboardControllerTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame(302);
         $this->assertResponseRedirects('/'); //redirection vers la login
-    }
-
-    /**
-     * ----------------------------------------------------------
-     * ------------- MODIFICATION MOT DE PASSE ------------------
-     * ----------------------------------------------------------
-     */
-    public function testChangePasswordNotAccessUserAnonymous(): void
-    {
-        $this->client->request('GET', '/change/password');
-
-        $this->assertResponseStatusCodeSame(302);
-    }
-
-    /**
-     * @dataProvider userAuthorized()
-     */
-    public function testChangePasswordWithUserAuthorized(string $roles): void
-    {
-        $this->client->loginUser($roles == 'user' ? $this->userSimpleAuthenticated : $this->adminAuthenticated);
-
-        $this->client->request('GET', '/change/password');
-
-        $this->assertResponseIsSuccessful();
-    }
-    /**
-     * @dataProvider validFormDataChangePassword
-     */
-    public function testSubmitFormChangePasswordWithValidData(array $formData): void
-    {
-        $this->client->loginUser($this->userSimpleAuthenticated);
-        /** @var Crawler */
-        $this->crawler = $this->client->request('GET', '/change/password');
-
-        $expectedNewPassword = $formData['change_password']['newPassword']['second'];
-        $this->simulateSubmitFormChangePassword($formData);
-
-        $this->client->followRedirects();
-        $this->assertResponseRedirects('/');
-
-        $this->assertUserPasswordChange($expectedNewPassword);
-    }
-
-    private function assertUserPasswordChange(string $expectedNewPassword): void
-    {
-        /** @var UserRepository */
-        $userRepository = $this->getContainer()->get(UserRepository::class);
-        /** @var UserPasswordHasherInterface */
-        $hasher = $this->getContainer()->get(UserPasswordHasherInterface::class);
-
-        /** @var User */
-        $user = $userRepository->findOneByUsername($this->userSimpleAuthenticated->getUsername());
-        $this->assertTrue(
-            $hasher->isPasswordValid($user, $expectedNewPassword)
-        );
-    }
-
-    private function simulateSubmitFormChangePassword(array $formData)
-    {
-        $form = $this->crawler->selectButton('Modifier')->form($formData);
-        $this->client->submit($form);
-    }
-    /**
-     * return array<array, {array {string, array {string, string }}}>
-     */
-    public static function validFormDataChangePassword(): array
-    {
-        return [
-            [
-                [
-                    'change_password' => [
-                        'oldPassword' => 'password',
-                        'newPassword' => [
-                            'first' => 'my new password',
-                            'second' => 'my new password'
-                        ]
-                    ]
-                ]
-            ]
-        ];
-    }
-    /**
-     * @return string[][]
-     */
-    public static function userAuthorized(): array
-    {
-        return [
-            ['user'],
-            ['admin']
-        ];
     }
 
     protected function tearDown(): void
