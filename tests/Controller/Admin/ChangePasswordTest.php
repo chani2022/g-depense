@@ -47,13 +47,11 @@ class ChangePasswordTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
     /**
-     * @dataProvider validFormDataChangePassword
+     * @dataProvider formDataValid
      */
-    public function testSubmitFormChangePasswordWithValidData(array $formData): void
+    public function testSubmitFormWithValidData(array $formData): void
     {
-        $this->client->loginUser($this->userSimpleAuthenticated);
-        /** @var Crawler */
-        $this->crawler = $this->client->request('GET', '/change/password');
+        $this->simulateAccesPageChangePassword();
 
         $expectedNewPassword = $formData['change_password']['newPassword']['second'];
         $this->simulateSubmitFormChangePassword($formData);
@@ -62,6 +60,26 @@ class ChangePasswordTest extends WebTestCase
         $this->assertResponseRedirects('/');
 
         $this->assertUserPasswordChange($expectedNewPassword);
+    }
+
+    /**
+     * @dataProvider formDataInvalid
+     */
+    public function testSubmitFormWithInvalidData(array $formData, int $nbErrorsFormExpected): void
+    {
+        $this->simulateAccesPageChangePassword();
+
+        $this->simulateSubmitFormChangePassword($formData);
+
+        $nbErrorsActual = $this->crawler->filter('.invalid-feedback')->count();
+        $this->assertSame($nbErrorsFormExpected, $nbErrorsActual);
+    }
+
+    private function simulateAccesPageChangePassword(): void
+    {
+        $this->client->loginUser($this->userSimpleAuthenticated);
+        /** @var Crawler */
+        $this->crawler = $this->client->request('GET', '/change/password');
     }
 
     private function assertUserPasswordChange(string $expectedNewPassword): void
@@ -81,12 +99,12 @@ class ChangePasswordTest extends WebTestCase
     private function simulateSubmitFormChangePassword(array $formData)
     {
         $form = $this->crawler->selectButton('Modifier')->form($formData);
-        $this->client->submit($form);
+        $this->crawler = $this->client->submit($form);
     }
     /**
      * return array<array, {array {string, array {string, string }}}>
      */
-    public static function validFormDataChangePassword(): array
+    public static function formDataValid(): array
     {
         return [
             [
@@ -100,6 +118,48 @@ class ChangePasswordTest extends WebTestCase
                     ]
                 ]
             ]
+        ];
+    }
+
+    public static function formDataInValid(): array
+    {
+        return [
+            '2 mot de passe not mismatch' => [
+                [
+                    'change_password' => [
+                        'oldPassword' => 'password',
+                        'newPassword' => [
+                            'first' => 'my password',
+                            'second' => 'my new password'
+                        ]
+                    ]
+                ],
+                'nbErrorsFormExpected' => 1
+            ],
+            'old password wrong' => [
+                [
+                    'change_password' => [
+                        'oldPassword' => 'wrong password',
+                        'newPassword' => [
+                            'first' => 'my new password',
+                            'second' => 'my new password'
+                        ]
+                    ]
+                ],
+                'nbErrorsFormExpected' => 1
+            ],
+            '2 mot de passe not mismatch and old password wrong' => [
+                [
+                    'change_password' => [
+                        'oldPassword' => 'wrong password',
+                        'newPassword' => [
+                            'first' => 'my password',
+                            'second' => 'my new password'
+                        ]
+                    ]
+                ],
+                'nbErrorsFormExpected' => 2
+            ],
         ];
     }
     /**
