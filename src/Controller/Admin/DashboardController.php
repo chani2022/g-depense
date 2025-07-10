@@ -3,11 +3,13 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Locale;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -64,8 +66,11 @@ class DashboardController extends AbstractDashboardController
     }
 
     #[Route('/change/password', name: 'app_change_password')]
-    public function changePassword(): Response
+    public function changePassword(Request $request, EntityManagerInterface $em): Response
     {
+        $user = $this->getUser();
+        $form = $this->createForm(ChangePasswordType::class, $user);
+
         // $url =  $adminUrlGenerator
         //     ->setDashboard(DashboardController::class)
         //     ->setController(UserCrudController::class)
