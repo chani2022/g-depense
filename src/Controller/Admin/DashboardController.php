@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use App\Flash\MessageFlash;
+use App\Form\ChangePasswordType;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Locale;
@@ -11,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -66,18 +69,27 @@ class DashboardController extends AbstractDashboardController
     }
 
     #[Route('/change/password', name: 'app_change_password')]
-    public function changePassword(Request $request, EntityManagerInterface $em): Response
+    public function changePassword(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher, MessageFlash $messageFlash): Response
     {
+        /** @var User */
         $user = $this->getUser();
         $form = $this->createForm(ChangePasswordType::class, $user);
+        $form->handleRequest($request);
 
-        // $url =  $adminUrlGenerator
-        //     ->setDashboard(DashboardController::class)
-        //     ->setController(UserCrudController::class)
-        //     ->setAction('changePassword')
-        //     ->generateUrl();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $plainNewPassword = $form->get('newPassword')->getData();
+            $user->setPassword(
+                $hasher->hashPassword(new User(), $plainNewPassword)
+            );
 
-        // return $this->redirect($url);
-        return $this->render('change_password/change-password.html.twig', []);
+            $em->flush();
+
+            $messageFlash->addFlash('success', 'Mot de passe modifié avec succes.');
+
+            $this->redirectToRoute('app_change_password');
+        }
+        return $this->render('change_password/change-password.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 }
