@@ -173,28 +173,26 @@ class DashboardControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
     }
-
-    public function testSubmitFormChangePasswordWithValidData(): void
+    /**
+     * @dataProvider validFormDataChangePassword
+     */
+    public function testSubmitFormChangePasswordWithValidData(array $formData): void
     {
         $this->client->loginUser($this->userSimpleAuthenticated);
         /** @var Crawler */
         $this->crawler = $this->client->request('GET', '/change/password');
 
-        $expectedNewPassword = 'my password';
-        $form = $this->crawler->selectButton('Modifier')->form([
-            'change_password' => [
-                'oldPassword' => 'password',
-                'newPassword' => [
-                    'first' => $expectedNewPassword,
-                    'second' => $expectedNewPassword
-                ]
-            ]
-        ]);
-        $this->client->submit($form);
+        $expectedNewPassword = $formData['change_password']['newPassword']['second'];
+        $this->simulateSubmitFormChangePassword($formData);
 
         $this->client->followRedirects();
         $this->assertResponseRedirects('/');
 
+        $this->assertUserPasswordChange($expectedNewPassword);
+    }
+
+    private function assertUserPasswordChange(string $expectedNewPassword): void
+    {
         /** @var UserRepository */
         $userRepository = $this->getContainer()->get(UserRepository::class);
         /** @var UserPasswordHasherInterface */
@@ -205,6 +203,31 @@ class DashboardControllerTest extends WebTestCase
         $this->assertTrue(
             $hasher->isPasswordValid($user, $expectedNewPassword)
         );
+    }
+
+    private function simulateSubmitFormChangePassword(array $formData)
+    {
+        $form = $this->crawler->selectButton('Modifier')->form($formData);
+        $this->client->submit($form);
+    }
+    /**
+     * return array<array, {array {string, array {string, string }}}>
+     */
+    public static function validFormDataChangePassword(): array
+    {
+        return [
+            [
+                [
+                    'change_password' => [
+                        'oldPassword' => 'password',
+                        'newPassword' => [
+                            'first' => 'my new password',
+                            'second' => 'my new password'
+                        ]
+                    ]
+                ]
+            ]
+        ];
     }
     /**
      * @return string[][]
