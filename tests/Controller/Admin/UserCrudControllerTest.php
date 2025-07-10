@@ -8,11 +8,13 @@ use App\Tests\Trait\LoadFixtureTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use App\Entity\User;
+use App\Tests\Trait\UserAuthenticatedTrait;
 
 final class UserCrudControllerTest extends AbstractCrudTestCase
 {
     use RefreshDatabaseTrait;
-    use LoadFixtureTrait;
+    use UserAuthenticatedTrait;
+
 
     protected function getControllerFqcn(): string
     {
@@ -27,7 +29,7 @@ final class UserCrudControllerTest extends AbstractCrudTestCase
     public function testIndexPageUserAuthorized(): void
     {
         /** @var User */
-        $authenticatedUser = $this->getFixtures()['user_admin'];
+        $authenticatedUser = $this->getAdminAuthenticated();
         // this examples doesn't use security; in your application you may
         // need to ensure that the user is logged before the test
         $this->client->loginUser($authenticatedUser);
@@ -38,10 +40,10 @@ final class UserCrudControllerTest extends AbstractCrudTestCase
     /**
      * @dataProvider userAccessDenied
      */
-    public function testAccessDeniedPageIndexIfUserAnonymousAndSimpleUser(string $roles): void
+    public function testAccessDeniedPageIndexUserIfUserAnonymousAndSimpleUser(string $roles): void
     {
         if ($roles == 'roleUser') {
-            $authenticatedUser = $this->getFixtures()['user_credentials_ok'];
+            $authenticatedUser = $this->getSimpeUserAuthenticated();
             $this->client->loginUser($authenticatedUser);
         }
 
@@ -51,6 +53,15 @@ final class UserCrudControllerTest extends AbstractCrudTestCase
         } else {
             static::assertResponseStatusCodeSame(403);
         }
+    }
+
+    public function testUserAuthenticatedNotShowInPageIndexUser(): void
+    {
+        $this->client->loginUser($this->getAdminAuthenticated());
+
+        $this->client->request('GET', $this->generateIndexUrl());
+        $this->assertResponseIsSuccessful();
+        $this->assertIndexPagesCount(1);
     }
     /**
      * @return array<array{string, string}>
