@@ -31,19 +31,4 @@ class UserCrudController extends AbstractCrudController
             TextField::new('username', 'Nom d\'utilisateur'),
         ];
     }
-
-    public function configureActions(Actions $actions): Actions
-    {
-        $actionName = 'changePassword';
-        $changePassword = Action::new($actionName, 'changement de mot de passe', 'fa fa-file-invoice')
-            ->linkToCrudAction('changePassword');
-
-        return $actions
-            ->add(Crud::PAGE_INDEX, $changePassword)->setPermission($changePassword, 'ROLE_USER');
-    }
-
-    public function changePassword(AdminContext $context): Response
-    {
-        return $this->render('change_password/change-password.html.twig');
-    }
 }
