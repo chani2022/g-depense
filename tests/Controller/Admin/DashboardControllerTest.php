@@ -191,6 +191,10 @@ class DashboardControllerTest extends WebTestCase
             ]
         ]);
         $this->client->submit($form);
+
+        $this->client->followRedirects();
+        $this->assertResponseRedirects('/');
+
         /** @var UserRepository */
         $userRepository = $this->getContainer()->get(UserRepository::class);
         /** @var UserPasswordHasherInterface */
@@ -198,15 +202,9 @@ class DashboardControllerTest extends WebTestCase
 
         /** @var User */
         $user = $userRepository->findOneByUsername($this->userSimpleAuthenticated->getUsername());
-        // $passwordActual = $user->getPassword();
-
         $this->assertTrue(
             $hasher->isPasswordValid($user, $expectedNewPassword)
         );
-        $this->assertResponseStatusCodeSame(302);
-        $this->client->followRedirect();
-        $this->assertResponseRedirects('/');
-        // $this->assertSelectorExists('.alert-success');
     }
     /**
      * @return string[][]
