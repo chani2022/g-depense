@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ChangePasswordTypeTest extends TestCase
 {
@@ -33,7 +34,8 @@ class ChangePasswordTypeTest extends TestCase
                     PasswordType::class,
                     [
                         'label' => 'Ancien mot de passe',
-                        'contraints' => [
+                        'mapped' => false,
+                        'constraints' => [
                             new UserPassword()
                         ]
                     ]
@@ -42,6 +44,7 @@ class ChangePasswordTypeTest extends TestCase
                     'newPassword',
                     RepeatedType::class,
                     [
+                        'mapped' => false,
                         'type' => PasswordType::class,
                         'invalid_message' => 'The password fields must match.',
                         'options' => ['attr' => ['class' => 'password-field']],
@@ -50,9 +53,18 @@ class ChangePasswordTypeTest extends TestCase
                         'second_options' => ['label' => 'Repetez votre mot de passe'],
                     ]
                 ]
-            );
+            )
+            ->willReturnSelf();
 
         $this->changePasswordType->buildForm($formBuilder, $options);
+    }
+
+    public function testConfigureOptionsChangePassword(): void
+    {
+        $optionResolver = new OptionsResolver();
+        $this->changePasswordType->configureOptions($optionResolver);
+
+        $this->assertSame([], $optionResolver->resolve());
     }
 
     protected function tearDown(): void
