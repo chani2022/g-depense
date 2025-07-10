@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\User;
 use App\Flash\MessageFlash;
 use App\Form\ChangePasswordType;
+use App\Form\ProfilType;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Locale;
@@ -67,8 +68,32 @@ class DashboardController extends AbstractDashboardController
         ];
     }
 
+    #[Route('/profil', name: 'app_profil')]
+    public function profil(Request $request, EntityManagerInterface $em): Response
+    {
+        /** @var User */
+        $user = $this->getUser();
+        $form = $this->createForm(ProfilType::class, $user);
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            $user->setFile(null); //pour eviter le serialization du fichier
+            if ($form->isValid()) {
+                $em->flush();
+                return $this->redirectToRoute('app_profil');
+            } else {
+                //pour ne pas afficher le nom et prenom dans l'affichage du profil easyadmin
+                $em->refresh($user);
+                $em->clear();
+            }
+        }
+
+        return $this->render('profil/profil.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
     #[Route('/change/password', name: 'app_change_password')]
-    public function changePassword(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher, MessageFlash $messageFlash): Response
+    public function changePassword(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher): Response
     {
         /** @var User */
         $user = $this->getUser();

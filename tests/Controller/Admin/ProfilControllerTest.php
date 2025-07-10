@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\AdminController;
+namespace App\Tests\Admin\Controller;
 
 use App\Tests\Trait\LoadFixtureTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
