@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class ChangePasswordTest extends WebTestCase
+class ChangePasswordControllerTest extends WebTestCase
 {
     use ReloadDatabaseTrait;
     use UserAuthenticatedTrait;
