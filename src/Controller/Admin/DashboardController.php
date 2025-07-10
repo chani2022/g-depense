@@ -63,7 +63,6 @@ class DashboardController extends AbstractDashboardController
         ];
     }
 
-    #[IsGranted('ROLE_USER')]
     #[Route('/change/password', name: 'app_change_password')]
     public function changePassword(): Response
     {
