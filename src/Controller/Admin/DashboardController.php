@@ -3,7 +3,6 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
-use App\Flash\MessageFlash;
 use App\Form\ChangePasswordType;
 use App\Form\ProfilType;
 use Doctrine\ORM\EntityManagerInterface;
