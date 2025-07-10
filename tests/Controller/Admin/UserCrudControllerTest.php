@@ -61,7 +61,7 @@ final class UserCrudControllerTest extends AbstractCrudTestCase
 
         $this->client->request('GET', $this->generateIndexUrl());
         $this->assertResponseIsSuccessful();
-        $this->assertIndexPagesCount(1);
+        $this->assertIndexPageEntityCount(1);
     }
     /**
      * @return array<array{string, string}>
