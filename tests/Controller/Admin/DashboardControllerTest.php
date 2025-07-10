@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\CrudMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\DashboardMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\RouteMenuItem;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
+use Hautelook\AliceBundle\PhpUnit\ReloadDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -20,7 +21,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class DashboardControllerTest extends WebTestCase
 {
-    use RefreshDatabaseTrait;
+    use ReloadDatabaseTrait;
     use LoadFixtureTrait;
     use UserAuthenticatedTrait;
 
@@ -149,6 +150,11 @@ class DashboardControllerTest extends WebTestCase
         $this->assertResponseRedirects('/'); //redirection vers la login
     }
 
+    /**
+     * ----------------------------------------------------------
+     * ------------- MODIFICATION MOT DE PASSE ------------------
+     * ----------------------------------------------------------
+     */
     public function testChangePasswordNotAccessUserAnonymous(): void
     {
         $this->client->request('GET', '/change/password');
@@ -197,6 +203,10 @@ class DashboardControllerTest extends WebTestCase
         $this->assertTrue(
             $hasher->isPasswordValid($user, $expectedNewPassword)
         );
+        $this->assertResponseStatusCodeSame(302);
+        $this->client->followRedirect();
+        $this->assertResponseRedirects('/');
+        // $this->assertSelectorExists('.alert-success');
     }
     /**
      * @return string[][]

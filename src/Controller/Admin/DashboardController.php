@@ -84,9 +84,7 @@ class DashboardController extends AbstractDashboardController
 
             $em->flush();
 
-            $messageFlash->addFlash('success', 'Mot de passe modifié avec succes.');
-
-            $this->redirectToRoute('app_change_password');
+            return $this->redirectToRoute('app_login');
         }
         return $this->render('change_password/change-password.html.twig', [
             'form' => $form->createView()
