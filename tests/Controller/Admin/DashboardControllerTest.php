@@ -5,6 +5,7 @@ namespace App\Tests\Controller\Admin;
 use App\Controller\Admin\DashboardController;
 use App\Entity\User;
 use App\Tests\Trait\LoadFixtureTrait;
+use App\Tests\Trait\UserAuthenticatedTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\CrudMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\DashboardMenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\RouteMenuItem;
@@ -18,6 +19,7 @@ class DashboardControllerTest extends WebTestCase
 {
     use RefreshDatabaseTrait;
     use LoadFixtureTrait;
+    use UserAuthenticatedTrait;
 
     /** @var MockObject&KernelBrowser&null*/
     private $client;
@@ -25,6 +27,8 @@ class DashboardControllerTest extends WebTestCase
     private array|null $all_fixtures;
 
     private ?DashboardController $dashboardController;
+    private ?User $userSimpleAuthenticated;
+    private ?User $adminAuthenticated;
 
     protected function setUp(): void
     {
@@ -33,6 +37,8 @@ class DashboardControllerTest extends WebTestCase
 
         $uploaderHelper = $this->getContainer()->get(UploaderHelper::class);
         $this->dashboardController = new DashboardController($uploaderHelper);
+        $this->userSimpleAuthenticated = $this->getSimpeUserAuthenticated();
+        $this->adminAuthenticated = $this->getAdminAuthenticated();
     }
 
     public function testPageIndexDashboardExist(): void
@@ -138,8 +144,34 @@ class DashboardControllerTest extends WebTestCase
         $this->assertResponseRedirects('/'); //redirection vers la login
     }
 
+    public function testChangePasswordNotAccessUserAnonymous(): void
+    {
+        $this->client->request('GET', '/change/password');
 
+        $this->assertResponseStatusCodeSame(302);
+    }
 
+    /**
+     * @dataProvider userAuthorized()
+     */
+    public function testChangePasswordWithUserAuthorized(string $roles): void
+    {
+        $this->client->loginUser($roles == 'user' ? $this->userSimpleAuthenticated : $this->adminAuthenticated);
+
+        $this->client->request('GET', '/change/password');
+
+        $this->assertResponseIsSuccessful();
+    }
+    /**
+     * @return string[][]
+     */
+    public static function userAuthorized(): array
+    {
+        return [
+            ['user'],
+            ['admin']
+        ];
+    }
 
     protected function tearDown(): void
     {
@@ -147,5 +179,7 @@ class DashboardControllerTest extends WebTestCase
         $this->client = null;
         $this->dashboardController = null;
         $this->all_fixtures = null;
+        $this->userSimpleAuthenticated = null;
+        $this->adminAuthenticated = null;
     }
 }
