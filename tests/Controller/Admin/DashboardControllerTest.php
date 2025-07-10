@@ -4,6 +4,7 @@ namespace App\Tests\Controller\Admin;
 
 use App\Controller\Admin\DashboardController;
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Tests\Trait\LoadFixtureTrait;
 use App\Tests\Trait\UserAuthenticatedTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Menu\CrudMenuItem;
@@ -14,6 +15,8 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use PHPUnit\Framework\MockObject\MockObject;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
+use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class DashboardControllerTest extends WebTestCase
 {
@@ -23,12 +26,14 @@ class DashboardControllerTest extends WebTestCase
 
     /** @var MockObject&KernelBrowser&null*/
     private $client;
-
+    private ?Crawler $crawler;
     private array|null $all_fixtures;
 
     private ?DashboardController $dashboardController;
     private ?User $userSimpleAuthenticated;
     private ?User $adminAuthenticated;
+
+
 
     protected function setUp(): void
     {
@@ -162,6 +167,37 @@ class DashboardControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
     }
+
+    public function testSubmitFormChangePasswordWithValidData(): void
+    {
+        $this->client->loginUser($this->userSimpleAuthenticated);
+        /** @var Crawler */
+        $this->crawler = $this->client->request('GET', '/change/password');
+
+        $expectedNewPassword = 'my password';
+        $form = $this->crawler->selectButton('Modifier')->form([
+            'change_password' => [
+                'oldPassword' => 'password',
+                'newPassword' => [
+                    'first' => $expectedNewPassword,
+                    'second' => $expectedNewPassword
+                ]
+            ]
+        ]);
+        $this->client->submit($form);
+        /** @var UserRepository */
+        $userRepository = $this->getContainer()->get(UserRepository::class);
+        /** @var UserPasswordHasherInterface */
+        $hasher = $this->getContainer()->get(UserPasswordHasherInterface::class);
+
+        /** @var User */
+        $user = $userRepository->findOneByUsername($this->userSimpleAuthenticated->getUsername());
+        // $passwordActual = $user->getPassword();
+
+        $this->assertTrue(
+            $hasher->isPasswordValid($user, $expectedNewPassword)
+        );
+    }
     /**
      * @return string[][]
      */
@@ -181,5 +217,6 @@ class DashboardControllerTest extends WebTestCase
         $this->all_fixtures = null;
         $this->userSimpleAuthenticated = null;
         $this->adminAuthenticated = null;
+        $this->crawler = null;
     }
 }
