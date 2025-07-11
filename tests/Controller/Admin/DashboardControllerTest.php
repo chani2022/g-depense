@@ -41,10 +41,11 @@ class DashboardControllerTest extends WebTestCase
         $this->userSimpleAuthenticated = $this->getSimpeUserAuthenticated();
         $this->adminAuthenticated = $this->getAdminAuthenticated();
     }
+
     /**
      * @dataProvider menuItemsConfigureUser
      */
-    public function testPageIndexDashboardExist(array $menuItems): void
+    public function testUserMenuDashboard(array $menuItems): void
     {
         $userLogged = $this->all_fixtures['user_credentials_ok'];
         $this->client->loginUser($userLogged);
@@ -53,11 +54,21 @@ class DashboardControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertPageTitleContains('Dashboard');
 
-        $this->simulateConfigureUserMenuContaintsMenuItems($menuItems);
+        $this->simulateUserMenuContaintsMenuItems($menuItems);
+        $this->simulateUserMenuDisplayUserAuthenticatedProperties();
     }
 
+    public function simulateUserMenuDisplayUserAuthenticatedProperties(): void
+    {
+        /** @var DashboardController */
+        $dashboardController = $this->getContainer()->get(DashboardController::class);
+        $user = $this->getSimpeUserAuthenticated();
+        $actualUser = $dashboardController->configureUserMenu($user);
 
-    private function simulateConfigureUserMenuContaintsMenuItems(array $menuItems): void
+        $this->assertEquals($user->getFullName(), $actualUser->getAsDto()->getName());
+    }
+
+    private function simulateUserMenuContaintsMenuItems(array $menuItems): void
     {
         $this->assertSelectorTextContains($menuItems['css_classname'], $menuItems['label']);
     }
@@ -183,6 +194,22 @@ class DashboardControllerTest extends WebTestCase
                     'css_classname' => '.logout'
                 ]
             ]
+        ];
+    }
+
+    public static function configureMenuItems(): array
+    {
+        return [
+            [
+                'label' => 'Dashboard',
+                'icon' => 'fa fa-home',
+                'css_classname' => '.dashboard'
+            ],
+            [
+                'label' => 'User',
+                'icon' => 'fa fa-users',
+                'css_classname' => '.crud-user'
+            ],
         ];
     }
 
