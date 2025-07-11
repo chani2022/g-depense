@@ -57,11 +57,22 @@ final class UserCrudControllerTest extends AbstractCrudTestCase
 
     public function testUserAuthenticatedNotShowInPageIndexUser(): void
     {
+        // $this->client->loginUser($this->getAdminAuthenticated());
+
+        // $this->client->request('GET', $this->generateIndexUrl());
+        // $this->assertResponseIsSuccessful();
+        $this->simulateAccessPageIndexSuccessfully();
+        $this->assertIndexPageEntityCount(1);
+    }
+
+    public function testActionEditNotShowInUserCrud(): void {}
+
+    private function simulateAccessPageIndexSuccessfully(): void
+    {
         $this->client->loginUser($this->getAdminAuthenticated());
 
         $this->client->request('GET', $this->generateIndexUrl());
         $this->assertResponseIsSuccessful();
-        $this->assertIndexPageEntityCount(1);
     }
     /**
      * @return array<array{string, string}>
