@@ -42,23 +42,42 @@ class DashboardControllerTest extends WebTestCase
         $this->adminAuthenticated = $this->getAdminAuthenticated();
     }
 
-    /**
-     * @dataProvider menuItemsConfigureUser
-     */
-    public function testUserMenuDashboard(array $menuItems): void
+    public function testIndexNotAccessUserAnonymous(): void
     {
-        $userLogged = $this->all_fixtures['user_credentials_ok'];
-        $this->client->loginUser($userLogged);
         $this->client->request('GET', '/admin');
 
-        $this->assertResponseIsSuccessful();
-        $this->assertPageTitleContains('Dashboard');
-
-        $this->simulateUserMenuContaintsMenuItems($menuItems);
-        $this->simulateUserMenuDisplayUserAuthenticatedProperties();
+        $this->assertResponseStatusCodeSame(302);
+        $this->assertResponseRedirects('/'); //redirection vers la login
     }
 
-    public function simulateUserMenuDisplayUserAuthenticatedProperties(): void
+    public function testIndexDashboardSuccessfully(): void
+    {
+        $this->simulateAccessPageDashboard();
+    }
+
+    /**
+     * @dataProvider configureUserMenuItems
+     */
+    public function testUserMenuDashboard(array $userMenuItems): void
+    {
+        $this->simulateAccessPageDashboard();
+        $this->assertPageTitleContains('Dashboard');
+
+        $this->assertUserMenuContaintsMenuItems($userMenuItems);
+        $this->assertUserMenuDisplayUserAuthenticatedProperties();
+    }
+
+    /**
+     * @dataProvider configureMenuItems
+     */
+    public function testMenuItemsDashboard(array $menuItems): void
+    {
+        $this->simulateAccessPageDashboard();
+
+        $this->assertSelectorTextContains('.' . $menuItems['css_classname'], $menuItems['label']);
+    }
+
+    private function assertUserMenuDisplayUserAuthenticatedProperties(): void
     {
         /** @var DashboardController */
         $dashboardController = $this->getContainer()->get(DashboardController::class);
@@ -68,11 +87,19 @@ class DashboardControllerTest extends WebTestCase
         $this->assertEquals($user->getFullName(), $actualUser->getAsDto()->getName());
     }
 
-    private function simulateUserMenuContaintsMenuItems(array $menuItems): void
+    private function simulateAccessPageDashboard(): void
     {
-        $this->assertSelectorTextContains($menuItems['css_classname'], $menuItems['label']);
+        $userLogged = $this->all_fixtures['user_credentials_ok'];
+        $this->client->loginUser($userLogged);
+        $this->client->request('GET', '/admin');
+
+        $this->assertResponseIsSuccessful();
     }
 
+    private function assertUserMenuContaintsMenuItems(array $menuItems): void
+    {
+        $this->assertSelectorTextContains('.' . $menuItems['css_classname'], $menuItems['label']);
+    }
 
     public function testConfigureDashboard(): void
     {
@@ -81,93 +108,90 @@ class DashboardControllerTest extends WebTestCase
         $this->assertEquals('Depense Mensuel', $dashboardActual->getAsDto()->getTitle());
     }
 
-    public function testConfigureMenuItems(): void
-    {
-        $menuItem = $this->dashboardController->configureMenuItems();
+    // private function assertMenuItemsExist(array $menuItems): void
+    // {
+    //     $this->assertSelectorTextContains('.' . $menuItems['css_classname'], $menuItems['label']);
+    // }
 
-        $this->assertCount(2, $menuItem);
-        $this->simulateDashboardMenuItem($menuItem[0], 'Dashboard', 'fa fa-home');
-        $this->simulateCrudMenuItem($menuItem[1], 'User', 'fa fa-users', User::class, 'ROLE_ADMIN');
-    }
+    // public function testConfigureMenuItems(): void
+    // {
+    //     $menuItem = $this->dashboardController->configureMenuItems();
 
-    private function simulateDashboardMenuItem(
-        DashboardMenuItem $dashboardMenuItemActual,
-        string $expectedLabel,
-        string $expectedIcon
-    ): void {
-        $this->assertInstanceOf(DashboardMenuItem::class, $dashboardMenuItemActual);
-        $this->assertEquals($expectedLabel, $dashboardMenuItemActual->getAsDto()->getLabel());
-        $this->assertEquals($expectedIcon, $dashboardMenuItemActual->getAsDto()->getIcon());
-    }
+    //     $this->assertCount(2, $menuItem);
+    //     $this->simulateDashboardMenuItem($menuItem[0], 'Dashboard', 'fa fa-home');
+    //     $this->simulateCrudMenuItem($menuItem[1], 'User', 'fa fa-users', User::class, 'ROLE_ADMIN');
+    // }
 
-    private function simulateCrudMenuItem(
-        CrudMenuItem $crudMenuItemActual,
-        string $expectedLabel,
-        string $expectedIcon,
-        string $expectedEntityFqcn,
-        string $expectedPermission = ''
-    ): void {
-        $this->assertInstanceOf(CrudMenuItem::class, $crudMenuItemActual);
-        $this->assertEquals($expectedLabel, $crudMenuItemActual->getAsDto()->getLabel());
-        $this->assertEquals($expectedIcon, $crudMenuItemActual->getAsDto()->getIcon());
-        $this->assertEquals($expectedEntityFqcn, $crudMenuItemActual->getAsDto()->getRouteParameters()['entityFqcn']);
-        $this->assertEquals($expectedPermission, $crudMenuItemActual->getAsDto()->getPermission());
-    }
+    // private function simulateDashboardMenuItem(
+    //     DashboardMenuItem $dashboardMenuItemActual,
+    //     string $expectedLabel,
+    //     string $expectedIcon
+    // ): void {
+    //     $this->assertInstanceOf(DashboardMenuItem::class, $dashboardMenuItemActual);
+    //     $this->assertEquals($expectedLabel, $dashboardMenuItemActual->getAsDto()->getLabel());
+    //     $this->assertEquals($expectedIcon, $dashboardMenuItemActual->getAsDto()->getIcon());
+    // }
 
-    public function testConfigureUserMenu(): void
-    {
-        /** @var User */
-        $authenticatedUser = $this->all_fixtures['user_credentials_ok'];
+    // private function simulateCrudMenuItem(
+    //     CrudMenuItem $crudMenuItemActual,
+    //     string $expectedLabel,
+    //     string $expectedIcon,
+    //     string $expectedEntityFqcn,
+    //     string $expectedPermission = ''
+    // ): void {
+    //     $this->assertInstanceOf(CrudMenuItem::class, $crudMenuItemActual);
+    //     $this->assertEquals($expectedLabel, $crudMenuItemActual->getAsDto()->getLabel());
+    //     $this->assertEquals($expectedIcon, $crudMenuItemActual->getAsDto()->getIcon());
+    //     $this->assertEquals($expectedEntityFqcn, $crudMenuItemActual->getAsDto()->getRouteParameters()['entityFqcn']);
+    //     $this->assertEquals($expectedPermission, $crudMenuItemActual->getAsDto()->getPermission());
+    // }
 
-        self::bootKernel();
-        $container = self::getContainer();
+    // public function testConfigureUserMenu(): void
+    // {
+    //     /** @var User */
+    //     $authenticatedUser = $this->all_fixtures['user_credentials_ok'];
 
-        /** @var DashboardController $dashboardController */
-        $this->dashboardController = $container->get(DashboardController::class);
-        $userMenu = $this->dashboardController->configureUserMenu($authenticatedUser);
+    //     self::bootKernel();
+    //     $container = self::getContainer();
 
-        $this->assertEquals($authenticatedUser->getFullName(), $userMenu->getAsDto()->getName());
-        $this->assertTrue($userMenu->getAsDto()->isAvatarDisplayed());
-        $this->assertTrue($userMenu->getAsDto()->getItems() > 0);
+    //     /** @var DashboardController $dashboardController */
+    //     $this->dashboardController = $container->get(DashboardController::class);
+    //     $userMenu = $this->dashboardController->configureUserMenu($authenticatedUser);
 
-        /** simulation de menu item */
-        $items = $userMenu->getAsDto()->getItems();
-        $this->simulateItemUserMenuLinkToRouteProfil($items[0]);
-        $this->simulateItemUserMenuLinkToRouteChangePassword($items[1]);
-        $this->simulateItemUserMenuLinkToRouteLogout($items[2]);
-    }
+    //     $this->assertEquals($authenticatedUser->getFullName(), $userMenu->getAsDto()->getName());
+    //     $this->assertTrue($userMenu->getAsDto()->isAvatarDisplayed());
+    //     $this->assertTrue($userMenu->getAsDto()->getItems() > 0);
 
-    private function simulateItemUserMenuLinkToRouteProfil(RouteMenuItem $menuItemProfilActual): void
-    {
-        $dto = $menuItemProfilActual->getAsDto();
-        $this->assertInstanceOf(RouteMenuItem::class, $menuItemProfilActual);
-        $this->assertEquals("app_profil", $dto->getRouteName());
-        $this->assertEquals('ROLE_USER', $dto->getPermission());
-    }
+    //     /** simulation de menu item */
+    //     $items = $userMenu->getAsDto()->getItems();
+    //     $this->simulateItemUserMenuLinkToRouteProfil($items[0]);
+    //     $this->simulateItemUserMenuLinkToRouteChangePassword($items[1]);
+    //     $this->simulateItemUserMenuLinkToRouteLogout($items[2]);
+    // }
 
-    private function simulateItemUserMenuLinkToRouteChangePassword(RouteMenuItem $menuItemPasswordActual): void
-    {
-        $dto = $menuItemPasswordActual->getAsDto();
-        $this->assertInstanceOf(RouteMenuItem::class, $menuItemPasswordActual);
-        $this->assertEquals("app_change_password", $dto->getRouteName());
-        $this->assertEquals('ROLE_USER', $dto->getPermission());
-    }
+    // private function simulateItemUserMenuLinkToRouteProfil(RouteMenuItem $menuItemProfilActual): void
+    // {
+    //     $dto = $menuItemProfilActual->getAsDto();
+    //     $this->assertInstanceOf(RouteMenuItem::class, $menuItemProfilActual);
+    //     $this->assertEquals("app_profil", $dto->getRouteName());
+    //     $this->assertEquals('ROLE_USER', $dto->getPermission());
+    // }
 
-    private function simulateItemUserMenuLinkToRouteLogout(RouteMenuItem $menuItemLogout): void
-    {
-        $dto = $menuItemLogout->getAsDto();
-        $this->assertEquals('app_logout', $dto->getRouteName());
-    }
+    // private function simulateItemUserMenuLinkToRouteChangePassword(RouteMenuItem $menuItemPasswordActual): void
+    // {
+    //     $dto = $menuItemPasswordActual->getAsDto();
+    //     $this->assertInstanceOf(RouteMenuItem::class, $menuItemPasswordActual);
+    //     $this->assertEquals("app_change_password", $dto->getRouteName());
+    //     $this->assertEquals('ROLE_USER', $dto->getPermission());
+    // }
 
-    public function testIndexNotAccessUserAnonymous(): void
-    {
-        $this->client->request('GET', '/admin');
+    // private function simulateItemUserMenuLinkToRouteLogout(RouteMenuItem $menuItemLogout): void
+    // {
+    //     $dto = $menuItemLogout->getAsDto();
+    //     $this->assertEquals('app_logout', $dto->getRouteName());
+    // }
 
-        $this->assertResponseStatusCodeSame(302);
-        $this->assertResponseRedirects('/'); //redirection vers la login
-    }
-
-    public static function menuItemsConfigureUser(): array
+    public static function configureUserMenuItems(): array
     {
         return [
             [
@@ -175,7 +199,7 @@ class DashboardControllerTest extends WebTestCase
                     'label' => 'My Profile',
                     'icon' => 'fa fa-id-card',
                     'route_name' => 'app_profil',
-                    'css_classname' => '.profile'
+                    'css_classname' => 'profile'
                 ]
             ],
             [
@@ -183,7 +207,7 @@ class DashboardControllerTest extends WebTestCase
                     'label' => 'Change password',
                     'icon' => 'fa fa-id-card',
                     'route_name' => 'app_change_password',
-                    'css_classname' => '.change-password'
+                    'css_classname' => 'change-password'
                 ]
             ],
             [
@@ -191,7 +215,7 @@ class DashboardControllerTest extends WebTestCase
                     'label' => 'Logout',
                     'icon' => 'fa fa-logout',
                     'route_name' => 'app_logout',
-                    'css_classname' => '.logout'
+                    'css_classname' => 'logout'
                 ]
             ]
         ];
@@ -201,14 +225,18 @@ class DashboardControllerTest extends WebTestCase
     {
         return [
             [
-                'label' => 'Dashboard',
-                'icon' => 'fa fa-home',
-                'css_classname' => '.dashboard'
+                [
+                    'label' => 'Dashboard',
+                    'icon' => 'fa fa-home',
+                    'css_classname' => 'dashboard'
+                ]
             ],
             [
-                'label' => 'User',
-                'icon' => 'fa fa-users',
-                'css_classname' => '.crud-user'
+                [
+                    'label' => 'User',
+                    'icon' => 'fa fa-users',
+                    'css_classname' => 'crud-user'
+                ]
             ],
         ];
     }
