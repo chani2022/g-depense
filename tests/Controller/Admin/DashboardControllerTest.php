@@ -31,8 +31,6 @@ class DashboardControllerTest extends WebTestCase
     private ?User $userSimpleAuthenticated;
     private ?User $adminAuthenticated;
 
-
-
     protected function setUp(): void
     {
         $this->client = $this->createClient();
@@ -43,8 +41,10 @@ class DashboardControllerTest extends WebTestCase
         $this->userSimpleAuthenticated = $this->getSimpeUserAuthenticated();
         $this->adminAuthenticated = $this->getAdminAuthenticated();
     }
-
-    public function testPageIndexDashboardExist(): void
+    /**
+     * @dataProvider menuItemsConfigureUser
+     */
+    public function testPageIndexDashboardExist(array $menuItems): void
     {
         $userLogged = $this->all_fixtures['user_credentials_ok'];
         $this->client->loginUser($userLogged);
@@ -52,7 +52,16 @@ class DashboardControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertPageTitleContains('Dashboard');
+
+        $this->simulateConfigureUserMenuContaintsMenuItems($menuItems);
     }
+
+
+    private function simulateConfigureUserMenuContaintsMenuItems(array $menuItems): void
+    {
+        $this->assertSelectorTextContains($menuItems['css_classname'], $menuItems['label']);
+    }
+
 
     public function testConfigureDashboard(): void
     {
@@ -146,6 +155,37 @@ class DashboardControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(302);
         $this->assertResponseRedirects('/'); //redirection vers la login
     }
+
+    public static function menuItemsConfigureUser(): array
+    {
+        return [
+            [
+                'profil' => [
+                    'label' => 'My Profile',
+                    'icon' => 'fa fa-id-card',
+                    'route_name' => 'app_profil',
+                    'css_classname' => '.profile'
+                ]
+            ],
+            [
+                'change password' => [
+                    'label' => 'Change password',
+                    'icon' => 'fa fa-id-card',
+                    'route_name' => 'app_change_password',
+                    'css_classname' => '.change-password'
+                ]
+            ],
+            [
+                'logout' => [
+                    'label' => 'Logout',
+                    'icon' => 'fa fa-logout',
+                    'route_name' => 'app_logout',
+                    'css_classname' => '.logout'
+                ]
+            ]
+        ];
+    }
+
 
     protected function tearDown(): void
     {
