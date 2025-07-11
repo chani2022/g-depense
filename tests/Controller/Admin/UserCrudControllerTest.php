@@ -4,17 +4,14 @@ namespace App\Tests\Controller\Admin;
 
 use App\Controller\Admin\DashboardController;
 use App\Controller\Admin\UserCrudController;
-use App\Tests\Trait\LoadFixtureTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
-use App\Entity\User;
 use App\Tests\Trait\UserAuthenticatedTrait;
 
 final class UserCrudControllerTest extends AbstractCrudTestCase
 {
     use RefreshDatabaseTrait;
     use UserAuthenticatedTrait;
-
 
     protected function getControllerFqcn(): string
     {
@@ -28,14 +25,7 @@ final class UserCrudControllerTest extends AbstractCrudTestCase
 
     public function testIndexPageUserAuthorized(): void
     {
-        /** @var User */
-        $authenticatedUser = $this->getAdminAuthenticated();
-        // this examples doesn't use security; in your application you may
-        // need to ensure that the user is logged before the test
-        $this->client->loginUser($authenticatedUser);
-        $this->client->request("GET",  $this->generateIndexUrl());
-
-        static::assertResponseIsSuccessful();
+        $this->simulateAccessPageIndexSuccessfully();
     }
     /**
      * @dataProvider userAccessDenied
@@ -57,15 +47,9 @@ final class UserCrudControllerTest extends AbstractCrudTestCase
 
     public function testUserAuthenticatedNotShowInPageIndexUser(): void
     {
-        // $this->client->loginUser($this->getAdminAuthenticated());
-
-        // $this->client->request('GET', $this->generateIndexUrl());
-        // $this->assertResponseIsSuccessful();
         $this->simulateAccessPageIndexSuccessfully();
         $this->assertIndexPageEntityCount(1);
     }
-
-    public function testActionEditNotShowInUserCrud(): void {}
 
     private function simulateAccessPageIndexSuccessfully(): void
     {
