@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\File;
@@ -49,6 +51,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: CompteSalaire::class, orphanRemoval: true)]
+    private Collection $compteSalaires;
+
+    public function __construct()
+    {
+        $this->compteSalaires = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -192,5 +202,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getImageSize(): ?int
     {
         return $this->imageSize;
+    }
+
+    /**
+     * @return Collection<int, CompteSalaire>
+     */
+    public function getCompteSalaires(): Collection
+    {
+        return $this->compteSalaires;
+    }
+
+    public function addCompteSalaire(CompteSalaire $compteSalaire): static
+    {
+        if (!$this->compteSalaires->contains($compteSalaire)) {
+            $this->compteSalaires->add($compteSalaire);
+            $compteSalaire->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompteSalaire(CompteSalaire $compteSalaire): static
+    {
+        if ($this->compteSalaires->removeElement($compteSalaire)) {
+            // set the owning side to null (unless already changed)
+            if ($compteSalaire->getOwner() === $this) {
+                $compteSalaire->setOwner(null);
+            }
+        }
+
+        return $this;
     }
 }
