@@ -71,10 +71,10 @@ class DashboardControllerTest extends WebTestCase
     {
         $this->simulateAccessPageDashboardWithUser();
 
-        if ($menuItems['label'] == 'Dashboard') {
-            $this->assertSelectorTextContains('.' . $menuItems['css_classname'], $menuItems['label']);
-        } else {
+        if ($menuItems['label'] == 'User') {
             $this->assertSelectorNotExists('.' . $menuItems['css_classname']);
+        } else {
+            $this->assertSelectorTextContains('.' . $menuItems['css_classname'], $menuItems['label']);
         }
     }
 
@@ -86,6 +86,15 @@ class DashboardControllerTest extends WebTestCase
         $actualUser = $dashboardController->configureUserMenu($user);
 
         $this->assertEquals($user->getFullName(), $actualUser->getAsDto()->getName());
+    }
+
+    private function simulateAccessPageDashboardWithAdmin(): void
+    {
+        $adminLogged = $this->all_fixtures['user_admin'];
+        $this->client->loginUser($adminLogged);
+        $this->client->request('GET', '/admin');
+
+        $this->assertResponseIsSuccessful();
     }
 
     private function simulateAccessPageDashboardWithUser(): void
@@ -143,17 +152,24 @@ class DashboardControllerTest extends WebTestCase
     {
         return [
             [
-                [
+                'menu_items_access_user' => [
                     'label' => 'Dashboard',
                     'icon' => 'fa fa-home',
                     'css_classname' => 'dashboard'
                 ]
             ],
             [
-                [
+                'menu_item_denied_user' => [
                     'label' => 'User',
                     'icon' => 'fa fa-users',
                     'css_classname' => 'crud-user'
+                ]
+            ],
+            [
+                'menu_items_access_user' => [
+                    'label' => 'Compte salaire',
+                    'icon' => 'fa fa-users',
+                    'css_classname' => 'compte-salaire'
                 ]
             ],
         ];
