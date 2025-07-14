@@ -78,6 +78,16 @@ class DashboardControllerTest extends WebTestCase
         }
     }
 
+    /**
+     * @dataProvider configureMenuItems
+     */
+    public function testMenuItemsDashboardWithAdminAuthenticated(array $menuItems): void
+    {
+        $this->simulateAccessPageDashboardWithAdmin();
+
+        $this->assertSelectorTextContains('.' . $menuItems['css_classname'], $menuItems['label']);
+    }
+
     private function assertUserMenuDisplayUserAuthenticatedProperties(): void
     {
         /** @var DashboardController */
