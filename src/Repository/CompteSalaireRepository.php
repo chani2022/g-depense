@@ -21,28 +21,26 @@ class CompteSalaireRepository extends ServiceEntityRepository
         parent::__construct($registry, CompteSalaire::class);
     }
 
-//    /**
-//     * @return CompteSalaire[] Returns an array of CompteSalaire objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function getCompteSalaireByDate(string $date): ?CompteSalaire
+    {
+        // $field = 'dateFinCompte';
+        // if ($isDateDebut) {
+        //     $field = 'dateDebutCompte';
+        // }
+        return  $this->createQueryBuilder('c')
+            ->where('c.dateDebutCompte <= :date AND c.dateFinCompte >= :date')
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
-//    public function findOneBySomeField($value): ?CompteSalaire
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    //    public function findOneBySomeField($value): ?CompteSalaire
+    //    {
+    //        return $this->createQueryBuilder('c')
+    //            ->andWhere('c.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }
