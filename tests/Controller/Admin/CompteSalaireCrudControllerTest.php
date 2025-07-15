@@ -39,6 +39,12 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
         $this->assertIndexPageEntityCount(3);
     }
 
+    public function testShowAllCompteSalaireIfAdminAuthenticated(): void
+    {
+        $this->simulateUserAccessPageIndexSuccessfully();
+        $this->assertIndexPageEntityCount(4);
+    }
+
 
     private function simulateUserAccessPageIndexSuccessfully(): void
     {
