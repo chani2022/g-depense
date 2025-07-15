@@ -33,11 +33,8 @@ class DateBeetweenValidatorTest extends TestCase
      */
     public function testValueMissing(?string $value): void
     {
-
         $this->context->expects($this->never())
-            ->method('buildViolation')
-            ->with($this->constraint->message)
-            ->willReturnSelf();
+            ->method('buildViolation');
 
         $this->dateBeetweenValidator->validate($value, $this->constraint);
     }
@@ -45,7 +42,6 @@ class DateBeetweenValidatorTest extends TestCase
     public function testValueInRangeCompteSalaireDateDebutAndDateFinThrowError(): void
     {
         $value = '2025-01-01';
-
         $compteSalaire = new CompteSalaire();
         $this->compteSalaireRepository->expects($this->once())
             ->method('getCompteSalaireByDate')
@@ -62,14 +58,15 @@ class DateBeetweenValidatorTest extends TestCase
             ->with($this->constraint->message)
             ->willReturn($constraintBuilder);
 
-        $constraintBuilder->expects($this->once())
+        $constraintBuilder
+            ->expects($this->once())
             ->method('setParameter')
             ->with('{{ value }}', $value)
             ->willReturnSelf();
 
-        $constraintBuilder->expects($this->once())
-            ->method('addViolation')
-            ->willReturn('test');
+        $constraintBuilder
+            ->expects($this->once())
+            ->method('addViolation');
 
         $this->dateBeetweenValidator->validate($value, $this->constraint);
     }
