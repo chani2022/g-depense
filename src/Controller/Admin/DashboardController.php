@@ -69,6 +69,7 @@ class DashboardController extends AbstractDashboardController
                 ->setCssClass('crud-user')
                 ->setPermission('ROLE_ADMIN'),
             MenuItem::linkToCrud('Compte salaire', 'fa fa-users', CompteSalaire::class)
+                ->setCssClass('compte-salaire')
         ];
     }
 
