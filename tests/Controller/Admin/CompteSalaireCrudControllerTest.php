@@ -33,7 +33,7 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
         $this->simulateAdminAccessPageIndexSuccessfully();
     }
 
-    public function testOnlyOwnerCompteSalaireShowIfUserAuthenticated(): void
+    public function testShowOnlyCompteSalaireOwnerIfUserAuthenticated(): void
     {
         $this->simulateUserAccessPageIndexSuccessfully();
         $this->assertIndexPageEntityCount(3);
@@ -41,7 +41,7 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
 
     public function testShowAllCompteSalaireIfAdminAuthenticated(): void
     {
-        $this->simulateUserAccessPageIndexSuccessfully();
+        $this->simulateAdminAccessPageIndexSuccessfully();
         $this->assertIndexPageEntityCount(4);
     }
 
