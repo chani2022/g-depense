@@ -9,14 +9,14 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use App\Entity\CompteSalaire;
-use DateTime;
 use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;
 
 class DateBeetweenValidatorTest extends TestCase
 {
     private ?DateBeetweenValidator $dateBeetweenValidator;
     private ?DateBeetween $constraint;
-    private ?MockObject $context;
+    /** @var MockObject&ExecutionContextInterface&null */
+    private $context;
     /** @var MockObject&CompteSalaireRepository&null */
     private  $compteSalaireRepository;
 
@@ -31,7 +31,7 @@ class DateBeetweenValidatorTest extends TestCase
     /**
      * @dataProvider provideInvalid
      */
-    public function testValidValueNullAndContentNone(?string $value): void
+    public function testValueMissing(?string $value): void
     {
 
         $this->context->expects($this->never())
@@ -42,7 +42,7 @@ class DateBeetweenValidatorTest extends TestCase
         $this->dateBeetweenValidator->validate($value, $this->constraint);
     }
 
-    public function testValidate(): void
+    public function testValueInRangeCompteSalaireDateDebutAndDateFinThrowError(): void
     {
         $value = '2025-01-01';
 
@@ -53,6 +53,8 @@ class DateBeetweenValidatorTest extends TestCase
             ->willReturn($compteSalaire);
 
         $constraintBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
+        //demarrage du context
+        $this->dateBeetweenValidator->initialize($this->context);
 
         $this->context
             ->expects($this->once())
@@ -62,12 +64,33 @@ class DateBeetweenValidatorTest extends TestCase
 
         $constraintBuilder->expects($this->once())
             ->method('setParameter')
-            ->with('{{  value }}', $value)
+            ->with('{{ value }}', $value)
             ->willReturnSelf();
 
         $constraintBuilder->expects($this->once())
             ->method('addViolation')
             ->willReturn('test');
+
+        $this->dateBeetweenValidator->validate($value, $this->constraint);
+    }
+
+    public function testValueNotInRangeCompteSalaireDateDebutAndDateFin(): void
+    {
+        $value = '2025-01-01';
+        $this->compteSalaireRepository->expects($this->once())
+            ->method('getCompteSalaireByDate')
+            ->with($value)
+            ->willReturn(null);
+
+        $constraintBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
+        //demarrage du context
+        $this->dateBeetweenValidator->initialize($this->context);
+
+        $this->context
+            ->expects($this->never())
+            ->method('buildViolation')
+            ->with($this->constraint->message)
+            ->willReturn($constraintBuilder);
 
         $this->dateBeetweenValidator->validate($value, $this->constraint);
     }
