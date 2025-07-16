@@ -24,6 +24,13 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
     {
         return DashboardController::class;
     }
+
+    public function testAccessDeniedIfUserNotAuthenticated(): void
+    {
+        $this->client->request('GET', $this->generateIndexUrl());
+        $this->assertResponseStatusCodeSame(401);
+    }
+
     /**
      * ---------------------------------------------------
      * ---------------------page index-------------------------
@@ -109,6 +116,8 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
         $this->client->request('GET', $this->generateNewFormUrl());
         $this->assertResponseIsSuccessful();
     }
+
+
 
     public static function fieldsHidden(): array
     {
