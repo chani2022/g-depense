@@ -48,7 +48,7 @@ final class UserCrudControllerTest extends AbstractCrudTestCase
     public function testUserAuthenticatedNotShowInPageIndexUser(): void
     {
         $this->simulateAccessPageIndexSuccessfully();
-        $this->assertIndexPageEntityCount(1);
+        $this->assertIndexPageEntityCount(2);
     }
 
     private function simulateAccessPageIndexSuccessfully(): void

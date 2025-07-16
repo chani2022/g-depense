@@ -7,10 +7,12 @@ use App\Controller\Admin\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use App\Tests\Trait\UserAuthenticatedTrait;
+use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestFormAsserts;
 
 final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
 {
     use RefreshDatabaseTrait;
+    use CrudTestFormAsserts;
     use UserAuthenticatedTrait;
 
     protected function getControllerFqcn(): string
@@ -22,7 +24,11 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
     {
         return DashboardController::class;
     }
-
+    /**
+     * ---------------------------------------------------
+     * ---------------------page index-------------------------
+     * ---------------------------------------------------
+     */
     public function testIndexPageCompteSalaireAccessUserSuccessfully(): void
     {
         $this->simulateUserAccessPageIndexSuccessfully();
@@ -44,7 +50,6 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
         $this->simulateAdminAccessPageIndexSuccessfully();
         $this->assertIndexPageEntityCount(4);
     }
-
 
     private function simulateUserAccessPageIndexSuccessfully(): void
     {
@@ -69,6 +74,47 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
         return [
             ['anonymous'],
             ['roleUser']
+        ];
+    }
+
+    /**
+     * -------------------------------------------------------
+     * ---------------------------fin page index -------------------------
+     * -------------------------------------------------------
+     */
+
+    /**
+     * -------------------------------------------------------
+     * --------------------------page new--------------------------
+     * -------------------------------------------------------
+     */
+    public function testPageNewCompteSalaireSuccessfully(): void
+    {
+        $this->simulateAdminAccessPageNewSuccessfully();
+    }
+    /**
+     * @dataProvider fieldsHidden
+     */
+    public function testNewPageFieldsHidden(string $field): void
+    {
+        $this->simulateAdminAccessPageNewSuccessfully();
+
+        $this->assertFormFieldNotExists($field);
+    }
+
+    private function simulateAdminAccessPageNewSuccessfully(): void
+    {
+        $this->client->loginUser($this->getSimpeUserAuthenticated());
+
+        $this->client->request('GET', $this->generateNewFormUrl());
+        $this->assertResponseIsSuccessful();
+    }
+
+    public static function fieldsHidden(): array
+    {
+        return [
+            ['id'],
+            ['owner']
         ];
     }
 }

@@ -23,10 +23,6 @@ class CompteSalaireRepository extends ServiceEntityRepository
 
     public function getCompteSalaireByDate(string $date): ?CompteSalaire
     {
-        // $field = 'dateFinCompte';
-        // if ($isDateDebut) {
-        //     $field = 'dateDebutCompte';
-        // }
         return  $this->createQueryBuilder('c')
             ->where('c.dateDebutCompte <= :date AND c.dateFinCompte >= :date')
             ->setParameter('date', $date)

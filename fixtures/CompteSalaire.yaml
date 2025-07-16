@@ -1,9 +1,17 @@
 App\Entity\CompteSalaire:
-  compte_salaire_user_credentials_ok_{1..3}:
+  compte_salaire_user_credentials_ok_1:
     dateDebutCompte: <(new \DateTime("2024-01-01"))>
     dateFinCompte: <(new \DateTime("2024-01-15"))>
     owner: '@user_credentials_ok'
-  compte_salaire_user_credentials_other:
+  compte_salaire_user_credentials_ok_2:
     dateDebutCompte: <(new \DateTime("2024-01-16"))>
-    dateFinCompte: <(new DateTime("2024-01-30"))>
+    dateFinCompte: <(new \DateTime("2024-01-30"))>
+    owner: '@user_credentials_ok'
+  compte_salaire_user_credentials_ok_3:
+    dateDebutCompte: <(new \DateTime("2024-02-01"))>
+    dateFinCompte: <(new \DateTime("2024-02-15"))>
+    owner: '@user_credentials_ok'
+  compte_salaire_user_credentials_other:
+    dateDebutCompte: <(new \DateTime("2024-02-16"))>
+    dateFinCompte: <(new DateTime("2024-02-30"))>
     owner: '@user_credentials_other'
