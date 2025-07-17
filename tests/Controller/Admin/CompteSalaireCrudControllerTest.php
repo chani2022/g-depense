@@ -8,12 +8,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use App\Tests\Trait\UserAuthenticatedTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestFormAsserts;
+use Symfony\Component\DomCrawler\Crawler;
 
 final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
 {
     use RefreshDatabaseTrait;
     use CrudTestFormAsserts;
     use UserAuthenticatedTrait;
+
+    private ?Crawler $crawler;
 
     protected function getControllerFqcn(): string
     {
@@ -114,10 +117,23 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
         $this->assertFormFieldNotExists($field);
     }
 
-    // public function testCreateCompteSalaire(): void
-    // {
-    //     $this->simu
-    // }
+    public function testCreateCompteSalaireAlreadyExist(): void
+    {
+        $this->simulateUserAccessPageIndexSuccessfully();
+
+        $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
+        $nameForm = $this->getFormEntity();
+        $form = $this->crawler->filter(sprintf('form[name="%s"]', $nameForm))
+            ->form([
+                $nameForm => [
+                    'dateDebutCompte' => '2024-01-02',
+                    'dateFinCompte' => '2024-01-14'
+                ]
+            ]);
+        $this->crawler = $this->client->submit($form);
+
+        $this->assertSelectorExists('.invalid-feedback');
+    }
 
 
     private function simulateAdminAccessPageNewSuccessfully(): void
@@ -144,5 +160,12 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
             ['id'],
             ['owner']
         ];
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->crawler = null;
     }
 }
