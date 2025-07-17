@@ -28,7 +28,7 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
     public function testAccessDeniedIfUserNotAuthenticated(): void
     {
         $this->client->request('GET', $this->generateIndexUrl());
-        $this->assertResponseStatusCodeSame(401);
+        $this->assertResponseStatusCodeSame(302);
     }
 
     /**
@@ -95,9 +95,14 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
      * --------------------------page new--------------------------
      * -------------------------------------------------------
      */
-    public function testPageNewCompteSalaireSuccessfully(): void
+    public function testPageNewCompteSalaireSuccessfullyWithAdmin(): void
     {
         $this->simulateAdminAccessPageNewSuccessfully();
+    }
+
+    public function testPageNewCompteSalaireSuccessfullyWithUser(): void
+    {
+        $this->simulateUserAccessPageNewSuccessfully();
     }
     /**
      * @dataProvider fieldsHidden
@@ -109,7 +114,21 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
         $this->assertFormFieldNotExists($field);
     }
 
+    // public function testCreateCompteSalaire(): void
+    // {
+    //     $this->simu
+    // }
+
+
     private function simulateAdminAccessPageNewSuccessfully(): void
+    {
+        $this->client->loginUser($this->getAdminAuthenticated());
+
+        $this->client->request('GET', $this->generateNewFormUrl());
+        $this->assertResponseIsSuccessful();
+    }
+
+    private function simulateUserAccessPageNewSuccessfully(): void
     {
         $this->client->loginUser($this->getSimpeUserAuthenticated());
 
