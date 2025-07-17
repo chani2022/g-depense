@@ -8,12 +8,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use App\Tests\Trait\UserAuthenticatedTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestFormAsserts;
+use Symfony\Component\DomCrawler\Crawler;
 
 final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
 {
     use RefreshDatabaseTrait;
     use CrudTestFormAsserts;
     use UserAuthenticatedTrait;
+
+    private ?Crawler $crawler;
 
     protected function getControllerFqcn(): string
     {
@@ -95,9 +98,14 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
      * --------------------------page new--------------------------
      * -------------------------------------------------------
      */
-    public function testPageNewCompteSalaireSuccessfully(): void
+    public function testPageNewCompteSalaireSuccessfullyWithAdmin(): void
     {
         $this->simulateAdminAccessPageNewSuccessfully();
+    }
+
+    public function testPageNewCompteSalaireSuccessfullyWithUser(): void
+    {
+        $this->simulateUserAccessPageNewSuccessfully();
     }
     /**
      * @dataProvider fieldsHidden
@@ -109,7 +117,34 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
         $this->assertFormFieldNotExists($field);
     }
 
+    public function testCreateCompteSalaireAlreadyExist(): void
+    {
+        $this->simulateUserAccessPageIndexSuccessfully();
+
+        $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
+        $nameForm = $this->getFormEntity();
+        $form = $this->crawler->filter(sprintf('form[name="%s"]', $nameForm))
+            ->form([
+                $nameForm => [
+                    'dateDebutCompte' => '2024-01-02',
+                    'dateFinCompte' => '2024-01-14'
+                ]
+            ]);
+        $this->crawler = $this->client->submit($form);
+
+        $this->assertSelectorExists('.invalid-feedback');
+    }
+
+
     private function simulateAdminAccessPageNewSuccessfully(): void
+    {
+        $this->client->loginUser($this->getAdminAuthenticated());
+
+        $this->client->request('GET', $this->generateNewFormUrl());
+        $this->assertResponseIsSuccessful();
+    }
+
+    private function simulateUserAccessPageNewSuccessfully(): void
     {
         $this->client->loginUser($this->getSimpeUserAuthenticated());
 
@@ -125,5 +160,12 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
             ['id'],
             ['owner']
         ];
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->crawler = null;
     }
 }
