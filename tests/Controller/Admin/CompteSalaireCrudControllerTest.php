@@ -116,8 +116,10 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
 
         $this->assertFormFieldNotExists($field);
     }
-
-    public function testCreateCompteSalaireAlreadyExist(): void
+    /**
+     * @dataProvider provideFormDataInvalid
+     */
+    public function testCreateCompteSalaireAlreadyExist(array $formData, int $expected): void
     {
         $this->simulateUserAccessPageIndexSuccessfully();
 
@@ -125,14 +127,11 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
         $nameForm = $this->getFormEntity();
         $form = $this->crawler->filter(sprintf('form[name="%s"]', $nameForm))
             ->form([
-                $nameForm => [
-                    'dateDebutCompte' => '2024-01-02',
-                    'dateFinCompte' => '2024-01-14'
-                ]
+                $nameForm => $formData
             ]);
         $this->crawler = $this->client->submit($form);
-
-        $this->assertSelectorExists('.invalid-feedback');
+        $numberActual = $this->crawler->filter('.invalid-feedback')->count();
+        $this->assertSame($expected, $numberActual);
     }
 
 
@@ -159,6 +158,36 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
         return [
             ['id'],
             ['owner']
+        ];
+    }
+
+    public static function provideFormDataInvalid(): array
+    {
+        return [
+            'date debut et fin dans une même compte' => [
+                'data' => [
+
+                    'dateDebutCompte' => '2024-01-02',
+                    'dateFinCompte' => '2024-01-14'
+                ],
+                'expected' => 2
+            ],
+            'date debut dans un compte' => [
+                'data' => [
+
+                    'dateDebutCompte' => '2024-01-02',
+                    'dateFinCompte' => '2024-06-14'
+                ],
+                'expected' => 1
+            ],
+            'date fin dans un compte' => [
+                'data' => [
+
+                    'dateDebutCompte' => '2024-06-02',
+                    'dateFinCompte' => '2024-01-14'
+                ],
+                'expected' => 1
+            ]
         ];
     }
 

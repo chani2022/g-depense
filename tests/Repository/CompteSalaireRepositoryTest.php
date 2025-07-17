@@ -5,24 +5,30 @@ namespace App\Repository;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use App\Entity\CompteSalaire;
+use App\Entity\User;
+use App\Tests\Trait\UserAuthenticatedTrait;
+use DateTime;
 
 class CompteSalaireRepositoryTest extends KernelTestCase
 {
     use RefreshDatabaseTrait;
+    use UserAuthenticatedTrait;
 
     private ?CompteSalaireRepository $compteSalaireRepository;
+    private ?User $userAuthenticated;
 
     protected function setUp(): void
     {
         parent::setUp();
         static::bootKernel();
         $this->compteSalaireRepository = $this->getContainer()->get(CompteSalaireRepository::class);
+        $this->userAuthenticated = $this->getSimpeUserAuthenticated();
     }
 
     public function testGetCompteSalaireByDateReturnNull(): void
     {
         /** @var CompteSalaire|null */
-        $compteSalaire = $this->compteSalaireRepository->getCompteSalaireByDate('2025-02-15');
+        $compteSalaire = $this->compteSalaireRepository->getCompteSalaireByDate($this->userAuthenticated, new DateTime('2025-02-15'));
         $this->assertNull($compteSalaire);
     }
     /**
@@ -31,7 +37,7 @@ class CompteSalaireRepositoryTest extends KernelTestCase
     public function testGetCompteSalaireByDateReturnCompteSalaire(string $dateSearch, string $dateDebutExpected, string $dateFinExpected): void
     {
         /** @var CompteSalaire|null */
-        $compteSalaire = $this->compteSalaireRepository->getCompteSalaireByDate($dateSearch);
+        $compteSalaire = $this->compteSalaireRepository->getCompteSalaireByDate($this->userAuthenticated, new DateTime($dateSearch));
         $this->assertInstanceOf(CompteSalaire::class, $compteSalaire);
         $this->assertSame($dateDebutExpected, $compteSalaire->getDateDebutCompte()->format('Y-m-d'));
         $this->assertSame($dateFinExpected, $compteSalaire->getDateFinCompte()->format('Y-m-d'));
@@ -57,5 +63,6 @@ class CompteSalaireRepositoryTest extends KernelTestCase
     {
         parent::tearDown();
         $this->compteSalaireRepository = null;
+        $this->userAuthenticated = null;
     }
 }

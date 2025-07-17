@@ -4,12 +4,13 @@ namespace App\Validator;
 
 use App\Repository\CompteSalaireRepository;
 use DateTime;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 class DateBeetweenValidator extends ConstraintValidator
 {
-    public function __construct(private CompteSalaireRepository $compteSalaireRepository) {}
+    public function __construct(private CompteSalaireRepository $compteSalaireRepository, private UsernamePasswordToken $token) {}
     /**
      * @param DateTime $value
      * @param DateBeetween $constraint
@@ -22,7 +23,7 @@ class DateBeetweenValidator extends ConstraintValidator
             return;
         }
 
-        if ($this->compteSalaireRepository->getCompteSalaireByDate($value)) {
+        if ($this->compteSalaireRepository->getCompteSalaireByDate($this->token->getUser(), $value)) {
             // TODO: implement the validation here
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value->format('d-m-Y'))
