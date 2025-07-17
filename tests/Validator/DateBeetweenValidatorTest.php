@@ -11,6 +11,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use App\Entity\CompteSalaire;
 use App\Entity\User;
 use DateTime;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
@@ -22,13 +24,13 @@ class DateBeetweenValidatorTest extends TestCase
     private $context;
     /** @var MockObject&CompteSalaireRepository&null */
     private  $compteSalaireRepository;
-    /** @var MockObject&UsernamePasswordToken&null */
-    private $token;
+
+    private ?TokenStorageInterface $token;
 
     protected function setUp(): void
     {
         $this->compteSalaireRepository = $this->createMock(CompteSalaireRepository::class);
-        $this->token = new UsernamePasswordToken(new User(), 'main');
+        $this->token = new TokenStorage();
         $this->dateBeetweenValidator = new DateBeetweenValidator($this->compteSalaireRepository, $this->token);
         $this->constraint = new DateBeetween('strict');
         $this->constraint->message = 'test';
@@ -47,13 +49,7 @@ class DateBeetweenValidatorTest extends TestCase
 
     public function testValueInRangeCompteSalaireDateDebutAndDateFinThrowError(): void
     {
-        $value = new DateTime('2025-01-01');
-        $user = $this->token->getUser();
-        $compteSalaire = new CompteSalaire();
-        $this->compteSalaireRepository->expects($this->once())
-            ->method('getCompteSalaireByDate')
-            ->with($user, $value)
-            ->willReturn($compteSalaire);
+        $value = $this->simulateGetCompteSalaireByDate(new CompteSalaire());
 
         $constraintBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
         //demarrage du context
@@ -80,12 +76,7 @@ class DateBeetweenValidatorTest extends TestCase
 
     public function testValueNotInRangeCompteSalaireDateDebutAndDateFin(): void
     {
-        $value = new DateTime('2025-01-01');
-        $user = new User();
-        $this->compteSalaireRepository->expects($this->once())
-            ->method('getCompteSalaireByDate')
-            ->with($user, $value)
-            ->willReturn(null);
+        $value = $this->simulateGetCompteSalaireByDate();
 
         $constraintBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
         //demarrage du context
@@ -98,6 +89,26 @@ class DateBeetweenValidatorTest extends TestCase
             ->willReturn($constraintBuilder);
 
         $this->dateBeetweenValidator->validate($value, $this->constraint);
+    }
+
+    private function simulateGetCompteSalaireByDate(?CompteSalaire $compteSalaire = null, ?DateTime $value = null): DateTime
+    {
+        $value = new DateTime('2025-01-01');
+        $this->token->setToken(
+            new UsernamePasswordToken(new User, 'main')
+        );
+        $user = $this->token->getToken()->getUser();
+        $invocation = $this->compteSalaireRepository->expects($this->once())
+            ->method('getCompteSalaireByDate')
+            ->with($user, $value);
+
+        if ($compteSalaire) {
+            $invocation->willReturn($compteSalaire);
+        } else {
+            $invocation->willReturn(null);
+        }
+
+        return $value;
     }
 
     public static function provideInvalid(): array
