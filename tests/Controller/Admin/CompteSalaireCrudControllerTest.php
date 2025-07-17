@@ -131,6 +131,7 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
                 ]
             ]);
         $this->crawler = $this->client->submit($form);
+
         $this->assertSelectorExists('.invalid-feedback');
     }
 

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\CompteSalaire;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -21,11 +22,11 @@ class CompteSalaireRepository extends ServiceEntityRepository
         parent::__construct($registry, CompteSalaire::class);
     }
 
-    public function getCompteSalaireByDate(string $date): ?CompteSalaire
+    public function getCompteSalaireByDate(DateTime $date): ?CompteSalaire
     {
         return  $this->createQueryBuilder('c')
             ->where('c.dateDebutCompte <= :date AND c.dateFinCompte >= :date')
-            ->setParameter('date', $date)
+            ->setParameter('date', $date->format('Y-m-d'))
             ->getQuery()
             ->getOneOrNullResult();
     }
