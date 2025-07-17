@@ -28,7 +28,7 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
     public function testAccessDeniedIfUserNotAuthenticated(): void
     {
         $this->client->request('GET', $this->generateIndexUrl());
-        $this->assertResponseStatusCodeSame(401);
+        $this->assertResponseStatusCodeSame(302);
     }
 
     /**
