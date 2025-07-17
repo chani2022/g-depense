@@ -121,7 +121,7 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
      */
     public function testCreateCompteSalaireAlreadyExist(array $formData, int $expected): void
     {
-        $this->simulateUserAccessPageIndexSuccessfully();
+        $this->simulateUserAccessPageNewSuccessfully();
 
         $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
         $nameForm = $this->getFormEntity();
@@ -132,6 +132,23 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
         $this->crawler = $this->client->submit($form);
         $numberActual = $this->crawler->filter('.invalid-feedback')->count();
         $this->assertSame($expected, $numberActual);
+    }
+
+    public function testCreateCompteSalaireSuccessfully(): void
+    {
+        $this->simulateUserAccessPageNewSuccessfully();
+
+        $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
+        $nameForm = $this->getFormEntity();
+        $form = $this->crawler->filter(sprintf('form[name="%s"]', $nameForm))
+            ->form([
+                $nameForm => [
+                    'dateDebutCompte' => '2024-03-01',
+                    'dateFinCompte' => '2024-03-15'
+                ]
+            ]);
+        $this->crawler = $this->client->submit($form);
+        $this->assertResponseStatusCodeSame(302);
     }
 
 
@@ -150,8 +167,6 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
         $this->client->request('GET', $this->generateNewFormUrl());
         $this->assertResponseIsSuccessful();
     }
-
-
 
     public static function fieldsHidden(): array
     {
