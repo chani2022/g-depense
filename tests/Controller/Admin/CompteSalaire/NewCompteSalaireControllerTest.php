@@ -3,11 +3,9 @@
 namespace App\Tests\Controller\Admin\CompteSalaire;
 
 use App\Tests\Controller\CompteSalaire\Admin\CompteSalaireCrudControllerTest;
-use Symfony\Component\DomCrawler\Crawler;
 
 class NewCompteSalaireControllerTest extends CompteSalaireCrudControllerTest
 {
-    private ?Crawler $crawler;
     /**
      * -------------------------------------------------------
      * --------------------------page new--------------------------
