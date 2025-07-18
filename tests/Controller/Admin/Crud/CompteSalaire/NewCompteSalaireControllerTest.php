@@ -1,16 +1,11 @@
 <?php
 
-namespace App\Tests\Controller\Admin\CompteSalaire;
+namespace App\Tests\Controller\Admin\Crud\CompteSalaire;
 
-use App\Tests\Controller\CompteSalaire\Admin\CompteSalaireCrudControllerTest;
+use App\Tests\Controller\Admin\Crud\CompteSalaire\AbstractCompteSalaireCrudTest;
 
-class NewCompteSalaireControllerTest extends CompteSalaireCrudControllerTest
+class NewCompteSalaireControllerTest extends AbstractCompteSalaireCrudTest
 {
-    /**
-     * -------------------------------------------------------
-     * --------------------------page new--------------------------
-     * -------------------------------------------------------
-     */
     public function testPageNewCompteSalaireSuccessfullyWithAdmin(): void
     {
         $this->simulateAdminAccessPageNewSuccessfully();
@@ -63,7 +58,6 @@ class NewCompteSalaireControllerTest extends CompteSalaireCrudControllerTest
         $this->crawler = $this->client->submit($form);
         $this->assertResponseStatusCodeSame(302);
     }
-
 
     private function simulateAdminAccessPageNewSuccessfully(): void
     {
@@ -124,12 +118,5 @@ class NewCompteSalaireControllerTest extends CompteSalaireCrudControllerTest
                 'expected' => 2
             ]
         ];
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        $this->crawler = null;
     }
 }

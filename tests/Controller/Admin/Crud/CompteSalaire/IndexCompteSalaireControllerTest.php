@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Tests\Controller\Admin\CompteSalaire;
+namespace App\Tests\Controller\Admin\Crud\CompteSalaire;
 
-use App\Tests\Controller\CompteSalaire\Admin\CompteSalaireCrudControllerTest;
+use App\Tests\Controller\Admin\Crud\CompteSalaire\AbstractCompteSalaireCrudTest;
 
-class IndexCompteSalaireControllerTest extends CompteSalaireCrudControllerTest
+class IndexCompteSalaireControllerTest extends AbstractCompteSalaireCrudTest
 {
     public function testAccessDeniedIfUserNotAuthenticated(): void
     {
@@ -59,10 +59,4 @@ class IndexCompteSalaireControllerTest extends CompteSalaireCrudControllerTest
             ['roleUser']
         ];
     }
-
-    /**
-     * -------------------------------------------------------
-     * ---------------------------fin page index -------------------------
-     * -------------------------------------------------------
-     */
 }

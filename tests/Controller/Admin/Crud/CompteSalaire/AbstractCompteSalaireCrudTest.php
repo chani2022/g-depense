@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Controller\CompteSalaire\Admin;
+namespace App\Tests\Controller\Admin\Crud\CompteSalaire;
 
 use App\Controller\Admin\CompteSalaireCrudController;
 use App\Controller\Admin\DashboardController;
@@ -10,7 +10,7 @@ use App\Tests\Trait\UserAuthenticatedTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestFormAsserts;
 use Symfony\Component\DomCrawler\Crawler;
 
-abstract class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
+abstract class AbstractCompteSalaireCrudTest extends AbstractCrudTestCase
 {
     use RefreshDatabaseTrait;
     use CrudTestFormAsserts;
