@@ -38,6 +38,7 @@ class NewCompteSalaireControllerTest extends AbstractCompteSalaireCrudTest
                 $nameForm => $formData
             ]);
         $this->crawler = $this->client->submit($form);
+
         $numberActual = $this->crawler->filter('.invalid-feedback')->count();
         $this->assertSame($expected, $numberActual);
     }
@@ -88,7 +89,6 @@ class NewCompteSalaireControllerTest extends AbstractCompteSalaireCrudTest
         return [
             'date debut et fin dans une même compte' => [
                 'data' => [
-
                     'dateDebutCompte' => '2024-01-02',
                     'dateFinCompte' => '2024-01-14'
                 ],
@@ -96,7 +96,6 @@ class NewCompteSalaireControllerTest extends AbstractCompteSalaireCrudTest
             ],
             'date debut dans un compte' => [
                 'data' => [
-
                     'dateDebutCompte' => '2024-01-02',
                     'dateFinCompte' => '2024-06-14'
                 ],
@@ -104,7 +103,6 @@ class NewCompteSalaireControllerTest extends AbstractCompteSalaireCrudTest
             ],
             'date fin dans un compte' => [
                 'data' => [
-
                     'dateDebutCompte' => '2024-06-02',
                     'dateFinCompte' => '2024-01-14'
                 ],
@@ -116,6 +114,20 @@ class NewCompteSalaireControllerTest extends AbstractCompteSalaireCrudTest
                     'dateFinCompte' => ''
                 ],
                 'expected' => 2
+            ],
+            'date debut vide' => [
+                'data' => [
+                    'dateDebutCompte' => '',
+                    'dateFinCompte' => '2024-07-10'
+                ],
+                'expected' => 1
+            ],
+            'date fin vide' => [
+                'data' => [
+                    'dateDebutCompte' => '2024-05-20',
+                    'dateFinCompte' => ''
+                ],
+                'expected' => 1
             ]
         ];
     }

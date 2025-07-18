@@ -34,7 +34,7 @@ class CompteSalaire
         return $this->dateDebutCompte;
     }
 
-    public function setDateDebutCompte(\DateTimeInterface $dateDebutCompte): static
+    public function setDateDebutCompte(?\DateTimeInterface $dateDebutCompte): static
     {
         $this->dateDebutCompte = $dateDebutCompte;
 
@@ -46,7 +46,7 @@ class CompteSalaire
         return $this->dateFinCompte;
     }
 
-    public function setDateFinCompte(\DateTimeInterface $dateFinCompte): static
+    public function setDateFinCompte(?\DateTimeInterface $dateFinCompte): static
     {
         $this->dateFinCompte = $dateFinCompte;
 
