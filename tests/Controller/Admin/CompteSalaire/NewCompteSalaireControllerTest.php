@@ -1,98 +1,13 @@
 <?php
 
-namespace App\Tests\Controller\Admin;
+namespace App\Tests\Controller\Admin\CompteSalaire;
 
-use App\Controller\Admin\CompteSalaireCrudController;
-use App\Controller\Admin\DashboardController;
-use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
-use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
-use App\Tests\Trait\UserAuthenticatedTrait;
-use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestFormAsserts;
+use App\Tests\Controller\CompteSalaire\Admin\CompteSalaireCrudControllerTest;
 use Symfony\Component\DomCrawler\Crawler;
 
-final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
+class NewCompteSalaireControllerTest extends CompteSalaireCrudControllerTest
 {
-    use RefreshDatabaseTrait;
-    use CrudTestFormAsserts;
-    use UserAuthenticatedTrait;
-
     private ?Crawler $crawler;
-
-    protected function getControllerFqcn(): string
-    {
-        return CompteSalaireCrudController::class;
-    }
-
-    protected function getDashboardFqcn(): string
-    {
-        return DashboardController::class;
-    }
-
-    public function testAccessDeniedIfUserNotAuthenticated(): void
-    {
-        $this->client->request('GET', $this->generateIndexUrl());
-        $this->assertResponseStatusCodeSame(302);
-    }
-
-    /**
-     * ---------------------------------------------------
-     * ---------------------page index-------------------------
-     * ---------------------------------------------------
-     */
-    public function testIndexPageCompteSalaireAccessUserSuccessfully(): void
-    {
-        $this->simulateUserAccessPageIndexSuccessfully();
-    }
-
-    public function testIndexPageCompteSalaireAccessAdminSuccessfully(): void
-    {
-        $this->simulateAdminAccessPageIndexSuccessfully();
-    }
-
-    public function testShowOnlyCompteSalaireOwnerIfUserAuthenticated(): void
-    {
-        $this->simulateUserAccessPageIndexSuccessfully();
-        $this->assertIndexPageEntityCount(3);
-    }
-
-    public function testShowAllCompteSalaireIfAdminAuthenticated(): void
-    {
-        $this->simulateAdminAccessPageIndexSuccessfully();
-        $this->assertIndexPageEntityCount(4);
-    }
-
-    private function simulateUserAccessPageIndexSuccessfully(): void
-    {
-        $this->client->loginUser($this->getSimpeUserAuthenticated());
-
-        $this->client->request('GET', $this->generateIndexUrl());
-        $this->assertResponseIsSuccessful();
-    }
-
-    private function simulateAdminAccessPageIndexSuccessfully(): void
-    {
-        $this->client->loginUser($this->getAdminAuthenticated());
-
-        $this->client->request('GET', $this->generateIndexUrl());
-        $this->assertResponseIsSuccessful();
-    }
-    /**
-     * @return array<array{string, string}>
-     */
-    public static function userAccessDenied(): array
-    {
-        return [
-            ['anonymous'],
-            ['roleUser']
-        ];
-    }
-
-    /**
-     * -------------------------------------------------------
-     * ---------------------------fin page index -------------------------
-     * -------------------------------------------------------
-     */
-
     /**
      * -------------------------------------------------------
      * --------------------------page new--------------------------
@@ -119,7 +34,7 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
     /**
      * @dataProvider provideFormDataInvalid
      */
-    public function testCreateCompteSalaireAlreadyExist(array $formData, int $expected): void
+    public function testCreateCompteSalaireAlreadyExistAndBlank(array $formData, int $expected): void
     {
         $this->simulateUserAccessPageNewSuccessfully();
 
@@ -202,6 +117,13 @@ final class CompteSalaireCrudControllerTest extends AbstractCrudTestCase
                     'dateFinCompte' => '2024-01-14'
                 ],
                 'expected' => 1
+            ],
+            'date debut et fin vide' => [
+                'data' => [
+                    'dateDebutCompte' => '',
+                    'dateFinCompte' => ''
+                ],
+                'expected' => 2
             ]
         ];
     }
