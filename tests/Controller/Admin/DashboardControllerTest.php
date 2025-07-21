@@ -182,6 +182,13 @@ class DashboardControllerTest extends WebTestCase
                     'css_classname' => 'compte-salaire'
                 ]
             ],
+            [
+                'menu_items_access_user' => [
+                    'label' => 'Capital',
+                    'icon' => 'fa fa-users',
+                    'css_classname' => 'capital'
+                ]
+            ]
         ];
     }
 
