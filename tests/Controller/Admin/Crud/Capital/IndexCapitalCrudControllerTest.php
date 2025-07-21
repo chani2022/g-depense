@@ -25,7 +25,7 @@ class IndexCapitalControllerTest extends AbstractCapitalCrudTest
     public function testShowOnlyCapitalsOwnerIfUserAuthenticated(): void
     {
         $this->simulateUserAccessPageIndexSuccessfully();
-        $this->assertIndexPageEntityCount(1);
+        $this->assertIndexPageEntityCount(2);
     }
 
     public function testShowAllCompteSalaireIfAdminAuthenticated(): void
