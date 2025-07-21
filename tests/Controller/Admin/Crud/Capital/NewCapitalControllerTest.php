@@ -5,15 +5,15 @@ namespace App\Tests\Controller\Admin\Crud\Capital;
 
 class NewCapitalControllerTest extends AbstractCapitalCrudTest
 {
-    // public function testPageNewCapitalSuccessfullyWithAdmin(): void
-    // {
-    //     $this->simulateAdminAccessPageNewSuccessfully();
-    // }
+    public function testPageNewCapitalSuccessfullyWithAdmin(): void
+    {
+        $this->simulateAdminAccessPageNewSuccessfully();
+    }
 
-    // public function testPageNewCapitalSuccessfullyWithUser(): void
-    // {
-    //     $this->simulateUserAccessPageNewSuccessfully();
-    // }
+    public function testPageNewCapitalSuccessfullyWithUser(): void
+    {
+        $this->simulateUserAccessPageNewSuccessfully();
+    }
 
     // /**
     //  * @dataProvider provideFormDataInvalid
@@ -51,21 +51,21 @@ class NewCapitalControllerTest extends AbstractCapitalCrudTest
     //     $this->assertResponseStatusCodeSame(302);
     // }
 
-    // private function simulateAdminAccessPageNewSuccessfully(): void
-    // {
-    //     $this->client->loginUser($this->getAdminAuthenticated());
+    private function simulateAdminAccessPageNewSuccessfully(): void
+    {
+        $this->client->loginUser($this->getAdminAuthenticated());
 
-    //     $this->client->request('GET', $this->generateNewFormUrl());
-    //     $this->assertResponseIsSuccessful();
-    // }
+        $this->client->request('GET', $this->generateNewFormUrl());
+        $this->assertResponseIsSuccessful();
+    }
 
-    // private function simulateUserAccessPageNewSuccessfully(): void
-    // {
-    //     $this->client->loginUser($this->getSimpeUserAuthenticated());
+    private function simulateUserAccessPageNewSuccessfully(): void
+    {
+        $this->client->loginUser($this->getSimpeUserAuthenticated());
 
-    //     $this->client->request('GET', $this->generateNewFormUrl());
-    //     $this->assertResponseIsSuccessful();
-    // }
+        $this->client->request('GET', $this->generateNewFormUrl());
+        $this->assertResponseIsSuccessful();
+    }
 
     // public static function fieldsHidden(): array
     // {
