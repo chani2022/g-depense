@@ -11,10 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -33,22 +30,25 @@ class CapitalCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->hideOnIndex(),
-            ImageField::new('compteSalaire.owner.imageName')
-                ->setBasePath('/images/users/')
-                ->setLabel('Image'),
+            AvatarField::new('compteSalaire.owner.imageName')
+                ->formatValue(function ($value) {
+                    return '/images/users/' . $value;
+                })
+                ->setLabel('Proprietaire'),
             NumberField::new('montant')->setLabel('Montant'),
-            NumberField::new('ajout')->setLabel('Montant')
+            NumberField::new('ajout')->setLabel('Ajout')
         ];
     }
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
         $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
-        $alias = $qb->getAllAliases()[0];
-
+        $aliasCapital = $qb->getAllAliases()[0];
+        $qb->select($aliasCapital . ',cs,ow')
+            ->join($aliasCapital . '.compteSalaire', 'cs')
+            ->join('cs.owner', 'ow');
         if (!$this->security->isGranted('ROLE_ADMIN', $this->security->getUser())) {
-            $qb->join(sprintf('%s.compteSalaire', $alias), 'cs')
-                ->where('cs.owner = :owner')
+            $qb->where('cs.owner = :owner')
                 ->setParameter('owner', $this->security->getUser());
         }
 

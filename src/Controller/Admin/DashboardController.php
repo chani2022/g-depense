@@ -84,11 +84,12 @@ class DashboardController extends AbstractDashboardController
         $form = $this->createForm(ProfilType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
-            $user->setFile(null); //pour eviter le serialization du fichier
             if ($form->isValid()) {
                 $em->flush();
+                $user->setFile(null); //pour eviter le serialization du fichier
                 return $this->redirectToRoute('app_profil');
             } else {
+                $user->setFile(null); //pour eviter le serialization du fichier
                 //pour ne pas afficher le nom et prenom dans l'affichage du profil easyadmin
                 $em->refresh($user);
                 $em->clear();

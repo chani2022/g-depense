@@ -11,7 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -31,6 +31,12 @@ class CompteSalaireCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id', '#')->onlyOnIndex(),
+            AvatarField::new('owner.imageName')
+                ->formatValue(function ($value) {
+                    return '/images/users/' . $value;
+                })
+                ->setLabel('Propriétaire')
+                ->onlyOnIndex(),
             DateField::new('dateDebutCompte')
                 ->setFormTypeOption('constraints', [
                     new NotBlank(),
@@ -41,7 +47,6 @@ class CompteSalaireCrudController extends AbstractCrudController
                     new NotBlank(),
                     new DateBeetween('strict'),
                 ]),
-            AssociationField::new('owner')->onlyOnIndex()
         ];
     }
 
@@ -56,11 +61,12 @@ class CompteSalaireCrudController extends AbstractCrudController
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
         $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
-        $alias = $qb->getAllAliases()[0];
+        $aliasCompteSalaire = $qb->getAllAliases()[0];
+        $qb->select($aliasCompteSalaire, 'ow')
+            ->join($aliasCompteSalaire . '.owner', 'ow');
 
-        $user = $this->getUser();
-        if (!$this->security->isGranted('ROLE_ADMIN', $user)) {
-            $qb->where(sprintf('%s.owner = :user', $alias))
+        if (!$this->security->isGranted('ROLE_ADMIN', $this->security->getUser())) {
+            $qb->where(sprintf('%s.owner = :user', $aliasCompteSalaire))
                 ->setParameter('user', $this->getUser());
         }
 
