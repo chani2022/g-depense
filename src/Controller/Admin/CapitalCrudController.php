@@ -34,7 +34,8 @@ class CapitalCrudController extends AbstractCrudController
                 ->formatValue(function ($value) {
                     return '/images/users/' . $value;
                 })
-                ->setLabel('Proprietaire'),
+                ->setLabel('Proprietaire')
+                ->onlyOnIndex(),
             NumberField::new('montant')->setLabel('Montant'),
             NumberField::new('ajout')->setLabel('Ajout')
         ];

@@ -5,6 +5,12 @@ namespace App\Tests\Controller\Admin\Crud\Capital;
 
 class NewCapitalControllerTest extends AbstractCapitalCrudTest
 {
+    public function testAccessDeniedPageNewCapitalIfUserNotAuthenticated(): void
+    {
+        $this->client->request('GET', $this->generateNewFormUrl());
+        $this->assertResponseStatusCodeSame(302);
+    }
+
     public function testPageNewCapitalSuccessfullyWithAdmin(): void
     {
         $this->simulateAdminAccessPageNewSuccessfully();
