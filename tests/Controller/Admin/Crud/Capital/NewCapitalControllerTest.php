@@ -2,7 +2,6 @@
 
 namespace App\Tests\Controller\Admin\Crud\Capital;
 
-use App\Tests\Controller\Admin\Crud\CompteSalaire\AbstractCapitalCrudTest;
 
 class NewCapitalControllerTest extends AbstractCapitalCrudTest
 {
@@ -15,15 +14,7 @@ class NewCapitalControllerTest extends AbstractCapitalCrudTest
     {
         $this->simulateUserAccessPageNewSuccessfully();
     }
-    /**
-     * @dataProvider fieldsHidden
-     */
-    public function testNewPageFieldsHidden(string $field): void
-    {
-        $this->simulateAdminAccessPageNewSuccessfully();
 
-        $this->assertFormFieldNotExists($field);
-    }
     /**
      * @dataProvider provideFormDataInvalid
      */

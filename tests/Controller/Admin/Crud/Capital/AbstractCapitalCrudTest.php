@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Controller\Admin\Crud\CompteSalaire;
+namespace App\Tests\Controller\Admin\Crud\Capital;
 
 use App\Controller\Admin\CapitalCrudController;
 use App\Controller\Admin\DashboardController;

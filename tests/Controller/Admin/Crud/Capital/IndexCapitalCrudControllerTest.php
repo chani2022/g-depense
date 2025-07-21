@@ -2,7 +2,7 @@
 
 namespace App\Tests\Controller\Admin\Crud\Capital;
 
-use App\Tests\Controller\Admin\Crud\CompteSalaire\AbstractCapitalCrudTest;
+use App\Tests\Controller\Admin\Crud\Capital\AbstractCapitalCrudTest;
 
 class IndexCapitalControllerTest extends AbstractCapitalCrudTest
 {
@@ -14,27 +14,27 @@ class IndexCapitalControllerTest extends AbstractCapitalCrudTest
 
     public function testIndexPageCapitalAccessUserSuccessfully(): void
     {
-        $this->simulateUserAccessPageIndexSuccessfully();
+        $this->simulateUserAccessPageIndexCapitalSuccessfully();
     }
 
     public function testIndexPageCapitalAccessAdminSuccessfully(): void
     {
-        $this->simulateUserAccessPageIndexSuccessfully();
+        $this->simulateUserAccessPageIndexCapitalSuccessfully();
     }
 
     public function testShowOnlyCapitalsOwnerIfUserAuthenticated(): void
     {
-        $this->simulateUserAccessPageIndexSuccessfully();
+        $this->simulateUserAccessPageIndexCapitalSuccessfully();
         $this->assertIndexPageEntityCount(2);
     }
 
     public function testShowAllCapitalIfAdminAuthenticated(): void
     {
-        $this->simulateAdminAccessPageIndexSuccessfully();
+        $this->simulateAdminAccessPageIndexCapitalSuccessfully();
         $this->assertIndexPageEntityCount(3);
     }
 
-    private function simulateUserAccessPageIndexSuccessfully(): void
+    private function simulateUserAccessPageIndexCapitalSuccessfully(): void
     {
         $this->client->loginUser($this->getSimpeUserAuthenticated());
 
@@ -42,12 +42,29 @@ class IndexCapitalControllerTest extends AbstractCapitalCrudTest
         $this->assertResponseIsSuccessful();
     }
 
-    private function simulateAdminAccessPageIndexSuccessfully(): void
+    private function simulateAdminAccessPageIndexCapitalSuccessfully(): void
     {
         $this->client->loginUser($this->getAdminAuthenticated());
 
         $this->client->request('GET', $this->generateIndexUrl());
         $this->assertResponseIsSuccessful();
+    }
+
+    /**
+     * @dataProvider fieldsHidden
+     */
+    public function testIndexPageCapitalFieldsHidden(string $field): void
+    {
+        $this->simulateUserAccessPageIndexCapitalSuccessfully();
+
+        $this->assertFormFieldNotExists($field);
+    }
+
+    public static function fieldsHidden(): array
+    {
+        return [
+            ['id'],
+        ];
     }
     /**
      * @return array<array{string, string}>
