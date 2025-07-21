@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\EventSubscriber\EasyAdminSubscriber;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
@@ -28,18 +29,22 @@ class EasyAdminSubscriberTest extends TestCase
         $compteSalaire = new CompteSalaire();
         $beforeEntityPersistEvent = new BeforeEntityPersistedEvent($compteSalaire);
 
-        $this->easyAdminSubscriber->BeforeEntityPersistedEvent($beforeEntityPersistEvent);
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
+        $eventDispatcher->dispatch($beforeEntityPersistEvent, BeforeEntityPersistedEvent::class);
 
         $this->assertInstanceOf(User::class, $compteSalaire->getOwner());
     }
 
     public function testBeforeEntityPersistEventReturn(): void
     {
-        $user = new user();
         $compteSalaire = new CompteSalaire();
+        $user = new User();
         $beforeEntityPersistEvent = new BeforeEntityPersistedEvent($user);
 
-        $this->easyAdminSubscriber->BeforeEntityPersistedEvent($beforeEntityPersistEvent);
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
+        $eventDispatcher->dispatch($beforeEntityPersistEvent, BeforeEntityPersistedEvent::class);
 
         $this->assertNull($compteSalaire->getOwner());
     }
