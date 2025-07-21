@@ -42,9 +42,11 @@ class CapitalCrudController extends AbstractCrudController
         $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
         $alias = $qb->getAllAliases()[0];
 
-        $qb->join(sprintf('%s.compteSalaire', $alias), 'cs')
-            ->where('cs.owner = :owner')
-            ->setParameter('owner', $this->security->getUser());
+        if (!$this->security->isGranted('ROLE_ADMIN', $this->security->getUser())) {
+            $qb->join(sprintf('%s.compteSalaire', $alias), 'cs')
+                ->where('cs.owner = :owner')
+                ->setParameter('owner', $this->security->getUser());
+        }
 
         return $qb;
     }
