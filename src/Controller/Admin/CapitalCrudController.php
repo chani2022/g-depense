@@ -9,7 +9,9 @@ use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -31,10 +33,11 @@ class CapitalCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->hideOnIndex(),
-            NumberField::new('montant'),
-            NumberField::new('ajout')
-            // TextField::new('montant'),
-            // TextField::new('ajout'),
+            ImageField::new('compteSalaire.owner.imageName')
+                ->setBasePath('/images/users/')
+                ->setLabel('Image'),
+            NumberField::new('montant')->setLabel('Montant'),
+            NumberField::new('ajout')->setLabel('Montant')
         ];
     }
 
