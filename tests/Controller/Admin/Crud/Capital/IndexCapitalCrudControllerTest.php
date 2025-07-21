@@ -28,10 +28,10 @@ class IndexCapitalControllerTest extends AbstractCapitalCrudTest
         $this->assertIndexPageEntityCount(2);
     }
 
-    public function testShowAllCompteSalaireIfAdminAuthenticated(): void
+    public function testShowAllCapitalIfAdminAuthenticated(): void
     {
         $this->simulateAdminAccessPageIndexSuccessfully();
-        $this->assertIndexPageEntityCount(4);
+        $this->assertIndexPageEntityCount(3);
     }
 
     private function simulateUserAccessPageIndexSuccessfully(): void
