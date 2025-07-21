@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Capital;
 use App\Entity\CompteSalaire;
 use App\Entity\User;
 use App\Form\ChangePasswordType;
@@ -70,7 +71,7 @@ class DashboardController extends AbstractDashboardController
                 ->setPermission('ROLE_ADMIN'),
             MenuItem::linkToCrud('Compte salaire', 'fa fa-users', CompteSalaire::class)
                 ->setCssClass('compte-salaire'),
-            MenuItem::linkToCrud('Capital', 'fa fa-users', CompteSalaire::class)
+            MenuItem::linkToCrud('Capital', 'fa fa-users', Capital::class)
                 ->setCssClass('capital')
         ];
     }
