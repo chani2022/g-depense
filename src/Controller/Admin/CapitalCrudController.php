@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -26,16 +27,16 @@ class CapitalCrudController extends AbstractCrudController
         return Capital::class;
     }
 
-
     public function configureFields(string $pageName): iterable
     {
         return [
             IdField::new('id')->hideOnIndex(),
+            NumberField::new('montant'),
+            NumberField::new('ajout')
             // TextField::new('montant'),
             // TextField::new('ajout'),
         ];
     }
-
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {

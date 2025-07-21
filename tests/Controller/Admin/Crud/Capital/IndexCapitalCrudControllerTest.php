@@ -84,7 +84,8 @@ class IndexCapitalControllerTest extends AbstractCapitalCrudTest
     {
         return [
             ['montant'],
-            ['ajout']
+            ['ajout'],
+            ['compteSalaire.owner.imageName']
         ];
     }
     /**
