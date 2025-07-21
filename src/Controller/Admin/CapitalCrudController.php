@@ -32,7 +32,7 @@ class CapitalCrudController extends AbstractCrudController
             IdField::new('id')->hideOnIndex(),
             AvatarField::new('compteSalaire.owner.imageName')
                 ->formatValue(function ($value) {
-                    return '/images/users/' . $value;
+                    return $value ? '/images/users/' . $value : '/images/users/user-default.png';
                 })
                 ->setLabel('Proprietaire')
                 ->onlyOnIndex(),
