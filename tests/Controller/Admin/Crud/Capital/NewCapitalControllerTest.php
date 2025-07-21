@@ -43,22 +43,22 @@ class NewCapitalControllerTest extends AbstractCapitalCrudTest
         $this->assertSame($expected, $numberActual);
     }
 
-    // public function testCreateCapitalSuccessfully(): void
-    // {
-    //     $this->simulateUserAccessPageNewSuccessfully();
+    public function testCreateCapitalSuccessfully(): void
+    {
+        $this->simulateUserAccessPageNewSuccessfully();
 
-    //     $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
-    //     $nameForm = $this->getFormEntity();
-    //     $form = $this->crawler->filter(sprintf('form[name="%s"]', $nameForm))
-    //         ->form([
-    //             $nameForm => [
-    //                 'montant' => 25,
-    //                 'ajout' => 15.25
-    //             ]
-    //         ]);
-    //     $this->crawler = $this->client->submit($form);
-    //     $this->assertResponseStatusCodeSame(302);
-    // }
+        $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
+        $nameForm = $this->getFormEntity();
+        $form = $this->crawler->filter(sprintf('form[name="%s"]', $nameForm))
+            ->form([
+                $nameForm => [
+                    'montant' => 25,
+                    'ajout' => 15.25
+                ]
+            ]);
+        $this->crawler = $this->client->submit($form);
+        $this->assertResponseStatusCodeSame(302);
+    }
 
     private function simulateAdminAccessPageNewSuccessfully(): void
     {

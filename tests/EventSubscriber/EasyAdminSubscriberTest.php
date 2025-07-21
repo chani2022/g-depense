@@ -2,6 +2,7 @@
 
 namespace App\Tests\EventSubscriber;
 
+use App\Entity\Capital;
 use App\Entity\CompteSalaire;
 use App\Entity\User;
 use App\EventSubscriber\EasyAdminSubscriber;
@@ -23,8 +24,10 @@ class EasyAdminSubscriberTest extends TestCase
         );
         $this->easyAdminSubscriber = new EasyAdminSubscriber($tokenStorage);
     }
-
-    public function testBeforeEntityPersistEventSuccess(): void
+    /**
+     * ----------------------compte salaire --------------
+     */
+    public function testBeforeEntityCompteSalairePersistEventSuccess(): void
     {
         $compteSalaire = new CompteSalaire();
         $beforeEntityPersistEvent = new BeforeEntityPersistedEvent($compteSalaire);
@@ -36,7 +39,7 @@ class EasyAdminSubscriberTest extends TestCase
         $this->assertInstanceOf(User::class, $compteSalaire->getOwner());
     }
 
-    public function testBeforeEntityPersistEventReturn(): void
+    public function testBeforeEntityCompteSalairePersistEventReturn(): void
     {
         $compteSalaire = new CompteSalaire();
         $user = new User();
@@ -48,6 +51,22 @@ class EasyAdminSubscriberTest extends TestCase
 
         $this->assertNull($compteSalaire->getOwner());
     }
+
+    /**
+     * ----------------------capital------------------
+     */
+    public function testBeforeEntityCapitalPersistEventSuccess(): void
+    {
+        $capital = new Capital();
+        $beforeEntityPersistEvent = new BeforeEntityPersistedEvent($capital);
+
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
+        $eventDispatcher->dispatch($beforeEntityPersistEvent, BeforeEntityPersistedEvent::class);
+
+        $this->assertInstanceOf(CompteSalaire::class, $capital->getCompteSalaire());
+    }
+
 
     public function testGetSubscribedEvents(): void
     {
