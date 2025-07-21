@@ -13,7 +13,7 @@ use Symfony\Component\DomCrawler\Crawler;
 abstract class AbstractCapitalCrudTest extends AbstractCrudTestCase
 {
     use RefreshDatabaseTrait;
-    use CrudTestFormAsserts;
+    // use CrudTestFormAsserts;
     use UserAuthenticatedTrait;
 
     protected ?Crawler $crawler;

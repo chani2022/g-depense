@@ -26,16 +26,16 @@ class CapitalCrudController extends AbstractCrudController
         return Capital::class;
     }
 
-    /*
+
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
+            IdField::new('id')->hideOnIndex(),
+            // TextField::new('montant'),
+            // TextField::new('ajout'),
         ];
     }
-    */
+
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {

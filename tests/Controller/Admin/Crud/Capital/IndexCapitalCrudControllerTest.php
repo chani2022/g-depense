@@ -3,9 +3,12 @@
 namespace App\Tests\Controller\Admin\Crud\Capital;
 
 use App\Tests\Controller\Admin\Crud\Capital\AbstractCapitalCrudTest;
+use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestIndexAsserts;
 
 class IndexCapitalControllerTest extends AbstractCapitalCrudTest
 {
+    use CrudTestIndexAsserts;
+
     public function testAccessDeniedPageIndexCapitalIfUserNotAuthenticated(): void
     {
         $this->client->request('GET', $this->generateIndexUrl());
@@ -57,7 +60,7 @@ class IndexCapitalControllerTest extends AbstractCapitalCrudTest
     {
         $this->simulateUserAccessPageIndexCapitalSuccessfully();
 
-        $this->assertFormFieldNotExists($field);
+        $this->assertIndexColumnNotExists('id');
     }
 
     public static function fieldsHidden(): array
@@ -66,6 +69,7 @@ class IndexCapitalControllerTest extends AbstractCapitalCrudTest
             ['id'],
         ];
     }
+
     /**
      * @return array<array{string, string}>
      */
