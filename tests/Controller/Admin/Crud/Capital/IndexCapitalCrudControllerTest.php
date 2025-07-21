@@ -60,7 +60,17 @@ class IndexCapitalControllerTest extends AbstractCapitalCrudTest
     {
         $this->simulateUserAccessPageIndexCapitalSuccessfully();
 
-        $this->assertIndexColumnNotExists('id');
+        $this->assertIndexColumnNotExists($field);
+    }
+
+    /**
+     * @dataProvider fieldsShowing
+     */
+    public function testIndexPageCapitalFieldsShowing(string $field): void
+    {
+        $this->simulateUserAccessPageIndexCapitalSuccessfully();
+
+        $this->assertIndexColumnExists($field);
     }
 
     public static function fieldsHidden(): array
@@ -70,6 +80,13 @@ class IndexCapitalControllerTest extends AbstractCapitalCrudTest
         ];
     }
 
+    public static function fieldsShowing(): array
+    {
+        return [
+            ['montant'],
+            ['ajout']
+        ];
+    }
     /**
      * @return array<array{string, string}>
      */
