@@ -2,9 +2,12 @@
 
 namespace App\Tests\Controller\Admin\Crud\Capital;
 
+use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestFormAsserts;
 
 class NewCapitalControllerTest extends AbstractCapitalCrudTest
 {
+    use CrudTestFormAsserts;
+
     public function testAccessDeniedPageNewCapitalIfUserNotAuthenticated(): void
     {
         $this->client->request('GET', $this->generateNewFormUrl());
@@ -21,26 +24,26 @@ class NewCapitalControllerTest extends AbstractCapitalCrudTest
         $this->simulateUserAccessPageNewSuccessfully();
     }
 
-    // /**
-    //  * @dataProvider provideFormDataInvalid
-    //  */
-    // public function testCreateCompteSalaireAlreadyExistAndBlank(array $formData, int $expected): void
-    // {
-    //     $this->simulateUserAccessPageNewSuccessfully();
+    /**
+     * @dataProvider provideFormDataInvalid
+     */
+    public function testCreateCapitalWithFormDataInvalid(array $formData, int $expected): void
+    {
+        $this->simulateUserAccessPageNewSuccessfully();
 
-    //     $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
-    //     $nameForm = $this->getFormEntity();
-    //     $form = $this->crawler->filter(sprintf('form[name="%s"]', $nameForm))
-    //         ->form([
-    //             $nameForm => $formData
-    //         ]);
-    //     $this->crawler = $this->client->submit($form);
+        $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
+        $nameForm = $this->getFormEntity();
+        $form = $this->crawler->filter(sprintf('form[name="%s"]', $nameForm))
+            ->form([
+                $nameForm => $formData
+            ]);
+        $this->crawler = $this->client->submit($form);
 
-    //     $numberActual = $this->crawler->filter('.invalid-feedback')->count();
-    //     $this->assertSame($expected, $numberActual);
-    // }
+        $numberActual = $this->crawler->filter('.invalid-feedback')->count();
+        $this->assertSame($expected, $numberActual);
+    }
 
-    // public function testCreateCompteSalaireSuccessfully(): void
+    // public function testCreateCapitalSuccessfully(): void
     // {
     //     $this->simulateUserAccessPageNewSuccessfully();
 
@@ -49,8 +52,8 @@ class NewCapitalControllerTest extends AbstractCapitalCrudTest
     //     $form = $this->crawler->filter(sprintf('form[name="%s"]', $nameForm))
     //         ->form([
     //             $nameForm => [
-    //                 'dateDebutCompte' => '2024-03-01',
-    //                 'dateFinCompte' => '2024-03-15'
+    //                 'montant' => 25,
+    //                 'ajout' => 15.25
     //             ]
     //         ]);
     //     $this->crawler = $this->client->submit($form);
@@ -81,51 +84,30 @@ class NewCapitalControllerTest extends AbstractCapitalCrudTest
     //     ];
     // }
 
-    // public static function provideFormDataInvalid(): array
-    // {
-    //     return [
-    //         'date debut et fin dans une même compte' => [
-    //             'data' => [
-    //                 'dateDebutCompte' => '2024-01-02',
-    //                 'dateFinCompte' => '2024-01-14'
-    //             ],
-    //             'expected' => 2
-    //         ],
-    //         'date debut dans un compte' => [
-    //             'data' => [
-    //                 'dateDebutCompte' => '2024-01-02',
-    //                 'dateFinCompte' => '2024-06-14'
-    //             ],
-    //             'expected' => 1
-    //         ],
-    //         'date fin dans un compte' => [
-    //             'data' => [
-    //                 'dateDebutCompte' => '2024-06-02',
-    //                 'dateFinCompte' => '2024-01-14'
-    //             ],
-    //             'expected' => 1
-    //         ],
-    //         'date debut et fin vide' => [
-    //             'data' => [
-    //                 'dateDebutCompte' => '',
-    //                 'dateFinCompte' => ''
-    //             ],
-    //             'expected' => 2
-    //         ],
-    //         'date debut vide' => [
-    //             'data' => [
-    //                 'dateDebutCompte' => '',
-    //                 'dateFinCompte' => '2024-07-10'
-    //             ],
-    //             'expected' => 1
-    //         ],
-    //         'date fin vide' => [
-    //             'data' => [
-    //                 'dateDebutCompte' => '2024-05-20',
-    //                 'dateFinCompte' => ''
-    //             ],
-    //             'expected' => 1
-    //         ]
-    //     ];
-    // }
+    public static function provideFormDataInvalid(): array
+    {
+        return [
+            'montant et ajout chaine de caractère' => [
+                'data' => [
+                    'montant' => '2024-01-02',
+                    'ajout' => '2024-01-14'
+                ],
+                'expected' => 2
+            ],
+            'montant chaine de caractère' => [
+                'data' => [
+                    'montant' => '2024-01-02',
+                    'ajout' => 25
+                ],
+                'expected' => 1
+            ],
+            'ajout chaine de caractère' => [
+                'data' => [
+                    'montant' => 15,
+                    'ajout' => 'test'
+                ],
+                'expected' => 1
+            ]
+        ];
+    }
 }
