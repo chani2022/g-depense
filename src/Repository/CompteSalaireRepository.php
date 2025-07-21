@@ -34,6 +34,17 @@ class CompteSalaireRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function getCompteSalaireWithDateNow(User $user): ?CompteSalaire
+    {
+        return  $this->createQueryBuilder('c')
+            ->where('c.dateDebutCompte <= :date AND c.dateFinCompte >= :date')
+            ->andWhere('c.owner = :owner')
+            ->setParameter('date', (new DateTime())->format('Y-m-d'))
+            ->setParameter('owner', $user)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     //    public function findOneBySomeField($value): ?CompteSalaire
     //    {
     //        return $this->createQueryBuilder('c')

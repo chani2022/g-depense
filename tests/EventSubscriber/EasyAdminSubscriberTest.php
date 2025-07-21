@@ -6,23 +6,30 @@ use App\Entity\Capital;
 use App\Entity\CompteSalaire;
 use App\Entity\User;
 use App\EventSubscriber\EasyAdminSubscriber;
+use App\Repository\CompteSalaireRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class EasyAdminSubscriberTest extends TestCase
 {
     private ?EasyAdminSubscriber $easyAdminSubscriber;
+    /** @var CompteSalaireRepository&MockObject&null */
+    private $mockCompteSalaireRepository;
+
+    private ?TokenStorage $tokenStorage;
 
     protected function setUp(): void
     {
-        $tokenStorage = new TokenStorage();
-        $tokenStorage->setToken(
+        $this->mockCompteSalaireRepository = $this->createMock(CompteSalaireRepository::class);
+        $this->tokenStorage = new TokenStorage();
+        $this->tokenStorage->setToken(
             new UsernamePasswordToken(new User, 'main')
         );
-        $this->easyAdminSubscriber = new EasyAdminSubscriber($tokenStorage);
+        $this->easyAdminSubscriber = new EasyAdminSubscriber($this->tokenStorage, $this->mockCompteSalaireRepository);
     }
     /**
      * ----------------------compte salaire --------------
@@ -57,6 +64,13 @@ class EasyAdminSubscriberTest extends TestCase
      */
     public function testBeforeEntityCapitalPersistEventSuccess(): void
     {
+        $compteSalaire = new CompteSalaire();
+        $this->mockCompteSalaireRepository
+            ->expects($this->once())
+            ->method('getCompteSalaireWithDateNow')
+            ->with($this->tokenStorage->getToken()->getUser())
+            ->willReturn($compteSalaire);
+
         $capital = new Capital();
         $beforeEntityPersistEvent = new BeforeEntityPersistedEvent($capital);
 
@@ -72,5 +86,12 @@ class EasyAdminSubscriberTest extends TestCase
     {
         $actualSubscribedEvents = $this->easyAdminSubscriber->getSubscribedEvents();
         $this->assertArrayHasKey(BeforeEntityPersistedEvent::class, $actualSubscribedEvents);
+    }
+
+    protected function tearDown(): void
+    {
+        $this->easyAdminSubscriber = null;
+        $this->mockCompteSalaireRepository = null;
+        $this->tokenStorage = null;
     }
 }

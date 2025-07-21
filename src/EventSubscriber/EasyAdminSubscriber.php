@@ -2,14 +2,16 @@
 
 namespace App\EventSubscriber;
 
+use App\Entity\Capital;
 use App\Entity\CompteSalaire;
+use App\Repository\CompteSalaireRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class EasyAdminSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private TokenStorageInterface $tokenStorage) {}
+    public function __construct(private TokenStorageInterface $tokenStorage, private CompteSalaireRepository $compteSalaireRepository) {}
     public function BeforeEntityCompteSalairePersistedEvent(BeforeEntityPersistedEvent $event): void
     {
         $object = $event->getEntityInstance();
@@ -25,11 +27,12 @@ class EasyAdminSubscriber implements EventSubscriberInterface
     {
         $object = $event->getEntityInstance();
 
-        if (!$object instanceof CompteSalaire) return;
+        if (!$object instanceof Capital) return;
 
-        $object->setOwner(
-            $this->tokenStorage->getToken()->getUser()
-        );
+        $compteSalaire = $this->compteSalaireRepository->getCompteSalaireWithDateNow($this->tokenStorage->getToken()->getUser());
+        if ($compteSalaire) {
+            $object->setCompteSalaire($compteSalaire);
+        }
     }
 
 
