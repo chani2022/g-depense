@@ -17,15 +17,15 @@ class IndexCapitalControllerTest extends AbstractCapitalCrudTest
         $this->simulateUserAccessPageIndexSuccessfully();
     }
 
-    public function testIndexPageCompteSalaireAccessAdminSuccessfully(): void
-    {
-        $this->simulateAdminAccessPageIndexSuccessfully();
-    }
-
-    public function testShowOnlyCompteSalaireOwnerIfUserAuthenticated(): void
+    public function testIndexPageCapitalAccessAdminSuccessfully(): void
     {
         $this->simulateUserAccessPageIndexSuccessfully();
-        $this->assertIndexPageEntityCount(3);
+    }
+
+    public function testShowOnlyCapitalsOwnerIfUserAuthenticated(): void
+    {
+        $this->simulateUserAccessPageIndexSuccessfully();
+        $this->assertIndexPageEntityCount(1);
     }
 
     public function testShowAllCompteSalaireIfAdminAuthenticated(): void
