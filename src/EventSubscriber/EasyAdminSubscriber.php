@@ -11,7 +11,10 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class EasyAdminSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private TokenStorageInterface $tokenStorage, private CompteSalaireRepository $compteSalaireRepository) {}
+    public function __construct(
+        private TokenStorageInterface $tokenStorage,
+        private CompteSalaireRepository $compteSalaireRepository
+    ) {}
     public function BeforeEntityCompteSalairePersistedEvent(BeforeEntityPersistedEvent $event): void
     {
         $object = $event->getEntityInstance();
