@@ -26,6 +26,17 @@ abstract class AbstractCategoryCrudTest extends AbstractCrudTestCase
         return DashboardController::class;
     }
 
+    protected function logUser(): void
+    {
+        $this->client->loginUser($this->getSimpeUserAuthenticated());
+    }
+
+    protected function logAdmin(): void
+    {
+        $this->client->loginUser($this->getAdminAuthenticated());
+    }
+
+
     protected function tearDown(): void
     {
         parent::tearDown();
