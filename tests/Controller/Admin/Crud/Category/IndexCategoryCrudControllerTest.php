@@ -35,11 +35,18 @@ class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
         $this->assertIndexColumnExists($field);
     }
 
-    public function testCountOwnerEntityCategory(): void
+    public function testShowOnlyOwnerEntityCategory(): void
     {
         $this->simulateAccessPageIndexCategorySuccessfullyWithUser();
 
         $this->assertIndexPageEntityCount(1);
+    }
+
+    public function testShowAllEntityCategoryIfAdmin(): void
+    {
+        $this->simulateAccessPageIndexCategorySuccessfullyWithAdmin();
+
+        $this->assertIndexPageEntityCount(2);
     }
 
     private function simulateAccessPageIndexCategorySuccessfullyWithUser(): void

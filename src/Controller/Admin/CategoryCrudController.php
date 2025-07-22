@@ -39,7 +39,6 @@ class CategoryCrudController extends AbstractCrudController
         $aliasCategory = $qb->getAllAliases()[0];
 
         return $qb->join($aliasCategory . '.owner', 'ow')
-            // ->addSelect(['ow'])
             ->where('ow = :owner')
             ->setParameter('owner', $this->security->getUser());
     }
