@@ -11,6 +11,10 @@ App\Entity\CompteSalaire:
     dateDebutCompte: <(new \DateTime("2024-02-01"))>
     dateFinCompte: <(new \DateTime("2024-02-15"))>
     owner: '@user_credentials_ok'
+  compte_salaire_user_credentials_with_date_now:
+    dateDebutCompte: <(new \DateTime("-7 days"))>
+    dateFinCompte: <(new \DateTime("+7 days"))>
+    owner: '@user_credentials_ok'
   compte_salaire_user_credentials_other:
     dateDebutCompte: <(new \DateTime("2024-02-16"))>
     dateFinCompte: <(new DateTime("2024-02-30"))>
