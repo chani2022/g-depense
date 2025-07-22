@@ -25,13 +25,13 @@ class IndexCompteSalaireControllerTest extends AbstractCompteSalaireCrudTest
     public function testShowOnlyCompteSalaireOwnerIfUserAuthenticated(): void
     {
         $this->simulateUserAccessPageIndexSuccessfully();
-        $this->assertIndexPageEntityCount(3);
+        $this->assertIndexPageEntityCount(4);
     }
 
     public function testShowAllCompteSalaireIfAdminAuthenticated(): void
     {
         $this->simulateAdminAccessPageIndexSuccessfully();
-        $this->assertIndexPageEntityCount(4);
+        $this->assertIndexPageEntityCount(5);
     }
 
     private function simulateUserAccessPageIndexSuccessfully(): void
