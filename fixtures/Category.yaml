@@ -1,9 +1,9 @@
-# App\Entity\Category:
-#   category_vital:
-#     nom: 'riz'
-#     prix: 150.5
-#     isVital: true
-#   category_facultatif:
-#     nom: 'jean'
-#     prix: 150.5
-#     isVital: false
+App\Entity\Category:
+  category_vital:
+    nom: 'riz'
+    prix: 150.5
+    isVital: true
+  category_facultatif:
+    nom: 'jean'
+    prix: 150.5
+    isVital: false

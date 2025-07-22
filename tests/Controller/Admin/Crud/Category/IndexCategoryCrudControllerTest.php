@@ -31,7 +31,10 @@ class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
     {
         $this->simulateAccessPageIndexCategorySuccessfullyWithUser();
 
+        // $ths = $this->crawler->filter('thead tr th')->each(fn($th) => $th->text());
+        // $this->assertContains($field, $ths);
         $this->assertIndexColumnExists($field);
+        // $this->assertTrue(in_array($field, $ths));
     }
 
     public function testCountOwnerEntityCategory(): void
@@ -57,9 +60,13 @@ class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
         $this->assertResponseIsSuccessful();
     }
 
+    /**
+     * @return array<string[]>
+     */
     public static function fieldShowing(): array
     {
         return [
+            ['id'],
             ['nom'],
             ['prix']
         ];
