@@ -1,4 +1,4 @@
-App\Entity\Depense:
-  depense_1:
-    category: '@category_1'
-    compteSalaire: '@compte_salaire_user_credentials_with_date_now'
+# App\Entity\Depense:
+#   depense_now:
+#     category: '@category_vital'
+#     compteSalaire: '@compte_salaire_user_credentials_with_date_now'

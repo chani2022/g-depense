@@ -4,7 +4,7 @@ namespace App\Tests\Controller\Admin\Crud\Category;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestIndexAsserts;
 
-class IndexCategoryCrudTest extends AbstractCategoryCrudTest
+class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
 {
     use CrudTestIndexAsserts;
 
@@ -23,6 +23,15 @@ class IndexCategoryCrudTest extends AbstractCategoryCrudTest
     public function testPageIndexCategorySuccessfullyIfAdminAuthenticated(): void
     {
         $this->simulateAccessPageIndexCategorySuccessfullyWithAdmin();
+    }
+    /**
+     * @dataProvider fieldShowing
+     */
+    public function testPageIndexCategoryFieldShowing(string $field): void
+    {
+        $this->simulateAccessPageIndexCategorySuccessfullyWithUser();
+
+        $this->assertIndexColumnExists($field);
     }
 
     public function testCountOwnerEntityCategory(): void

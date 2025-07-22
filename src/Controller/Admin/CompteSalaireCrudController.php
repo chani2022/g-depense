@@ -33,7 +33,7 @@ class CompteSalaireCrudController extends AbstractCrudController
             IdField::new('id', '#')->onlyOnIndex(),
             AvatarField::new('owner.imageName')
                 ->formatValue(function ($value) {
-                    return '/images/users/' . $value;
+                    return $value ? '/images/users/' . $value : '/images/users/user-default.png';
                 })
                 ->setLabel('Propriétaire')
                 ->onlyOnIndex(),
