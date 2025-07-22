@@ -24,6 +24,9 @@ class Category
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Depense::class)]
     private Collection $depenses;
 
+    #[ORM\Column]
+    private ?bool $isVital = null;
+
     public function __construct()
     {
         $this->depenses = new ArrayCollection();
@@ -84,6 +87,18 @@ class Category
                 $depense->setCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isIsVital(): ?bool
+    {
+        return $this->isVital;
+    }
+
+    public function setIsVital(bool $isVital): static
+    {
+        $this->isVital = $isVital;
 
         return $this;
     }
