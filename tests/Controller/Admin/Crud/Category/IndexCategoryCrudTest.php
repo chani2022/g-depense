@@ -15,5 +15,44 @@ class IndexCategoryCrudTest extends AbstractCategoryCrudTest
         $this->assertResponseStatusCodeSame(302);
     }
 
-    public function testCountEntityCategory(): void {}
+    public function testPageIndexCategorySuccessfullyIfUserAuthenticated(): void
+    {
+        $this->simulateAccessPageIndexCategorySuccessfullyWithUser();
+    }
+
+    public function testPageIndexCategorySuccessfullyIfAdminAuthenticated(): void
+    {
+        $this->simulateAccessPageIndexCategorySuccessfullyWithAdmin();
+    }
+
+    public function testCountOwnerEntityCategory(): void
+    {
+        $this->logUser();
+
+        $this->assertIndexPageEntityCount(2);
+    }
+
+    private function simulateAccessPageIndexCategorySuccessfullyWithUser(): void
+    {
+        $this->logUser();
+        $this->crawler = $this->client->request('GET', $this->generateIndexUrl());
+
+        $this->assertResponseIsSuccessful();
+    }
+
+    private function simulateAccessPageIndexCategorySuccessfullyWithAdmin(): void
+    {
+        $this->logAdmin();
+        $this->crawler = $this->client->request('GET', $this->generateIndexUrl());
+
+        $this->assertResponseIsSuccessful();
+    }
+
+    public static function fieldShowing(): array
+    {
+        return [
+            ['nom'],
+            ['prix']
+        ];
+    }
 }
