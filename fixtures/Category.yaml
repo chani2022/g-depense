@@ -1,10 +1,5 @@
-App\Entity\Capital:
-  capital_user_credentials_ok_1_with_montant:
-    montant: 1500.75
-    compteSalaire: '@compte_salaire_user_credentials_ok_1'
-  capital_user_credentials_ok_1_without_montant:
-    ajout: 15.25
-    compteSalaire: '@compte_salaire_user_credentials_ok_1'
-  capital_user_credentials_ok_other:
-    montant: 200.75
-    compteSalaire: '@compte_salaire_user_credentials_other'
+App\Entity\Category:
+  category_1:
+    nom: 'riz'
+    prix: 150.5
+    isVital: true

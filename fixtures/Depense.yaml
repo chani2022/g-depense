@@ -1,0 +1,4 @@
+App\Entity\Depense:
+  depense_1:
+    category: '@category_1'
+    compteSalaire: '@compte_salaire_user_credentials_with_date_now'
