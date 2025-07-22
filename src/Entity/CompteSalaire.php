@@ -29,9 +29,13 @@ class CompteSalaire
     #[ORM\OneToMany(mappedBy: 'compteSalaire', targetEntity: Capital::class)]
     private Collection $capitals;
 
+    #[ORM\OneToMany(mappedBy: 'compteSalaire', targetEntity: Depense::class)]
+    private Collection $depenses;
+
     public function __construct()
     {
         $this->capitals = new ArrayCollection();
+        $this->depenses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -99,6 +103,36 @@ class CompteSalaire
             // set the owning side to null (unless already changed)
             if ($capital->getCompteSalaire() === $this) {
                 $capital->setCompteSalaire(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Depense>
+     */
+    public function getDepenses(): Collection
+    {
+        return $this->depenses;
+    }
+
+    public function addDepense(Depense $depense): static
+    {
+        if (!$this->depenses->contains($depense)) {
+            $this->depenses->add($depense);
+            $depense->setCompteSalaire($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDepense(Depense $depense): static
+    {
+        if ($this->depenses->removeElement($depense)) {
+            // set the owning side to null (unless already changed)
+            if ($depense->getCompteSalaire() === $this) {
+                $depense->setCompteSalaire(null);
             }
         }
 
