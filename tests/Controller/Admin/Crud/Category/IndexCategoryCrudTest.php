@@ -27,7 +27,7 @@ class IndexCategoryCrudTest extends AbstractCategoryCrudTest
 
     public function testCountOwnerEntityCategory(): void
     {
-        $this->logUser();
+        $this->simulateAccessPageIndexCategorySuccessfullyWithUser();
 
         $this->assertIndexPageEntityCount(2);
     }
