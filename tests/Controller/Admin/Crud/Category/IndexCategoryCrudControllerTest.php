@@ -3,6 +3,7 @@
 namespace App\Tests\Controller\Admin\Crud\Category;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestIndexAsserts;
+use App\Tests\Controller\Admin\Crud\Category\AbstractCategoryCrudTest;
 
 class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
 {
@@ -40,8 +41,6 @@ class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
 
         $this->assertIndexPageEntityCount(1);
     }
-
-
 
     private function simulateAccessPageIndexCategorySuccessfullyWithUser(): void
     {
