@@ -15,7 +15,7 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         private TokenStorageInterface $tokenStorage,
         private CompteSalaireRepository $compteSalaireRepository
     ) {}
-    public function BeforeEntityCompteSalairePersistedEvent(BeforeEntityPersistedEvent $event): void
+    public function setOwnerForCompteSalaire(BeforeEntityPersistedEvent $event): void
     {
         $object = $event->getEntityInstance();
 
@@ -26,7 +26,7 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         );
     }
 
-    public function BeforeEntityCapitalPersistedEvent(BeforeEntityPersistedEvent $event): void
+    public function setCompteSalaireForCapital(BeforeEntityPersistedEvent $event): void
     {
         $object = $event->getEntityInstance();
 
@@ -44,8 +44,8 @@ class EasyAdminSubscriber implements EventSubscriberInterface
     {
         return [
             BeforeEntityPersistedEvent::class => [
-                ['BeforeEntityCompteSalairePersistedEvent'],
-                ['BeforeEntityCapitalPersistedEvent']
+                ['setOwnerForCompteSalaire'],
+                ['setCompteSalaireForCapital']
             ],
         ];
     }

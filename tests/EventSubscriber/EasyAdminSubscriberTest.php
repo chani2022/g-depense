@@ -34,7 +34,7 @@ class EasyAdminSubscriberTest extends TestCase
     /**
      * ----------------------compte salaire --------------
      */
-    public function testBeforeEntityCompteSalairePersistEventSuccess(): void
+    public function testSetOwnerForCompteSalaire(): void
     {
         $compteSalaire = new CompteSalaire();
         $beforeEntityPersistEvent = new BeforeEntityPersistedEvent($compteSalaire);
@@ -46,7 +46,7 @@ class EasyAdminSubscriberTest extends TestCase
         $this->assertInstanceOf(User::class, $compteSalaire->getOwner());
     }
 
-    public function testBeforeEntityCompteSalairePersistEventReturn(): void
+    public function testReturnIfObjectNotCompteSalaire(): void
     {
         $compteSalaire = new CompteSalaire();
         $user = new User();
@@ -62,7 +62,7 @@ class EasyAdminSubscriberTest extends TestCase
     /**
      * ----------------------capital------------------
      */
-    public function testBeforeEntityCapitalPersistEventSuccess(): void
+    public function testSetCompteSalaireForCapital(): void
     {
         $compteSalaire = new CompteSalaire();
         $this->mockCompteSalaireRepository
