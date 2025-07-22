@@ -187,8 +187,17 @@ class DashboardControllerTest extends WebTestCase
                     'label' => 'Capital',
                     'icon' => 'fa fa-users',
                     'css_classname' => 'capital'
-                ]
-            ]
+                ],
+
+            ],
+            [
+                'menu_items_access_user' => [
+                    'label' => 'Categories',
+                    'icon' => 'fa fa-users',
+                    'css_classname' => 'categories'
+                ],
+
+            ],
         ];
     }
 
