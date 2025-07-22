@@ -38,8 +38,11 @@ class CategoryCrudController extends AbstractCrudController
         $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
         $aliasCategory = $qb->getAllAliases()[0];
 
-        return $qb->join($aliasCategory . '.owner', 'ow')
-            ->where('ow = :owner')
-            ->setParameter('owner', $this->security->getUser());
+        if (!$this->security->isGranted('ROLE_ADMIN', $this->security->getUser())) {
+            $qb->join($aliasCategory . '.owner', 'ow')
+                ->where('ow = :owner')
+                ->setParameter('owner', $this->security->getUser());
+        }
+        return $qb;
     }
 }
