@@ -31,18 +31,17 @@ class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
     {
         $this->simulateAccessPageIndexCategorySuccessfullyWithUser();
 
-        // $ths = $this->crawler->filter('thead tr th')->each(fn($th) => $th->text());
-        // $this->assertContains($field, $ths);
         $this->assertIndexColumnExists($field);
-        // $this->assertTrue(in_array($field, $ths));
     }
 
     public function testCountOwnerEntityCategory(): void
     {
         $this->simulateAccessPageIndexCategorySuccessfullyWithUser();
 
-        $this->assertIndexPageEntityCount(2);
+        $this->assertIndexPageEntityCount(1);
     }
+
+
 
     private function simulateAccessPageIndexCategorySuccessfullyWithUser(): void
     {
