@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller\Admin\Crud\Category;
 
+use App\Controller\Admin\CategoryCrudController;
 use App\Controller\Admin\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
@@ -17,7 +18,7 @@ abstract class AbstractCategoryCrudTest extends AbstractCrudTestCase
 
     protected function getControllerFqcn(): string
     {
-        return CategoryController::class;
+        return CategoryCrudController::class;
     }
 
     protected function getDashboardFqcn(): string
