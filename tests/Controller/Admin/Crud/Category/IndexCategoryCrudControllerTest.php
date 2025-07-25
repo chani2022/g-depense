@@ -21,11 +21,10 @@ class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
         $this->simulateAccessPageIndexCategorySuccessfullyWithUser();
     }
 
-    public function testPageIndexCategorySuccessfullyIfAdminAuthenticated(): void
-    {
-        $this->simulateAccessPageIndexCategorySuccessfullyWithAdmin();
-    }
     /**
+     * -----------------------------------------------------------------
+     * --------------------------------utilisateur simple---------------
+     * -----------------------------------------------------------------
      * @dataProvider fieldShowing
      */
     public function testPageIndexCategoryFieldShowing(string $field): void
@@ -40,6 +39,16 @@ class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
         $this->simulateAccessPageIndexCategorySuccessfullyWithUser();
 
         $this->assertIndexPageEntityCount(1);
+    }
+
+    /**
+     * -------------------------------------------------------------
+     * ----------------------------Admin----------------------------
+     * -------------------------------------------------------------
+     */
+    public function testPageIndexCategorySuccessfullyIfAdminAuthenticated(): void
+    {
+        $this->simulateAccessPageIndexCategorySuccessfullyWithAdmin();
     }
 
     public function testShowAllEntityCategoryIfAdmin(): void

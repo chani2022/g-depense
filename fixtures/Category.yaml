@@ -9,3 +9,4 @@ App\Entity\Category:
     prix: 150.5
     isVital: false
     owner: '@user_credentials_other'
+    
