@@ -27,6 +27,16 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
     }
 
     /**
+     * @dataProvider fieldsShowing
+     */
+    public function testFieldsShowingInPageNewCategorySuccess($field): void
+    {
+        $this->simulateAccessPageNewCategorySuccessfullyWithUser();
+
+        $this->assertFormFieldExists($field);
+    }
+
+    /**
      * -------------------------------------------------------------
      * ----------------------------Admin----------------------------
      * -------------------------------------------------------------
@@ -51,5 +61,13 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
         $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
 
         $this->assertResponseIsSuccessful();
+    }
+
+    public static function fieldsShowing(): array
+    {
+        return [
+            ['nom'],
+            ['prix']
+        ];
     }
 }
