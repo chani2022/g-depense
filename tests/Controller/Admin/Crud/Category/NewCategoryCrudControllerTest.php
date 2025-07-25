@@ -16,29 +16,14 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
         $this->assertResponseStatusCodeSame(302);
     }
 
-    public function testPageIndexCategorySuccessfullyIfUserAuthenticated(): void
-    {
-        $this->simulateAccessPageIndexCategorySuccessfullyWithUser();
-    }
-
     /**
      * -----------------------------------------------------------------
      * --------------------------------utilisateur simple---------------
      * -----------------------------------------------------------------
-     * @dataProvider fieldShowing
      */
-    public function testPageIndexCategoryFieldShowing(string $field): void
+    public function testPageNewCategorySuccessfullyIfUserAuthenticated(): void
     {
-        $this->simulateAccessPageIndexCategorySuccessfullyWithUser();
-
-        $this->assertIndexColumnExists($field);
-    }
-
-    public function testShowOnlyOwnerEntityCategory(): void
-    {
-        $this->simulateAccessPageIndexCategorySuccessfullyWithUser();
-
-        $this->assertIndexPageEntityCount(1);
+        $this->simulateAccessPageNewCategorySuccessfullyWithUser();
     }
 
     /**
@@ -46,43 +31,25 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
      * ----------------------------Admin----------------------------
      * -------------------------------------------------------------
      */
-    public function testPageIndexCategorySuccessfullyIfAdminAuthenticated(): void
+    public function testPageNewCategorySuccessfullyIfAdminAuthenticated(): void
     {
-        $this->simulateAccessPageIndexCategorySuccessfullyWithAdmin();
+        $this->simulateAccessPageNewCategorySuccessfullyWithAdmin();
     }
 
-    public function testShowAllEntityCategoryIfAdmin(): void
-    {
-        $this->simulateAccessPageIndexCategorySuccessfullyWithAdmin();
-
-        $this->assertIndexPageEntityCount(2);
-    }
-
-    private function simulateAccessPageIndexCategorySuccessfullyWithUser(): void
+    //simulation
+    private function simulateAccessPageNewCategorySuccessfullyWithUser(): void
     {
         $this->logUser();
-        $this->crawler = $this->client->request('GET', $this->generateIndexUrl());
+        $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
 
         $this->assertResponseIsSuccessful();
     }
 
-    private function simulateAccessPageIndexCategorySuccessfullyWithAdmin(): void
+    private function simulateAccessPageNewCategorySuccessfullyWithAdmin(): void
     {
         $this->logAdmin();
-        $this->crawler = $this->client->request('GET', $this->generateIndexUrl());
+        $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
 
         $this->assertResponseIsSuccessful();
-    }
-
-    /**
-     * @return array<string[]>
-     */
-    public static function fieldShowing(): array
-    {
-        return [
-            ['id'],
-            ['nom'],
-            ['prix']
-        ];
     }
 }
