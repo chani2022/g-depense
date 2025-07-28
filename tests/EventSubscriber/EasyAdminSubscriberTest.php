@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\EventSubscriber\EasyAdminSubscriber;
 use App\Repository\CompteSalaireRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -31,6 +32,15 @@ class EasyAdminSubscriberTest extends TestCase
             new UsernamePasswordToken(new User, 'main')
         );
         $this->easyAdminSubscriber = new EasyAdminSubscriber($this->tokenStorage, $this->mockCompteSalaireRepository);
+    }
+    /**
+     * ----------------------user-------------------------
+     */
+
+    public function testHandleImageInGetSubscribedEvents(): void
+    {
+        $subscriberEvents = $this->easyAdminSubscriber->getSubscribedEvents();
+        $this->assertArrayHasKey(BeforeEntityUpdatedEvent::class, $subscriberEvents);
     }
     /**
      * ----------------------compte salaire --------------
