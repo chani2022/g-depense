@@ -28,7 +28,9 @@ class CategoryCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id', '#')->onlyOnIndex(),
-            TextField::new('nom', 'Nom'),
+            TextField::new('nom', 'Nom')->setFormTypeOption('constraints', [
+                new UniqueCategory()
+            ]),
             NumberField::new('prix', 'Prix'),
         ];
     }
