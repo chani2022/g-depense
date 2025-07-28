@@ -36,6 +36,13 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
         $this->assertFormFieldExists($field);
     }
 
+    public function testFieldsNotInPageNewCategorySuccess(): void
+    {
+        $this->simulateAccessPageNewCategorySuccessfullyWithUser();
+
+        $this->assertFormFieldNotExists('id');
+    }
+
     /**
      * -------------------------------------------------------------
      * ----------------------------Admin----------------------------
