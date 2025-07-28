@@ -3,6 +3,7 @@
 namespace App\EventSubscriber;
 
 use App\Entity\Capital;
+use App\Entity\Category;
 use App\Entity\CompteSalaire;
 use App\Repository\CompteSalaireRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
@@ -36,6 +37,15 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         if ($compteSalaire) {
             $object->setCompteSalaire($compteSalaire);
         }
+    }
+
+    public function setOwnerForCategory(BeforeEntityPersistedEvent $event): void
+    {
+        $object = $event->getEntityInstance();
+
+        if (!$object instanceof Category) return;
+
+        $object->setOwner($this->tokenStorage->getToken()->getUser());
     }
 
     public static function getSubscribedEvents(): array

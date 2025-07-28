@@ -102,14 +102,14 @@ class EasyAdminSubscriberTest extends TestCase
         $this->assertSame(['setOwnerForCategory'], $subscribeEvents[BeforeEntityPersistedEvent::class][2]);
     }
 
-    public function testSetOwnerForCategory(): void
+    public function testSetOwnerForEntityCategory(): void
     {
         $eventDispatcher = new EventDispatcher();
         $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
 
         $category = new Category();
         $beforeEntityPersistEvent = new BeforeEntityPersistedEvent($category);
-        $eventDispatcher->dispatch($beforeEntityPersistEvent);
+        $eventDispatcher->dispatch($beforeEntityPersistEvent, BeforeEntityPersistedEvent::class);
 
         $this->assertInstanceOf(User::class, $category->getOwner());
     }
