@@ -7,6 +7,7 @@ use App\Entity\Category;
 use App\Entity\CompteSalaire;
 use App\Repository\CompteSalaireRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -56,6 +57,9 @@ class EasyAdminSubscriber implements EventSubscriberInterface
                 ['setCompteSalaireForCapital'],
                 ['setOwnerForCategory']
             ],
+            BeforeEntityUpdatedEvent::class => [
+                ['handleImage']
+            ]
         ];
     }
 }
