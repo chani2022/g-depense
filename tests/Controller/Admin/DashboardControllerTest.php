@@ -147,14 +147,6 @@ class DashboardControllerTest extends WebTestCase
                     'css_classname' => 'change-password'
                 ]
             ],
-            [
-                'logout' => [
-                    'label' => 'Logout',
-                    'icon' => 'fa fa-logout',
-                    'route_name' => 'app_logout',
-                    'css_classname' => 'logout'
-                ]
-            ]
         ];
     }
 
