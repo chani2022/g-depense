@@ -3,6 +3,7 @@
 namespace App\Tests\EventSubscriber;
 
 use App\Entity\Capital;
+use App\Entity\Category;
 use App\Entity\CompteSalaire;
 use App\Entity\User;
 use App\EventSubscriber\EasyAdminSubscriber;
@@ -98,9 +99,19 @@ class EasyAdminSubscriberTest extends TestCase
     {
         $subscribeEvents = $this->easyAdminSubscriber->getSubscribedEvents();
 
-        $this->assertArrayHasKey(BeforeEntityPersistedEvent::class, $subscribeEvents);
-
         $this->assertSame(['setOwnerForCategory'], $subscribeEvents[BeforeEntityPersistedEvent::class][2]);
+    }
+
+    public function testSetOwnerForCategory(): void
+    {
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
+
+        $category = new Category();
+        $beforeEntityPersistEvent = new BeforeEntityPersistedEvent($category);
+        $eventDispatcher->dispatch($beforeEntityPersistEvent);
+
+        $this->assertInstanceOf(User::class, $category->getOwner());
     }
 
     protected function tearDown(): void
