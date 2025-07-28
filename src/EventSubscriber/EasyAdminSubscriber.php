@@ -43,7 +43,8 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         return [
             BeforeEntityPersistedEvent::class => [
                 ['setOwnerForCompteSalaire'],
-                ['setCompteSalaireForCapital']
+                ['setCompteSalaireForCapital'],
+                ['setOwnerForCategory']
             ],
         ];
     }
