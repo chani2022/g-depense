@@ -5,10 +5,14 @@ namespace App\EventSubscriber;
 use App\Entity\Capital;
 use App\Entity\Category;
 use App\Entity\CompteSalaire;
+use App\Entity\User;
 use App\Repository\CompteSalaireRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
+use Imagine\Gd\Imagine;
+use Imagine\Image\Box;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class EasyAdminSubscriber implements EventSubscriberInterface
@@ -49,6 +53,24 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         $object->setOwner($this->tokenStorage->getToken()->getUser());
     }
 
+    public function handleImageUser(BeforeEntityUpdatedEvent $event): void
+    {
+        $object = $event->getEntityInstance();
+
+        if (!$object instanceof User) {
+            return;
+        }
+        $file = $object->getFile();
+
+        if (!$file instanceof UploadedFile) return;
+
+        $imagine = new Imagine();
+        $image = $imagine->open($file->getPathname());
+
+        $image->resize(new Box(120, 90))
+            ->save($file->getPathname(), ['quality' => 85]);
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -58,7 +80,7 @@ class EasyAdminSubscriber implements EventSubscriberInterface
                 ['setOwnerForCategory']
             ],
             BeforeEntityUpdatedEvent::class => [
-                ['handleImage']
+                ['handleImageUser']
             ]
         ];
     }

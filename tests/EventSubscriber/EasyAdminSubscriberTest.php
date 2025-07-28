@@ -10,11 +10,13 @@ use App\EventSubscriber\EasyAdminSubscriber;
 use App\Repository\CompteSalaireRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
+use GdImage;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class EasyAdminSubscriberTest extends TestCase
 {
@@ -41,6 +43,38 @@ class EasyAdminSubscriberTest extends TestCase
     {
         $subscriberEvents = $this->easyAdminSubscriber->getSubscribedEvents();
         $this->assertArrayHasKey(BeforeEntityUpdatedEvent::class, $subscriberEvents);
+    }
+
+    public function testHandleImageUser(): void
+    {
+        $user = new User();
+        $tmp = sys_get_temp_dir();
+        $path = $tmp . DIRECTORY_SEPARATOR . 'test.png';
+
+        $width = 300;
+        $height = 300;
+        $image = imagecreatetruecolor($width, $height);
+
+        imagepng($image, $path); // 🗂️ Crée le fichier dans ce dossier
+
+        $user->setFile(
+            new UploadedFile($path, 'test', 'image/png', null, true)
+        );
+
+        $beforeEntityUpdateEvent = new BeforeEntityUpdatedEvent($user);
+
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
+        $eventDispatcher->dispatch($beforeEntityUpdateEvent);
+
+        $imageSize = getimagesize($user->getFile()->getPathname());
+        $width = $imageSize[0];
+        $height = $imageSize[1];
+
+        $this->assertSame(120, $width);
+        $this->assertSame(90, $height);
+
+        imagedestroy($image);
     }
     /**
      * ----------------------compte salaire --------------
