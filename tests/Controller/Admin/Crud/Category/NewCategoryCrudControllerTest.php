@@ -43,6 +43,26 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
         $this->assertFormFieldNotExists('id');
     }
 
+    public function testAlreadyCategoryExist(): void
+    {
+        $this->simulateAccessPageNewCategorySuccessfullyWithUser();
+
+        $formName = $this->getFormEntity();
+
+        $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
+
+        $form = $this->crawler->filter(sprintf('form[name="%s"]', $formName))
+            ->form([
+                $formName => [
+                    'nom' => 'alreadyExist'
+                ]
+            ]);
+        $this->crawler = $this->client->submit($form);
+
+        $numberActual = $this->crawler->filter('.invalid-feedback')->count();
+        $this->assertSame(1, $numberActual);
+    }
+
     /**
      * -------------------------------------------------------------
      * ----------------------------Admin----------------------------
