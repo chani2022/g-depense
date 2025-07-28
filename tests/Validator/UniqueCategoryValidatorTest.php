@@ -16,6 +16,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use App\Repository\CategoryRepository;
+use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
+use PHPUnit\Framework\MockObject\Invocation;
 
 class UniqueCategoryValidatorTest extends TestCase
 {
@@ -50,11 +52,14 @@ class UniqueCategoryValidatorTest extends TestCase
 
     public function testCategoryAlreadyExist(): void
     {
-        $value = $this->simulateGetCompteSalaireByDate(new Category());
+        $value = 'alreadyExist';
+        $user = $this->simulateUserAuthenticated();
+        $this->simulateAlreadyCategoryExist($user, $value);
 
-        $constraintBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
         //demarrage du context
         $this->uniqueCategoryValidator->initialize($this->context);
+
+        $constraintBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
 
         $this->context
             ->expects($this->once())
@@ -75,13 +80,18 @@ class UniqueCategoryValidatorTest extends TestCase
         $this->uniqueCategoryValidator->validate($value, $this->constraint);
     }
 
-    public function testValueNotInRangeCompteSalaireDateDebutAndDateFin(): void
+    public function testCategoryNotExist(): void
     {
-        $value = $this->simulateGetCompteSalaireByDate();
+        $value = 'newCategory';
+        $user = $this->simulateUserAuthenticated();
 
-        $constraintBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
+        $this->simulateCategoryNotExist($user, $value);
+
         //demarrage du context
-        $this->dateBeetweenValidator->initialize($this->context);
+        $this->uniqueCategoryValidator->initialize($this->context);
+
+        // $constraintBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
+        $constraintBuilder = $this->initConstraintBuilder();
 
         $this->context
             ->expects($this->never())
@@ -89,27 +99,42 @@ class UniqueCategoryValidatorTest extends TestCase
             ->with($this->constraint->message)
             ->willReturn($constraintBuilder);
 
-        $this->dateBeetweenValidator->validate($value, $this->constraint);
+        $this->uniqueCategoryValidator->validate($value, $this->constraint);
     }
 
-    private function simulateGetCompteSalaireByDate(?Category $category = null): string
+    private function simulateUserAuthenticated(): User
     {
-        $value = 'alreadyExist';
         $this->token->setToken(
             new UsernamePasswordToken(new User, 'main')
         );
-        $user = $this->token->getToken()->getUser();
-        $invocation = $this->categoryRepository->expects($this->once())
+
+        return $this->token->getToken()->getUser();
+    }
+
+    private function simulateAlreadyCategoryExist(User $user, string $value)
+    {
+        $category = new Category();
+        $invocation = $this->simulateExpectCategoryByUser($user, $value);
+        $invocation->willReturn($category);
+    }
+
+    private function simulateCategoryNotExist(User $user, string $value)
+    {
+        $invocation = $this->simulateExpectCategoryByUser($user, $value);
+        $invocation->willReturn(null);
+    }
+
+    private function simulateExpectCategoryByUser(User $user, $value): InvocationMocker
+    {
+        return $this->categoryRepository
+            ->expects($this->once())
             ->method('getCategoryByUser')
             ->with($user, $value);
+    }
 
-        if ($category) {
-            $invocation->willReturn($category);
-        } else {
-            $invocation->willReturn(null);
-        }
-
-        return $value;
+    private function initConstraintBuilder(): MockObject
+    {
+        return $this->createMock(ConstraintViolationBuilderInterface::class);
     }
 
     public static function provideInvalid(): array
