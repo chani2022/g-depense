@@ -88,6 +88,21 @@ class EasyAdminSubscriberTest extends TestCase
         $this->assertArrayHasKey(BeforeEntityPersistedEvent::class, $actualSubscribedEvents);
     }
 
+    /**
+     * -------------------------------------------------------------------------------
+     * ------------------------------category------------------------------------------
+     * -------------------------------------------------------------------------------
+     */
+
+    public function testSetOwnerForCategoryInSubscribedEvents(): void
+    {
+        $subscribeEvents = $this->easyAdminSubscriber->getSubscribedEvents();
+
+        $this->assertArrayHasKey(BeforeEntityPersistedEvent::class, $subscribeEvents);
+
+        $this->assertSame(['setOwnerForCategory'], $subscribeEvents[BeforeEntityPersistedEvent::class][3]);
+    }
+
     protected function tearDown(): void
     {
         $this->easyAdminSubscriber = null;
