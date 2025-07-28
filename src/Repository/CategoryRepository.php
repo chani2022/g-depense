@@ -38,15 +38,13 @@ class CategoryRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    public function getCategoryByUser(User $owner, string $nomCategory): ?Category
+    public function getCategoryByUser(User $owner, string $nomCategory)
     {
         return $this->createQueryBuilder('c')
             ->where('c.owner = :owner')
             ->andWhere('c.nom = :nomCategory')
-            ->setParameters(new ArrayCollection([
-                'owner' => $owner,
-                'nomCategory' => $nomCategory
-            ]))
+            ->setParameter('owner', $owner)
+            ->setParameter('nomCategory', $nomCategory)
             ->getQuery()
             ->getOneOrNullResult()
         ;
