@@ -13,6 +13,11 @@ trait UserAuthenticatedTrait
         return $this->getFixtures()['user_credentials_ok'];
     }
 
+    public function getSimpeOtherUserAuthenticated(): User
+    {
+        return $this->getFixtures()['user_credentials_other'];
+    }
+
     public function getAdminAuthenticated(): User
     {
         return $this->getFixtures()['user_admin'];

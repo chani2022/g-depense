@@ -4,7 +4,6 @@ namespace App\Tests\Controller\Admin\Crud\Category;
 
 use App\Tests\Controller\Admin\Crud\Category\AbstractCategoryCrudTest;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestFormAsserts;
-use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 
 class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
 {
@@ -66,8 +65,17 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
 
         $this->simulateSubmitForm($formData);
 
-        // $numberErrorActual = $this->crawler->filter('.invalid-feedback')->count();
-        // $this->assertSame($expected, $numberErrorActual);
+        $this->assertResponseStatusCodeSame(302);
+    }
+    /**
+     * @dataProvider formDataValidButNomCategoryOwnerUserOther
+     */
+    public function testCreateNewCategoryWithFormDataValidWithOtherUser(array $formData): void
+    {
+        $this->simulateAccessPageNewCategorySuccessfullyWithOtherUser();
+
+        $this->simulateSubmitForm($formData);
+
         $this->assertResponseStatusCodeSame(302);
     }
 
@@ -85,6 +93,14 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
     private function simulateAccessPageNewCategorySuccessfullyWithUser(): void
     {
         $this->logUser();
+        $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
+
+        $this->assertResponseIsSuccessful();
+    }
+
+    private function simulateAccessPageNewCategorySuccessfullyWithOtherUser(): void
+    {
+        $this->logOtherUser();
         $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
 
         $this->assertResponseIsSuccessful();
@@ -173,6 +189,19 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
             [
                 'formData' => [
                     'nom' => 'new category',
+                    'prix' => 15.25,
+                    'isVital' => true
+                ]
+            ]
+        ];
+    }
+
+    public function formDataValidButNomCategoryOwnerUserOther(): array
+    {
+        return [
+            [
+                'formData' => [
+                    'nom' => 'alreadyExist',
                     'prix' => 15.25,
                     'isVital' => true
                 ]

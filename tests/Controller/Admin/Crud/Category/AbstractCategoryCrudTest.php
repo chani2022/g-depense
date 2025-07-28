@@ -36,6 +36,11 @@ abstract class AbstractCategoryCrudTest extends AbstractCrudTestCase
         $this->client->loginUser($this->getAdminAuthenticated());
     }
 
+    protected function logOtherUser(): void
+    {
+        $this->client->loginUser($this->getSimpeOtherUserAuthenticated());
+    }
+
 
     protected function tearDown(): void
     {
