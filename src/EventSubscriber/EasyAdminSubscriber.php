@@ -38,8 +38,6 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         }
     }
 
-
-
     public static function getSubscribedEvents(): array
     {
         return [

@@ -44,24 +44,30 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
         $this->assertFormFieldNotExists('id');
     }
 
-    public function testAlreadyCategoryExist(): void
+    public function testAssertPropertiesRequired(array $formData, int $expected): void {}
+
+    /**
+     * @dataProvider formDataInvalid
+     */
+    public function testCreateNewCategoryWithFormDataInvalid(array $formData, int $expected): void
     {
         $this->simulateAccessPageNewCategorySuccessfullyWithUser();
 
-        $formName = $this->getFormEntity();
+        // $formName = $this->getFormEntity();
 
-        $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
+        // $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
 
-        $form = $this->crawler->filter(sprintf('form[name="%s"]', $formName))
-            ->form([
-                $formName => [
-                    'nom' => 'alreadyExist'
-                ]
-            ]);
-        $this->crawler = $this->client->submit($form);
+        // $form = $this->crawler->filter(sprintf('form[name="%s"]', $formName))
+        //     ->form([
+        //         $formName => [
+        //             'nom' => 'alreadyExist'
+        //         ]
+        //     ]);
+        // $this->crawler = $this->client->submit($form);
+        $this->simulateSubmitForm($formData);
 
-        $numberActual = $this->crawler->filter('.invalid-feedback')->count();
-        $this->assertSame(1, $numberActual);
+        $numberErrorActual = $this->crawler->filter('.invalid-feedback')->count();
+        $this->assertSame($expected, $numberErrorActual);
     }
 
     /**
@@ -91,11 +97,46 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
         $this->assertResponseIsSuccessful();
     }
 
+    private function simulateSubmitForm()
+    {
+        $formName = $this->getFormEntity();
+
+        $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
+
+        $form = $this->crawler->filter(sprintf('form[name="%s"]', $formName))
+            ->form([
+                $formName => [
+                    'nom' => 'alreadyExist'
+                ]
+            ]);
+        $this->crawler = $this->client->submit($form);
+    }
+
     public static function fieldsShowing(): array
     {
         return [
             ['nom'],
             ['prix']
+        ];
+    }
+
+    public static function formDataInvalid(): array
+    {
+        return [
+            'nom and prix required' => [
+                'formData' => [
+                    'nom' => '',
+                    'prix' => ''
+                ],
+                'expected' => 2
+            ],
+            // 'nom category already exist' => [
+            //     'formData' => [
+            //         'nom' => 'alreadyExist',
+            //         'prix' => 5.25
+            //     ],
+            //     'expected' => 1
+            // ]
         ];
     }
 }
