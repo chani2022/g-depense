@@ -3,6 +3,7 @@
 namespace App\Tests\Repository;
 
 use App\Entity\Category;
+use App\Entity\User;
 use App\Repository\CategoryRepository;
 use App\Tests\Trait\UserAuthenticatedTrait;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
@@ -22,26 +23,31 @@ class CategoryRepositoryTest extends KernelTestCase
         $this->categoryRepository = $this->getContainer()->get(CategoryRepository::class);
     }
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->categoryRepository = null;
+    }
+
     public function testGetCategoryReturnCategory(): void
     {
         $userAuthenticated = $this->getSimpeUserAuthenticated();
-        $categoryActual = $this->categoryRepository->getCategoryByUser($userAuthenticated, 'alreadyExist');
+        $expectActual = $this->simulateGetCategoryByUser($userAuthenticated, 'alreadyExist');
 
-        $this->assertNotNull($categoryActual);
-        $this->assertInstanceOf(Category::class, $categoryActual);
+        $this->assertNotNull($expectActual);
+        $this->assertInstanceOf(Category::class, $expectActual);
     }
 
     public function testGetCategoryReturnNull(): void
     {
         $userAuthenticated = $this->getSimpeUserAuthenticated();
-        $expectActual = $this->categoryRepository->getCategoryByUser($userAuthenticated, 'NoExist');
+        $expectActual = $this->simulateGetCategoryByUser($userAuthenticated, 'notExist');
 
         $this->assertNull($expectActual);
     }
 
-    protected function tearDown(): void
+    private function simulateGetCategoryByUser(User $userAuthenticated, string $nomCategory)
     {
-        parent::tearDown();
-        $this->categoryRepository = null;
+        return $this->categoryRepository->getCategoryByUser($userAuthenticated, $nomCategory);
     }
 }
