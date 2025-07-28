@@ -3,18 +3,17 @@
 namespace App\Validator;
 
 use App\Repository\CategoryRepository;
-use App\Repository\CompteSalaireRepository;
-use DateTime;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use App\Validator\UniqueCategory;
 
 class UniqueCategoryValidator extends ConstraintValidator
 {
     public function __construct(private CategoryRepository $categoryRepository, private TokenStorageInterface $token) {}
     /**
-     * @param DateTime $value
-     * @param DateBeetween $constraint
+     * @param string $value
+     * @param UniqueCategory $constraint
      */
     public function validate($value, Constraint $constraint)
     {
@@ -27,7 +26,7 @@ class UniqueCategoryValidator extends ConstraintValidator
         if ($this->categoryRepository->getCategoryByUser($this->token->getToken()->getUser(), $value)) {
             // TODO: implement the validation here
             $this->context->buildViolation($constraint->message)
-                ->setParameter('{{ value }}', $value->format('d-m-Y'))
+                ->setParameter('{{ value }}', $value)
                 ->addViolation();
         }
     }

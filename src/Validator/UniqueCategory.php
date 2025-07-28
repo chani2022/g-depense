@@ -17,7 +17,7 @@ class UniqueCategory extends Constraint
      * Any public properties become valid options for the annotation.
      * Then, use these in your validator class.
      */
-    public $message = 'Catory "{{ value }}" already exist.';
+    public $message = 'Catogory "{{ value }}" already exist.';
 
     #[HasNamedArguments]
     public function __construct(
