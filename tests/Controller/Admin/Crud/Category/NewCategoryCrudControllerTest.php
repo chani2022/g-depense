@@ -4,6 +4,7 @@ namespace App\Tests\Controller\Admin\Crud\Category;
 
 use App\Tests\Controller\Admin\Crud\Category\AbstractCategoryCrudTest;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestFormAsserts;
+use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 
 class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
 {

@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Category;
+use App\Validator\UniqueCategory;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use Doctrine\ORM\QueryBuilder;
