@@ -38,7 +38,7 @@ class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
     {
         $this->simulateAccessPageIndexCategorySuccessfullyWithUser();
 
-        $this->assertIndexPageEntityCount(1);
+        $this->assertIndexPageEntityCount(2);
     }
 
     /**
@@ -55,7 +55,7 @@ class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
     {
         $this->simulateAccessPageIndexCategorySuccessfullyWithAdmin();
 
-        $this->assertIndexPageEntityCount(2);
+        $this->assertIndexPageEntityCount(3);
     }
 
     private function simulateAccessPageIndexCategorySuccessfullyWithUser(): void
