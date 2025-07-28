@@ -31,6 +31,14 @@ class CategoryRepositoryTest extends KernelTestCase
         $this->assertInstanceOf(Category::class, $categoryActual);
     }
 
+    public function testGetCategoryReturnNull(): void
+    {
+        $userAuthenticated = $this->getSimpeUserAuthenticated();
+        $expectActual = $this->categoryRepository->getCategoryByUser($userAuthenticated, 'NoExist');
+
+        $this->assertNull($expectActual);
+    }
+
     protected function tearDown(): void
     {
         parent::tearDown();
