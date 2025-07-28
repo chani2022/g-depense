@@ -53,17 +53,6 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
     {
         $this->simulateAccessPageNewCategorySuccessfullyWithUser();
 
-        // $formName = $this->getFormEntity();
-
-        // $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
-
-        // $form = $this->crawler->filter(sprintf('form[name="%s"]', $formName))
-        //     ->form([
-        //         $formName => [
-        //             'nom' => 'alreadyExist'
-        //         ]
-        //     ]);
-        // $this->crawler = $this->client->submit($form);
         $this->simulateSubmitForm($formData);
 
         $numberErrorActual = $this->crawler->filter('.invalid-feedback')->count();
@@ -97,7 +86,7 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
         $this->assertResponseIsSuccessful();
     }
 
-    private function simulateSubmitForm()
+    private function simulateSubmitForm(array $formData)
     {
         $formName = $this->getFormEntity();
 
@@ -105,9 +94,7 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
 
         $form = $this->crawler->filter(sprintf('form[name="%s"]', $formName))
             ->form([
-                $formName => [
-                    'nom' => 'alreadyExist'
-                ]
+                $formName => $formData
             ]);
         $this->crawler = $this->client->submit($form);
     }
@@ -130,13 +117,41 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
                 ],
                 'expected' => 2
             ],
-            // 'nom category already exist' => [
-            //     'formData' => [
-            //         'nom' => 'alreadyExist',
-            //         'prix' => 5.25
-            //     ],
-            //     'expected' => 1
-            // ]
+            'nom required' => [
+                'formData' => [
+                    'nom' => null,
+                    'prix' => 15.25
+                ],
+                'expected' => 1
+            ],
+            'prix required' => [
+                'formData' => [
+                    'nom' => 'nom',
+                    'prix' => null
+                ],
+                'expected' => 1
+            ],
+            'prix must positif' => [
+                'formData' => [
+                    'nom' => 'nom',
+                    'prix' => -10
+                ],
+                'expected' => 1
+            ],
+            'prix must decimal' => [
+                'formData' => [
+                    'nom' => 'nom',
+                    'prix' => 'test'
+                ],
+                'expected' => 1
+            ],
+            'nom category already exist' => [
+                'formData' => [
+                    'nom' => 'alreadyExist',
+                    'prix' => 5.25
+                ],
+                'expected' => 1
+            ]
         ];
     }
 }

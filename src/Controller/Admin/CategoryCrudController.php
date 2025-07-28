@@ -15,6 +15,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Positive;
 
 #[IsGranted('ROLE_USER')]
 class CategoryCrudController extends AbstractCrudController
@@ -30,9 +32,15 @@ class CategoryCrudController extends AbstractCrudController
         return [
             IdField::new('id', '#')->onlyOnIndex(),
             TextField::new('nom', 'Nom')->setFormTypeOption('constraints', [
+                new NotBlank(),
                 new UniqueCategory()
             ]),
-            NumberField::new('prix', 'Prix'),
+            NumberField::new('prix', 'Prix')->setFormTypeOptions([
+                'constraints' => [
+                    new NotBlank(),
+                    new Positive()
+                ]
+            ]),
         ];
     }
 
