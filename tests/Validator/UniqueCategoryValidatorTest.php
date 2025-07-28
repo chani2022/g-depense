@@ -3,11 +3,9 @@
 namespace App\Tests\Validator;
 
 use App\Entity\Category;
-use App\Validator\DateBeetween;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use App\Entity\CompteSalaire;
 use App\Entity\User;
 use App\Validator\UniqueCategory;
 use App\Validator\UniqueCategoryValidator;
@@ -17,10 +15,10 @@ use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use App\Repository\CategoryRepository;
 use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
-use PHPUnit\Framework\MockObject\Invocation;
 
 class UniqueCategoryValidatorTest extends TestCase
 {
+    // === Properties ===
     private ?UniqueCategoryValidator $uniqueCategoryValidator;
     private ?UniqueCategory $constraint;
     /** @var MockObject&ExecutionContextInterface&null */
@@ -30,6 +28,7 @@ class UniqueCategoryValidatorTest extends TestCase
 
     private ?TokenStorageInterface $token;
 
+    // === Setup / Teardown ===
     protected function setUp(): void
     {
         $this->categoryRepository = $this->createMock(CategoryRepository::class);
@@ -39,6 +38,20 @@ class UniqueCategoryValidatorTest extends TestCase
         $this->constraint->message = 'test';
         $this->context = $this->createMock(ExecutionContextInterface::class);
     }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->constraint = null;
+        $this->uniqueCategoryValidator = null;
+        $this->context = null;
+        $this->categoryRepository = null;
+        $this->token = null;
+    }
+
+    // === Test cases ===
+
     /**
      * @dataProvider provideInvalid
      */
@@ -56,10 +69,9 @@ class UniqueCategoryValidatorTest extends TestCase
         $user = $this->simulateUserAuthenticated();
         $this->simulateAlreadyCategoryExist($user, $value);
 
-        //demarrage du context
-        $this->uniqueCategoryValidator->initialize($this->context);
+        $this->initializeValidatorContext();
 
-        $constraintBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
+        $constraintBuilder = $this->initConstraintBuilder();
 
         $this->context
             ->expects($this->once())
@@ -87,20 +99,33 @@ class UniqueCategoryValidatorTest extends TestCase
 
         $this->simulateCategoryNotExist($user, $value);
 
-        //demarrage du context
-        $this->uniqueCategoryValidator->initialize($this->context);
+        $this->initializeValidatorContext();
 
-        // $constraintBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
         $constraintBuilder = $this->initConstraintBuilder();
 
         $this->context
             ->expects($this->never())
-            ->method('buildViolation')
-            ->with($this->constraint->message)
-            ->willReturn($constraintBuilder);
+            ->method('buildViolation');
 
         $this->uniqueCategoryValidator->validate($value, $this->constraint);
     }
+
+    // === Data providers ===
+
+    public static function provideInvalid(): array
+    {
+        return [
+            [''],
+            [null]
+        ];
+    }
+
+    private function initializeValidatorContext(): void
+    {
+        $this->uniqueCategoryValidator->initialize($this->context);
+    }
+
+    // === Private helper methods ===
 
     private function simulateUserAuthenticated(): User
     {
@@ -135,24 +160,5 @@ class UniqueCategoryValidatorTest extends TestCase
     private function initConstraintBuilder(): MockObject
     {
         return $this->createMock(ConstraintViolationBuilderInterface::class);
-    }
-
-    public static function provideInvalid(): array
-    {
-        return [
-            [''],
-            [null]
-        ];
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        $this->constraint = null;
-        $this->uniqueCategoryValidator = null;
-        $this->context = null;
-        $this->categoryRepository = null;
-        $this->token = null;
     }
 }
