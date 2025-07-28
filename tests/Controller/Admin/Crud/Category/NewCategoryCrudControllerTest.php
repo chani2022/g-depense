@@ -44,8 +44,6 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
         $this->assertFormFieldNotExists('id');
     }
 
-    public function testAssertPropertiesRequired(array $formData, int $expected): void {}
-
     /**
      * @dataProvider formDataInvalid
      */
@@ -57,6 +55,20 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
 
         $numberErrorActual = $this->crawler->filter('.invalid-feedback')->count();
         $this->assertSame($expected, $numberErrorActual);
+    }
+
+    /**
+     * @dataProvider formDataValid
+     */
+    public function testCreateNewCategoryWithFormDataValid(array $formData): void
+    {
+        $this->simulateAccessPageNewCategorySuccessfullyWithUser();
+
+        $this->simulateSubmitForm($formData);
+
+        // $numberErrorActual = $this->crawler->filter('.invalid-feedback')->count();
+        // $this->assertSame($expected, $numberErrorActual);
+        $this->assertResponseStatusCodeSame(302);
     }
 
     /**
@@ -151,6 +163,19 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
                     'prix' => 5.25
                 ],
                 'expected' => 1
+            ]
+        ];
+    }
+
+    public function formDataValid(): array
+    {
+        return [
+            [
+                'formData' => [
+                    'nom' => 'new category',
+                    'prix' => 15.25,
+                    'is_vital' => true
+                ]
             ]
         ];
     }
