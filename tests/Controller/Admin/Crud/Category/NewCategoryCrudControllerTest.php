@@ -174,7 +174,7 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
                 'formData' => [
                     'nom' => 'new category',
                     'prix' => 15.25,
-                    'is_vital' => true
+                    'isVital' => true
                 ]
             ]
         ];
