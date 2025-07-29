@@ -8,6 +8,11 @@ class NewCapitalControllerTest extends AbstractCapitalCrudTest
 {
     use CrudTestFormAsserts;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
     public function testAccessDeniedPageNewCapitalIfUserNotAuthenticated(): void
     {
         $this->client->request('GET', $this->generateNewFormUrl());
@@ -76,14 +81,6 @@ class NewCapitalControllerTest extends AbstractCapitalCrudTest
         $this->assertResponseIsSuccessful();
     }
 
-    // public static function fieldsHidden(): array
-    // {
-    //     return [
-    //         ['id'],
-    //         ['owner']
-    //     ];
-    // }
-
     public static function provideFormDataInvalid(): array
     {
         return [
@@ -109,5 +106,10 @@ class NewCapitalControllerTest extends AbstractCapitalCrudTest
                 'expected' => 1
             ]
         ];
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
     }
 }

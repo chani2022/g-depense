@@ -9,6 +9,11 @@ class IndexCapitalControllerTest extends AbstractCapitalCrudTest
 {
     use CrudTestIndexAsserts;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
     public function testAccessDeniedPageIndexCapitalIfUserNotAuthenticated(): void
     {
         $this->client->request('GET', $this->generateIndexUrl());
@@ -97,5 +102,10 @@ class IndexCapitalControllerTest extends AbstractCapitalCrudTest
             ['anonymous'],
             ['roleUser']
         ];
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
     }
 }

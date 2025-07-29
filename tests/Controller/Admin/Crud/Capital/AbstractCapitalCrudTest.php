@@ -7,13 +7,11 @@ use App\Controller\Admin\DashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use App\Tests\Trait\UserAuthenticatedTrait;
-use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestFormAsserts;
 use Symfony\Component\DomCrawler\Crawler;
 
 abstract class AbstractCapitalCrudTest extends AbstractCrudTestCase
 {
     use RefreshDatabaseTrait;
-    // use CrudTestFormAsserts;
     use UserAuthenticatedTrait;
 
     protected ?Crawler $crawler;
