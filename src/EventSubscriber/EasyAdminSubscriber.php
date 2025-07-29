@@ -61,12 +61,6 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         $file = $object->getFile();
 
         if (!$file instanceof UploadedFile) return;
-
-        // $imagine = new Imagine();
-        // $image = $imagine->open($file->getPathname());
-
-        // $image->resize(new Box(120, 90))
-        //     ->save($file->getPathname(), ['quality' => 85]);
     }
 
     public static function getSubscribedEvents(): array

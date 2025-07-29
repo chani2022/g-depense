@@ -91,6 +91,6 @@ class HandleImage
             throw new InvalidArgument('La taille de l\'image est indefinie! veuillez le redefinir dans le constructeur ou la methode set size!');
         }
 
-        $this->image->save($path);
+        $this->image->save($path, ['quality' => 85]);
     }
 }

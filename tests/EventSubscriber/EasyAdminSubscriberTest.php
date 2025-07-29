@@ -7,10 +7,13 @@ use App\Entity\Category;
 use App\Entity\CompteSalaire;
 use App\Entity\User;
 use App\EventSubscriber\EasyAdminSubscriber;
+use App\HandleImage\HandleImage;
 use App\Repository\CompteSalaireRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
 use GdImage;
+use Imagine\Gd\Imagine;
+use Imagine\Image\Box;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -23,8 +26,8 @@ class EasyAdminSubscriberTest extends TestCase
     private ?EasyAdminSubscriber $easyAdminSubscriber;
     /** @var CompteSalaireRepository&MockObject&null */
     private $mockCompteSalaireRepository;
-
     private ?TokenStorage $tokenStorage;
+    private ?HandleImage $handlerImage;
 
     protected function setUp(): void
     {
@@ -33,7 +36,8 @@ class EasyAdminSubscriberTest extends TestCase
         $this->tokenStorage->setToken(
             new UsernamePasswordToken(new User, 'main')
         );
-        $this->easyAdminSubscriber = new EasyAdminSubscriber($this->tokenStorage, $this->mockCompteSalaireRepository);
+        $this->handlerImage = new HandleImage(new Imagine(), new Box(40, 40));
+        $this->easyAdminSubscriber = new EasyAdminSubscriber($this->tokenStorage, $this->mockCompteSalaireRepository, $this->handlerImage);
     }
     /**
      * ----------------------user-------------------------
@@ -47,15 +51,16 @@ class EasyAdminSubscriberTest extends TestCase
 
     public function testHandleImageUser(): void
     {
+        $path = $this->simulateCreateImage();
         $user = new User();
-        $tmp = sys_get_temp_dir();
-        $path = $tmp . DIRECTORY_SEPARATOR . 'test.png';
+        // $tmp = sys_get_temp_dir();
+        // $path = $tmp . DIRECTORY_SEPARATOR . 'test.png';
 
-        $width = 300;
-        $height = 300;
-        $image = imagecreatetruecolor($width, $height);
+        // $width = 300;
+        // $height = 300;
+        // $image = imagecreatetruecolor($width, $height);
 
-        imagepng($image, $path); // 🗂️ Crée le fichier dans ce dossier
+        // imagepng($image, $path); // 🗂️ Crée le fichier dans ce dossier
 
         $user->setFile(
             new UploadedFile($path, 'test', 'image/png', null, true)
@@ -68,13 +73,22 @@ class EasyAdminSubscriberTest extends TestCase
         $eventDispatcher->dispatch($beforeEntityUpdateEvent);
 
         $imageSize = getimagesize($user->getFile()->getPathname());
-        $width = $imageSize[0];
-        $height = $imageSize[1];
+        $widthActual = $imageSize[0];
+        $heightActual = $imageSize[1];
 
-        $this->assertSame(120, $width);
-        $this->assertSame(90, $height);
+        $this->assertSame($this->handlerImage->getImage()->getSize()->getWidth(), $widthActual);
+        $this->assertSame($this->handlerImage->getImage()->getSize()->getHeight(), $heightActual);
 
-        imagedestroy($image);
+        unlink($path);
+    }
+
+    private function simulateCreateImage(): string
+    {
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'test.png';
+        $gb = imagecreatetruecolor(300, 300);
+        imagepng($gb, $path);
+
+        return $path;
     }
     /**
      * ----------------------compte salaire --------------
