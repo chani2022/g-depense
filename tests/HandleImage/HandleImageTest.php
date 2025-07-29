@@ -14,16 +14,24 @@ class HandleImageTest extends TestCase
     private ?HandleImage $handler;
     private ?Imagine $imagine;
     private ?Box $size;
+    private ?array $mockImages = [];
 
     protected function setUp(): void
     {
         $this->imagine = new Imagine();
-        $this->size = new Box(40, 40);
+        $this->size = new Box(10, 10);
         $this->handler = new HandleImage($this->imagine, $this->size);
+        $this->mockImages = [];
     }
 
     protected function tearDown(): void
     {
+        if ($this->mockImages) {
+            foreach ($this->mockImages as $path) {
+                unlink($path);
+            }
+        }
+        $this->mockImages = null;
         $this->handler = null;
         $this->imagine = null;
         $this->size = null;
@@ -72,13 +80,14 @@ class HandleImageTest extends TestCase
      */
     public function testOpenHI(): void
     {
-        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'test.png';
-        $gb = imagecreatetruecolor(10, 10);
-        imagepng($gb, $path);
+        // $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'test.png';
+        // $gb = imagecreatetruecolor(10, 10);
+        // imagepng($gb, $path);
+
+        $path = $this->simulateCreateImage();
 
         $this->handler->open($path);
-
-        $info = $this->imagine->getMetadataReader()->readFile($path)->toArray();
+        $info = $this->handler->getImage()->metadata()->toArray();
         $pathActual = $info['filepath'];
         $this->assertSame($path, $pathActual);
     }
@@ -90,6 +99,15 @@ class HandleImageTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->handler->thumbnail();
+    }
+
+    private function simulateCreateImage(): string
+    {
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'test.png';
+        $gb = imagecreatetruecolor(10, 10);
+        imagepng($gb, $path);
+
+        return $path;
     }
 
     // public function testResizeToThumbnail(): void
