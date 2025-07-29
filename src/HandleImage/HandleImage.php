@@ -72,10 +72,11 @@ class HandleImage
     public function thumbnail(): self
     {
         if (!$this->image) {
-            throw new InvalidArgument('La taille de l\'image est indefinie! veuillez le modifier!');
+            throw new InvalidArgument('La taille de l\'image est indefinie! veuillez le redefinir dans le constructeur ou la methode set size!');
         }
 
         $this->image->thumbnail($this->size, $this->mode);
+
         return $this;
     }
 
@@ -84,5 +85,12 @@ class HandleImage
         return $this->image;
     }
 
-    public function resizeToThumbnail() {}
+    public function save(string $path)
+    {
+        if (!$this->image) {
+            throw new InvalidArgument('La taille de l\'image est indefinie! veuillez le redefinir dans le constructeur ou la methode set size!');
+        }
+
+        $this->image->save($path);
+    }
 }

@@ -110,11 +110,16 @@ class HandleImageTest extends TestCase
         );
     }
 
-    public function testSaveHI(): void
+    public function testSaveHIThrowError(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->handler->save('test.png');
+    }
+
+    public function testSaveHISuccess(): void
     {
         $path = $this->simulateOpenImage();
-
-        $this->handler->saveHI();
+        $this->handler->save($path);
 
         $this->assertSame($path, $this->handler->getImage()->metadata()['filepath']);
     }
