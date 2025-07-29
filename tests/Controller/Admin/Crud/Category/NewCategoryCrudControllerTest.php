@@ -9,6 +9,16 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
 {
     use CrudTestFormAsserts;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+    }
+
     public function testPageNewCategoryAccessDeniedIfUserNotAuthenticated(): void
     {
         $this->client->request('GET', $this->generateNewFormUrl());

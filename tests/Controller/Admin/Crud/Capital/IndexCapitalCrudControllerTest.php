@@ -3,15 +3,18 @@
 namespace App\Tests\Controller\Admin\Crud\Capital;
 
 use App\Tests\Controller\Admin\Crud\Capital\AbstractCapitalCrudTest;
-use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestIndexAsserts;
 
 class IndexCapitalControllerTest extends AbstractCapitalCrudTest
 {
-    use CrudTestIndexAsserts;
 
     protected function setUp(): void
     {
         parent::setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
     }
 
     public function testAccessDeniedPageIndexCapitalIfUserNotAuthenticated(): void
@@ -102,10 +105,5 @@ class IndexCapitalControllerTest extends AbstractCapitalCrudTest
             ['anonymous'],
             ['roleUser']
         ];
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
     }
 }

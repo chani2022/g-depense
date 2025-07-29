@@ -6,6 +6,16 @@ use App\Tests\Controller\Admin\Crud\CompteSalaire\AbstractCompteSalaireCrudTest;
 
 class IndexCompteSalaireControllerTest extends AbstractCompteSalaireCrudTest
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+    }
+
     public function testAccessDeniedIfUserNotAuthenticated(): void
     {
         $this->client->request('GET', $this->generateIndexUrl());

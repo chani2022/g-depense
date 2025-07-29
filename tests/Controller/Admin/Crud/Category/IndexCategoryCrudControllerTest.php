@@ -2,12 +2,20 @@
 
 namespace App\Tests\Controller\Admin\Crud\Category;
 
-use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestIndexAsserts;
 use App\Tests\Controller\Admin\Crud\Category\AbstractCategoryCrudTest;
 
 class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
 {
-    use CrudTestIndexAsserts;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+    }
 
     public function testPageIndexCategoryAccessDeniedIfUserNotAuthenticated(): void
     {

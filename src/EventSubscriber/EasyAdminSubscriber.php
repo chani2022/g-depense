@@ -9,8 +9,6 @@ use App\Entity\User;
 use App\Repository\CompteSalaireRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
-use Imagine\Gd\Imagine;
-use Imagine\Image\Box;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -64,11 +62,11 @@ class EasyAdminSubscriber implements EventSubscriberInterface
 
         if (!$file instanceof UploadedFile) return;
 
-        $imagine = new Imagine();
-        $image = $imagine->open($file->getPathname());
+        // $imagine = new Imagine();
+        // $image = $imagine->open($file->getPathname());
 
-        $image->resize(new Box(120, 90))
-            ->save($file->getPathname(), ['quality' => 85]);
+        // $image->resize(new Box(120, 90))
+        //     ->save($file->getPathname(), ['quality' => 85]);
     }
 
     public static function getSubscribedEvents(): array

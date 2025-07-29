@@ -13,6 +13,11 @@ class NewCapitalControllerTest extends AbstractCapitalCrudTest
         parent::setUp();
     }
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+    }
+
     public function testAccessDeniedPageNewCapitalIfUserNotAuthenticated(): void
     {
         $this->client->request('GET', $this->generateNewFormUrl());
@@ -106,10 +111,5 @@ class NewCapitalControllerTest extends AbstractCapitalCrudTest
                 'expected' => 1
             ]
         ];
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
     }
 }

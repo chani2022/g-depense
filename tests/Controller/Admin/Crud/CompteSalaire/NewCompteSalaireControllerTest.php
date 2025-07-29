@@ -6,6 +6,16 @@ use App\Tests\Controller\Admin\Crud\CompteSalaire\AbstractCompteSalaireCrudTest;
 
 class NewCompteSalaireControllerTest extends AbstractCompteSalaireCrudTest
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+    }
+
     public function testPageNewCompteSalaireSuccessfullyWithAdmin(): void
     {
         $this->simulateAdminAccessPageNewSuccessfully();
