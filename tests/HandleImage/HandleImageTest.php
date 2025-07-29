@@ -101,10 +101,22 @@ class HandleImageTest extends TestCase
     {
         $this->simulateOpenImage();
 
+        $this->handler->setMode(ImageInterface::THUMBNAIL_INSET)
+            ->thumbnail();
+
         $this->assertSameSize(
             [$this->size->getWidth(), $this->size->getHeight()],
             [$this->handler->getImage()->getSize()->getWidth(), $this->handler->getImage()->getSize()->getHeight()]
         );
+    }
+
+    public function testSaveHI(): void
+    {
+        $path = $this->simulateOpenImage();
+
+        $this->handler->saveHI();
+
+        $this->assertSame($path, $this->handler->getImage()->metadata()['filepath']);
     }
 
     private function simulateCreateImage(): string
