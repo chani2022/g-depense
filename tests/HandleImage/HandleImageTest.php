@@ -19,7 +19,7 @@ class HandleImageTest extends TestCase
     {
         $this->imagine = new Imagine();
         $this->size = new Box(40, 40);
-        $this->handler = new HandleImage($this->size);
+        $this->handler = new HandleImage($this->imagine, $this->size);
     }
 
     protected function tearDown(): void
@@ -47,6 +47,17 @@ class HandleImageTest extends TestCase
         $this->assertSame($mode, $this->handler->getMode());
     }
 
+    /**
+     * ------------------size----------------
+     */
+    public function testSize(): void
+    {
+        $this->handler->setSize(new Box(10, 10));
+
+        $this->assertSame(10, $this->handler->getSize()->getWidth());
+        $this->assertSame(10, $this->handler->getSize()->getHeight());
+    }
+
     public static function modeValid(): array
     {
         return [
@@ -54,6 +65,22 @@ class HandleImageTest extends TestCase
             [ImageInterface::THUMBNAIL_OUTBOUND]
 
         ];
+    }
+
+    /**
+     * -------------------open--------------
+     */
+    public function testOpenHI(): void
+    {
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'test.png';
+        $gb = imagecreatetruecolor(10, 10);
+        imagepng($gb, $path);
+
+        $this->handler->open($path);
+
+        $info = $this->imagine->getMetadataReader()->readFile($path)->toArray();
+        $pathActual = $info['filepath'];
+        $this->assertSame($path, $pathActual);
     }
 
     // public function testResizeToThumbnail(): void
