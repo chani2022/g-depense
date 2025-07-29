@@ -80,13 +80,8 @@ class HandleImageTest extends TestCase
      */
     public function testOpenHI(): void
     {
-        // $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'test.png';
-        // $gb = imagecreatetruecolor(10, 10);
-        // imagepng($gb, $path);
+        $path = $this->simulateOpenImage();
 
-        $path = $this->simulateCreateImage();
-
-        $this->handler->open($path);
         $info = $this->handler->getImage()->metadata()->toArray();
         $pathActual = $info['filepath'];
         $this->assertSame($path, $pathActual);
@@ -98,7 +93,18 @@ class HandleImageTest extends TestCase
     public function testThumbnailThrowException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+
         $this->handler->thumbnail();
+    }
+
+    public function testThumbnailSuccess(): void
+    {
+        $this->simulateOpenImage();
+
+        $this->assertSameSize(
+            [$this->size->getWidth(), $this->size->getHeight()],
+            [$this->handler->getImage()->getSize()->getWidth(), $this->handler->getImage()->getSize()->getHeight()]
+        );
     }
 
     private function simulateCreateImage(): string
@@ -106,6 +112,14 @@ class HandleImageTest extends TestCase
         $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'test.png';
         $gb = imagecreatetruecolor(10, 10);
         imagepng($gb, $path);
+
+        return $path;
+    }
+
+    private function simulateOpenImage(): string
+    {
+        $path = $this->simulateCreateImage();
+        $this->handler->open($path);
 
         return $path;
     }
