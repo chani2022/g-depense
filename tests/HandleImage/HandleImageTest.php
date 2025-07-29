@@ -19,7 +19,7 @@ class HandleImageTest extends TestCase
     {
         $this->imagine = new Imagine();
         $this->size = new Box(40, 40);
-        $this->handler = new HandleImage($this->imagine, $this->size);
+        $this->handler = new HandleImage($this->size);
     }
 
     protected function tearDown(): void
@@ -37,6 +37,23 @@ class HandleImageTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $this->handler->setMode('invalid');
+    }
+    /**
+     * @dataProvider modeValid
+     */
+    public function testSetModeValid(string|int $mode): void
+    {
+        $this->handler->setMode($mode);
+        $this->assertSame($mode, $this->handler->getMode());
+    }
+
+    public static function modeValid(): array
+    {
+        return [
+            [ImageInterface::THUMBNAIL_INSET],
+            [ImageInterface::THUMBNAIL_OUTBOUND]
+
+        ];
     }
 
     // public function testResizeToThumbnail(): void

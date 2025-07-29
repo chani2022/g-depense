@@ -17,19 +17,28 @@ class HandleImage
     ];
     private Imagine $imagine;
     private Box $size;
+    private string|int $mode;
 
 
-    public function __construct(Imagine $imagine, Box $size)
+    public function __construct(Box $size)
     {
-        $this->imagine = $imagine;
+        $this->imagine = new Imagine();
         $this->size = $size;
+        $this->mode = '';
     }
 
-    public function setMode(string $mode)
+    public function setMode(string|int $mode)
     {
         if (!in_array($mode, self::MODE)) {
             throw new InvalidArgumentException(sprintf('%s est invalid, les liste valides sont %s', $mode, implode(self::MODE)));
         }
+
+        $this->mode = $mode;
+    }
+
+    public function getMode(): string|int
+    {
+        return $this->mode;
     }
 
     public function resizeToThumbnail() {}
