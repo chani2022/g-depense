@@ -83,6 +83,15 @@ class HandleImageTest extends TestCase
         $this->assertSame($path, $pathActual);
     }
 
+    /**
+     * -----------------thumbnail--------------
+     */
+    public function testThumbnailThrowException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->handler->thumbnail();
+    }
+
     // public function testResizeToThumbnail(): void
     // {
     //     $this->handler->resizeToThumbnail();
