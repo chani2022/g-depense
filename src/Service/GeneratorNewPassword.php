@@ -20,7 +20,7 @@ class GeneratorNewPassword
         $newPasswordHashed = $this->hasher->hashPassword($user, $newPassword);
         $user->setPassword($newPasswordHashed);
 
-        $this->user = $user;
+        $this->user = $user; //pour assurer que doctrine suive l'entity user lors de l'appel de flush
         return $this;
     }
 

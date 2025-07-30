@@ -56,23 +56,6 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         $object->setOwner($this->tokenStorage->getToken()->getUser());
     }
 
-    // public function handleImageUser(BeforeEntityUpdatedEvent $event): void
-    // {
-    //     $object = $event->getEntityInstance();
-
-    //     if (!$object instanceof User) {
-    //         return;
-    //     }
-    //     $file = $object->getFile();
-
-    //     if (!$file instanceof UploadedFile) return;
-
-    //     $handleImage = new HandleImage(new Imagine(), new Box(40, 40), ImageInterface::THUMBNAIL_INSET);
-    //     $handleImage->open($file->getPathname())
-    //         ->thumbnail()
-    //         ->save($file->getPathname());
-    // }
-
     public static function getSubscribedEvents(): array
     {
         return [
@@ -80,10 +63,7 @@ class EasyAdminSubscriber implements EventSubscriberInterface
                 ['setOwnerForCompteSalaire'],
                 ['setCompteSalaireForCapital'],
                 ['setOwnerForCategory']
-            ],
-            // BeforeEntityUpdatedEvent::class => [
-            //     ['handleImageUser']
-            // ]
+            ]
         ];
     }
 }
