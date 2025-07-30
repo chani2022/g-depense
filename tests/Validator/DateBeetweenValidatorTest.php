@@ -39,7 +39,7 @@ class DateBeetweenValidatorTest extends TestCase
     /**
      * @dataProvider provideInvalid
      */
-    public function testValueMissing(?string $value): void
+    public function testDateTimeMissing(?string $value): void
     {
         $this->context->expects($this->never())
             ->method('buildViolation');
@@ -47,7 +47,7 @@ class DateBeetweenValidatorTest extends TestCase
         $this->dateBeetweenValidator->validate($value, $this->constraint);
     }
 
-    public function testValueInRangeCompteSalaireDateDebutAndDateFinThrowError(): void
+    public function testDateTimeInIntervalCompteSalaire(): void
     {
         $value = $this->simulateGetCompteSalaireByDate(new CompteSalaire());
 
@@ -74,7 +74,7 @@ class DateBeetweenValidatorTest extends TestCase
         $this->dateBeetweenValidator->validate($value, $this->constraint);
     }
 
-    public function testValueNotInRangeCompteSalaireDateDebutAndDateFin(): void
+    public function testDateTimeNotInIntervalCompteSalaire(): void
     {
         $value = $this->simulateGetCompteSalaireByDate();
 
