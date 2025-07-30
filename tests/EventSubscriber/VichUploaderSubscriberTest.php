@@ -14,17 +14,23 @@ use Vich\UploaderBundle\Mapping\PropertyMapping;
 class VichUploaderSubscriberTest extends TestCase
 {
     private ?VichUploaderSubscriber $doctrineSubscriber;
+    private ?array $mockImages = [];
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->doctrineSubscriber = new VichUploaderSubscriber();
+        $this->mockImages = [];
     }
 
     protected function tearDown(): void
     {
-        parent::tearDown();
-
+        if ($this->mockImages) {
+            foreach ($this->mockImages as $path) {
+                unlink($path);
+            }
+        }
+        $this->mockImages = null;
         $this->doctrineSubscriber = null;
     }
 
@@ -51,8 +57,6 @@ class VichUploaderSubscriberTest extends TestCase
 
         $this->assertSame($widthExpected, $widthActual);
         $this->assertSame($heightExpected, $heightActual);
-
-        unlink($path);
     }
 
     public function testResizeStop(): void
@@ -92,12 +96,16 @@ class VichUploaderSubscriberTest extends TestCase
         ];
     }
 
+    /**
+     * renvoie le chemin du fichier
+     */
     private function simulateCreateImage(): string
     {
         $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'test.png';
         $gb = imagecreatetruecolor(300, 300);
         imagepng($gb, $path);
 
+        $this->mockImages[] = $path;
         return $path;
     }
 }
