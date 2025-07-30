@@ -7,19 +7,13 @@ use App\Entity\Category;
 use App\Entity\CompteSalaire;
 use App\Entity\User;
 use App\EventSubscriber\EasyAdminSubscriber;
-use App\HandleImage\HandleImage;
 use App\Repository\CompteSalaireRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
-use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
-use GdImage;
-use Imagine\Gd\Imagine;
-use Imagine\Image\Box;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use PHPUnit\Framework\MockObject\MockObject;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class EasyAdminSubscriberTest extends TestCase
 {
@@ -38,51 +32,6 @@ class EasyAdminSubscriberTest extends TestCase
 
         $this->easyAdminSubscriber = new EasyAdminSubscriber($this->tokenStorage, $this->mockCompteSalaireRepository);
     }
-    // /**
-    //  * ----------------------user-------------------------
-    //  */
-
-    // public function testHandleImageInGetSubscribedEvents(): void
-    // {
-    //     $subscriberEvents = $this->easyAdminSubscriber->getSubscribedEvents();
-    //     $this->assertArrayHasKey(BeforeEntityUpdatedEvent::class, $subscriberEvents);
-    // }
-
-    // public function testHandleImageUser(): void
-    // {
-    //     $path = $this->simulateCreateImage();
-    //     $user = new User();
-    //     $uploadedFile = new UploadedFile($path, 'test', 'image/png', null, true);
-    //     $user->setFile($uploadedFile);
-
-    //     $beforeEntityUpdateEvent = new BeforeEntityUpdatedEvent($user);
-
-    //     $eventDispatcher = new EventDispatcher();
-    //     $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
-    //     $eventDispatcher->dispatch($beforeEntityUpdateEvent);
-
-    //     $imageSize = getimagesize($uploadedFile->getPathname());
-
-    //     $widthExpected = 40;
-    //     $heightExpected = 40;
-
-    //     $widthActual = $imageSize[0];
-    //     $heightActual = $imageSize[1];
-
-    //     $this->assertSame($widthExpected, $widthActual);
-    //     $this->assertSame($heightExpected, $heightActual);
-
-    //     unlink($path);
-    // }
-
-    // private function simulateCreateImage(): string
-    // {
-    //     $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'test.png';
-    //     $gb = imagecreatetruecolor(300, 300);
-    //     imagepng($gb, $path);
-
-    //     return $path;
-    // }
     /**
      * ----------------------compte salaire --------------
      */
