@@ -3,18 +3,15 @@
 namespace App\EventSubscriber;
 
 use App\Entity\User;
-use App\HandleImage\HandleImage;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
-use Imagine\Image\ImageInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Vich\UploaderBundle\Event\Event;
 use Vich\UploaderBundle\Event\Events;
 
-class DoctrineSubscriber implements EventSubscriberInterface
+class VichUploaderSubscriber implements EventSubscriberInterface
 {
-    public function onPostUpload(Event $event): void
+    public function onThumbnailImage(Event $event): void
     {
         $object = $event->getObject();
         if (!$object instanceof User) return;
@@ -22,11 +19,6 @@ class DoctrineSubscriber implements EventSubscriberInterface
         $mapping = $event->getMapping();
         $file = $mapping->getFile($object);
 
-        // $pathname = $file->getPathname();
-        // $handleImage = new HandleImage(new Imagine(), new Box(50, 50), ImageInterface::THUMBNAIL_INSET);
-        // $handleImage->open($file->getRealPath())
-        //     ->thumbnail()
-        //     ->save($file->getRealPath());
         $imagine = new Imagine();
         $image = $imagine->open($file->getRealPath());
 
@@ -40,7 +32,7 @@ class DoctrineSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            Events::PRE_UPLOAD => 'onPostUpload'
+            Events::PRE_UPLOAD => 'onThumbnailImage'
         ];
     }
 }

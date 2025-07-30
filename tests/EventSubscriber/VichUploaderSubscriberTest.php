@@ -4,29 +4,21 @@ namespace App\Tests\EventSubscriber;
 
 use App\Entity\Category;
 use App\Entity\User;
-use App\EventSubscriber\DoctrineSubscriber;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Events;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
+use App\EventSubscriber\VichUploaderSubscriber;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use PHPUnit\Framework\MockObject\MockObject;
-use Doctrine\Persistence\ObjectManager;
-use Imagine\Gd\Imagine;
 use Vich\UploaderBundle\Event\Event;
+use Vich\UploaderBundle\Event\Events;
 use Vich\UploaderBundle\Mapping\PropertyMapping;
 
-class DoctrineSubscriberTest extends TestCase
+class VichUploaderSubscriberTest extends TestCase
 {
-    private ?DoctrineSubscriber $doctrineSubscriber;
-    /** @var  ObjectManager&MockObject&null*/
-    private $objectManager;
+    private ?VichUploaderSubscriber $doctrineSubscriber;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->objectManager = $this->createMock(ObjectManager::class);
-        $this->doctrineSubscriber = new DoctrineSubscriber();
+        $this->doctrineSubscriber = new VichUploaderSubscriber();
     }
 
     protected function tearDown(): void
@@ -34,14 +26,13 @@ class DoctrineSubscriberTest extends TestCase
         parent::tearDown();
 
         $this->doctrineSubscriber = null;
-        $this->objectManager = null;
     }
 
     public function testPreUpdateInGetSubscribedEvents(): void
     {
         $subscribedEvent = $this->doctrineSubscriber->getSubscribedEvents();
 
-        $this->assertContains(Events::preUpdate, $subscribedEvent);
+        $this->assertArrayHasKey(Events::PRE_UPLOAD, $subscribedEvent);
     }
 
     public function testResizeSuccess(): void
@@ -50,7 +41,7 @@ class DoctrineSubscriberTest extends TestCase
         $user = $this->simulateUserWithImageToUpload($path);
         $event = $this->simulateEvent($user);
 
-        $this->doctrineSubscriber->onPostUpload($event);
+        $this->doctrineSubscriber->onThumbnailImage($event);
 
         $widthExpected = 50;
         $heightExpected = 50;
@@ -69,7 +60,7 @@ class DoctrineSubscriberTest extends TestCase
         $category = new Category();
         $event = $this->simulateEvent($category);
 
-        $this->doctrineSubscriber->onPostUpload($event);
+        $this->doctrineSubscriber->onThumbnailImage($event);
 
         $this->assertTrue(true);
     }
