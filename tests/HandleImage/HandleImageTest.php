@@ -68,10 +68,11 @@ class HandleImageTest extends TestCase
     private function simulateCreateImage(): string
     {
         $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'test.png';
-        $gb = imagecreatetruecolor(300, 300);
+        $gb = imagecreatetruecolor(100, 100);
         imagepng($gb, $path);
 
         $this->mockImages[] = $path;
+        imagedestroy($gb);
         return $path;
     }
 }
