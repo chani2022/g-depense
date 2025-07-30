@@ -17,14 +17,11 @@ class DateBeetweenValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
-        /* @var App\Validator\DateBeetween $constraint */
-
         if (null === $value || '' === $value) {
             return;
         }
 
         if ($this->compteSalaireRepository->getCompteSalaireByDate($this->token->getToken()->getUser(), $value)) {
-            // TODO: implement the validation here
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value->format('d-m-Y'))
                 ->addViolation();

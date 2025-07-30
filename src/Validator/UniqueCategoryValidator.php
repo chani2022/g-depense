@@ -17,14 +17,11 @@ class UniqueCategoryValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
-        /* @var App\Validator\DateBeetween $constraint */
-
         if (null === $value || '' === $value) {
             return;
         }
 
         if ($this->categoryRepository->getCategoryByUser($this->token->getToken()->getUser(), $value)) {
-            // TODO: implement the validation here
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)
                 ->addViolation();
