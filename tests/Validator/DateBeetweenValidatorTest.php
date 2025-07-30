@@ -91,7 +91,7 @@ class DateBeetweenValidatorTest extends TestCase
         $this->dateBeetweenValidator->validate($value, $this->constraint);
     }
 
-    private function simulateGetCompteSalaireByDate(?CompteSalaire $compteSalaire = null, ?DateTime $value = null): DateTime
+    private function simulateGetCompteSalaireByDate(?CompteSalaire $compteSalaire = null): DateTime
     {
         $value = new DateTime('2025-01-01');
         $this->token->setToken(
