@@ -10,6 +10,10 @@ use Vich\UploaderBundle\Event\Events;
 
 class VichUploaderSubscriber implements EventSubscriberInterface
 {
+    /**
+     * création de minuature des images
+     * @param Event $event
+     */
     public function onThumbnailImage(Event $event): void
     {
         $object = $event->getObject();
@@ -28,7 +32,7 @@ class VichUploaderSubscriber implements EventSubscriberInterface
         ]);
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             Events::PRE_UPLOAD => 'onThumbnailImage'
