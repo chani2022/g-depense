@@ -41,7 +41,7 @@ class VichUploaderSubscriberTest extends TestCase
         $this->assertArrayHasKey(Events::PRE_UPLOAD, $subscribedEvent);
     }
 
-    public function testResizeSuccess(): void
+    public function testOnThumbnailImageSuccess(): void
     {
         $path = $this->simulateCreateImage();
         $user = $this->simulateUserWithImageToUpload($path);
@@ -59,10 +59,20 @@ class VichUploaderSubscriberTest extends TestCase
         $this->assertSame($heightExpected, $heightActual);
     }
 
-    public function testResizeStop(): void
+    public function testOnThumbnailImageAborded(): void
     {
         $category = new Category();
         $event = $this->simulateEvent($category);
+
+        $this->doctrineSubscriber->onThumbnailImage($event);
+
+        $this->assertTrue(true);
+    }
+
+    public function testOnThumbnailImageNotContainsImage(): void
+    {
+        $user = new User();
+        $event = $this->simulateEvent($user);
 
         $this->doctrineSubscriber->onThumbnailImage($event);
 

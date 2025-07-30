@@ -11,7 +11,6 @@ use App\Repository\UserRepository;
 use Hautelook\AliceBundle\PhpUnit\ReloadDatabaseTrait;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-
 class ProfilControllerTest extends WebTestCase
 {
     use ReloadDatabaseTrait;

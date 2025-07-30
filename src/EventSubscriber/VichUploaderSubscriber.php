@@ -5,6 +5,7 @@ namespace App\EventSubscriber;
 use App\Entity\User;
 use App\HandleImage\HandleImage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Event\Event;
 use Vich\UploaderBundle\Event\Events;
 
@@ -21,6 +22,8 @@ class VichUploaderSubscriber implements EventSubscriberInterface
 
         $mapping = $event->getMapping();
         $file = $mapping->getFile($object);
+
+        if (!$file instanceof UploadedFile) return;
 
         $handleImage = new HandleImage();
         $resizedImage = $handleImage->open($file->getRealPath())
