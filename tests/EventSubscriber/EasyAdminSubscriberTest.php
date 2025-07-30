@@ -27,7 +27,6 @@ class EasyAdminSubscriberTest extends TestCase
     /** @var CompteSalaireRepository&MockObject&null */
     private $mockCompteSalaireRepository;
     private ?TokenStorage $tokenStorage;
-    private ?HandleImage $handlerImage;
 
     protected function setUp(): void
     {
@@ -36,60 +35,54 @@ class EasyAdminSubscriberTest extends TestCase
         $this->tokenStorage->setToken(
             new UsernamePasswordToken(new User, 'main')
         );
-        $this->handlerImage = new HandleImage(new Imagine(), new Box(40, 40));
-        $this->easyAdminSubscriber = new EasyAdminSubscriber($this->tokenStorage, $this->mockCompteSalaireRepository, $this->handlerImage);
+
+        $this->easyAdminSubscriber = new EasyAdminSubscriber($this->tokenStorage, $this->mockCompteSalaireRepository);
     }
-    /**
-     * ----------------------user-------------------------
-     */
+    // /**
+    //  * ----------------------user-------------------------
+    //  */
 
-    public function testHandleImageInGetSubscribedEvents(): void
-    {
-        $subscriberEvents = $this->easyAdminSubscriber->getSubscribedEvents();
-        $this->assertArrayHasKey(BeforeEntityUpdatedEvent::class, $subscriberEvents);
-    }
+    // public function testHandleImageInGetSubscribedEvents(): void
+    // {
+    //     $subscriberEvents = $this->easyAdminSubscriber->getSubscribedEvents();
+    //     $this->assertArrayHasKey(BeforeEntityUpdatedEvent::class, $subscriberEvents);
+    // }
 
-    public function testHandleImageUser(): void
-    {
-        $path = $this->simulateCreateImage();
-        $user = new User();
-        // $tmp = sys_get_temp_dir();
-        // $path = $tmp . DIRECTORY_SEPARATOR . 'test.png';
+    // public function testHandleImageUser(): void
+    // {
+    //     $path = $this->simulateCreateImage();
+    //     $user = new User();
+    //     $uploadedFile = new UploadedFile($path, 'test', 'image/png', null, true);
+    //     $user->setFile($uploadedFile);
 
-        // $width = 300;
-        // $height = 300;
-        // $image = imagecreatetruecolor($width, $height);
+    //     $beforeEntityUpdateEvent = new BeforeEntityUpdatedEvent($user);
 
-        // imagepng($image, $path); // 🗂️ Crée le fichier dans ce dossier
+    //     $eventDispatcher = new EventDispatcher();
+    //     $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
+    //     $eventDispatcher->dispatch($beforeEntityUpdateEvent);
 
-        $user->setFile(
-            new UploadedFile($path, 'test', 'image/png', null, true)
-        );
+    //     $imageSize = getimagesize($uploadedFile->getPathname());
 
-        $beforeEntityUpdateEvent = new BeforeEntityUpdatedEvent($user);
+    //     $widthExpected = 40;
+    //     $heightExpected = 40;
 
-        $eventDispatcher = new EventDispatcher();
-        $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
-        $eventDispatcher->dispatch($beforeEntityUpdateEvent);
+    //     $widthActual = $imageSize[0];
+    //     $heightActual = $imageSize[1];
 
-        $imageSize = getimagesize($user->getFile()->getPathname());
-        $widthActual = $imageSize[0];
-        $heightActual = $imageSize[1];
+    //     $this->assertSame($widthExpected, $widthActual);
+    //     $this->assertSame($heightExpected, $heightActual);
 
-        $this->assertSame($this->handlerImage->getImage()->getSize()->getWidth(), $widthActual);
-        $this->assertSame($this->handlerImage->getImage()->getSize()->getHeight(), $heightActual);
+    //     unlink($path);
+    // }
 
-        unlink($path);
-    }
+    // private function simulateCreateImage(): string
+    // {
+    //     $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'test.png';
+    //     $gb = imagecreatetruecolor(300, 300);
+    //     imagepng($gb, $path);
 
-    private function simulateCreateImage(): string
-    {
-        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'test.png';
-        $gb = imagecreatetruecolor(300, 300);
-        imagepng($gb, $path);
-
-        return $path;
-    }
+    //     return $path;
+    // }
     /**
      * ----------------------compte salaire --------------
      */

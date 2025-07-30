@@ -75,7 +75,7 @@ class HandleImage
             throw new InvalidArgument('La taille de l\'image est indefinie! veuillez le redefinir dans le constructeur ou la methode set size!');
         }
 
-        $this->image->thumbnail($this->size, $this->mode);
+        $this->image->thumbnail($this->size->widen($this->size->getWidth() - 10), $this->mode);
 
         return $this;
     }
@@ -90,7 +90,13 @@ class HandleImage
         if (!$this->image) {
             throw new InvalidArgument('La taille de l\'image est indefinie! veuillez le redefinir dans le constructeur ou la methode set size!');
         }
-
-        $this->image->save($path, ['quality' => 85]);
+        $this->image->save($path, ['quality' => 85, 'format' => 'png']);
     }
+
+    // public function resize(int $width, int $height): self
+    // {
+    //     $this->image->resize($this->size->widen($this->size->getWidth() - 10), $this->mode);
+
+    //     return $this;
+    // }
 }

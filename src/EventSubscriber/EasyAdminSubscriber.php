@@ -6,9 +6,13 @@ use App\Entity\Capital;
 use App\Entity\Category;
 use App\Entity\CompteSalaire;
 use App\Entity\User;
+use App\HandleImage\HandleImage;
 use App\Repository\CompteSalaireRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
+use Imagine\Gd\Imagine;
+use Imagine\Image\Box;
+use Imagine\Image\ImageInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -17,8 +21,9 @@ class EasyAdminSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private TokenStorageInterface $tokenStorage,
-        private CompteSalaireRepository $compteSalaireRepository
+        private CompteSalaireRepository $compteSalaireRepository,
     ) {}
+
     public function setOwnerForCompteSalaire(BeforeEntityPersistedEvent $event): void
     {
         $object = $event->getEntityInstance();
@@ -51,17 +56,22 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         $object->setOwner($this->tokenStorage->getToken()->getUser());
     }
 
-    public function handleImageUser(BeforeEntityUpdatedEvent $event): void
-    {
-        $object = $event->getEntityInstance();
+    // public function handleImageUser(BeforeEntityUpdatedEvent $event): void
+    // {
+    //     $object = $event->getEntityInstance();
 
-        if (!$object instanceof User) {
-            return;
-        }
-        $file = $object->getFile();
+    //     if (!$object instanceof User) {
+    //         return;
+    //     }
+    //     $file = $object->getFile();
 
-        if (!$file instanceof UploadedFile) return;
-    }
+    //     if (!$file instanceof UploadedFile) return;
+
+    //     $handleImage = new HandleImage(new Imagine(), new Box(40, 40), ImageInterface::THUMBNAIL_INSET);
+    //     $handleImage->open($file->getPathname())
+    //         ->thumbnail()
+    //         ->save($file->getPathname());
+    // }
 
     public static function getSubscribedEvents(): array
     {
@@ -71,9 +81,9 @@ class EasyAdminSubscriber implements EventSubscriberInterface
                 ['setCompteSalaireForCapital'],
                 ['setOwnerForCategory']
             ],
-            BeforeEntityUpdatedEvent::class => [
-                ['handleImageUser']
-            ]
+            // BeforeEntityUpdatedEvent::class => [
+            //     ['handleImageUser']
+            // ]
         ];
     }
 }
