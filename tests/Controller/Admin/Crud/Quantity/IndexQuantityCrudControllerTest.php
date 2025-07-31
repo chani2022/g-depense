@@ -90,7 +90,7 @@ class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
 
     private function simulateAdminAccessIndexQuantityPage(): void
     {
-        $userAuthenticated = $this->getSimpeUserAuthenticated();
+        $userAuthenticated = $this->getAdminAuthenticated();
         $this->client->loginUser($userAuthenticated);
 
         $this->client->request('GET', $this->generateIndexUrl());
