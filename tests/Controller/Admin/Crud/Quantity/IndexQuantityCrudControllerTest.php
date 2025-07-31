@@ -33,6 +33,13 @@ class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
         $this->simulateAdminAccessIndexQuantityPage();
     }
 
+    public function testShowOnlyOwnerQuantityIfUserAuthenticated(): void
+    {
+        $this->simulateUserAccessIndexQuantityPage();
+
+        $this->assertIndexPageEntityCount(1);
+    }
+
 
     private function simulateUserAccessIndexQuantityPage(): void
     {
