@@ -4,6 +4,7 @@ namespace App\Tests\Controller\Admin\Crud\Capital;
 
 use App\Controller\Admin\CapitalCrudController;
 use App\Controller\Admin\DashboardController;
+use App\Controller\Admin\QuantityCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use App\Tests\Trait\UserAuthenticatedTrait;
