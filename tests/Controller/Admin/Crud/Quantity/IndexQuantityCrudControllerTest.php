@@ -11,6 +11,11 @@ class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
         parent::setUp();
     }
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+    }
+
     public function testAccessDeniedIndexPageQuantityForUserAnonymous(): void
     {
         $this->client->request('GET', $this->generateIndexUrl());
@@ -23,13 +28,23 @@ class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
         $this->simulateUserAccessIndexQuantityPage();
     }
 
-
-    protected function tearDown(): void
+    public function testAdminAuthorizedForPageIndexQuantity(): void
     {
-        parent::tearDown();
+        $this->simulateAdminAccessIndexQuantityPage();
     }
 
+
     private function simulateUserAccessIndexQuantityPage(): void
+    {
+        $userAuthenticated = $this->getSimpeUserAuthenticated();
+        $this->client->loginUser($userAuthenticated);
+
+        $this->client->request('GET', $this->generateIndexUrl());
+
+        $this->assertResponseIsSuccessful();
+    }
+
+    private function simulateAdminAccessIndexQuantityPage(): void
     {
         $userAuthenticated = $this->getSimpeUserAuthenticated();
         $this->client->loginUser($userAuthenticated);
