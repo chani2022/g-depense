@@ -30,7 +30,7 @@ class QuantityCrudController extends AbstractCrudController
             TextField::new('unite', 'Unité'),
             AvatarField::new('owner', 'Propriétaire')
                 ->formatValue(function (User $value) {
-                    return $value ? '/images/users/' . $value->getImageName() : '/images/users/user-default.png';
+                    return $value->getImageName() ? '/images/users/' . $value->getImageName() : '/images/users/user-default.png';
                 })
                 ->onlyOnIndex()
                 ->setPermission('ROLE_ADMIN')
