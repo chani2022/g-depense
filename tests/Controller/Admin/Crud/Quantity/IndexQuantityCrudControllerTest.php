@@ -2,7 +2,7 @@
 
 namespace App\Tests\Controller\Admin\Crud\Quantity;
 
-use App\Tests\Controller\Admin\Crud\Capital\AbstractQuantityCrudTest;
+use App\Tests\Controller\Admin\Crud\Quantity\AbstractQuantityCrudTest;
 
 class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
 {
@@ -15,7 +15,9 @@ class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
     {
         parent::tearDown();
     }
-
+    /**
+     * ---------------------security de la page ----------------------------------
+     */
     public function testAccessDeniedIndexPageQuantityForUserAnonymous(): void
     {
         $this->client->request('GET', $this->generateIndexUrl());
@@ -32,7 +34,9 @@ class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
     {
         $this->simulateAdminAccessIndexQuantityPage();
     }
-
+    /**
+     * -----------------------nombre d'entity affiché par utilisateur-------------
+     */
     public function testShowOnlyOwnerQuantityIfUserAuthenticated(): void
     {
         $this->simulateUserAccessIndexQuantityPage();
@@ -40,7 +44,40 @@ class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
         $this->assertIndexPageEntityCount(1);
     }
 
+    public function testShowAllQuantityIfAdminAuthenticated(): void
+    {
+        $this->simulateAdminAccessIndexQuantityPage();
 
+        $this->assertIndexPageEntityCount(2);
+    }
+
+    public function testFieldsShowingIfUserAuthenticated(): void
+    {
+        $this->simulateUserAccessIndexQuantityPage();
+
+        $this->assertIndexColumnExists('unite');
+    }
+    /**
+     * @dataProvider fieldsShowIfUserAdmin
+     */
+    public function testFieldsShowingIfAdminAuthenticated(string $field): void
+    {
+        $this->simulateAdminAccessIndexQuantityPage();
+
+        $this->assertIndexColumnExists($field);
+    }
+
+    public static function fieldsShowIfUserAdmin(): array
+    {
+        return [
+            ['unite'],
+            ['owner']
+        ];
+    }
+
+    /**
+     * --------------------------simulation----------------------------------------
+     */
     private function simulateUserAccessIndexQuantityPage(): void
     {
         $userAuthenticated = $this->getSimpeUserAuthenticated();
