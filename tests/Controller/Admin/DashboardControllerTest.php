@@ -154,28 +154,28 @@ class DashboardControllerTest extends WebTestCase
     {
         return [
             [
-                'menu_items_access_user' => [
+                'menu_items_dashboard_access_user' => [
                     'label' => 'Dashboard',
                     'icon' => 'fa fa-home',
                     'css_classname' => 'dashboard'
                 ]
             ],
             [
-                'menu_item_denied_user' => [
+                'menu_item_user_denied_user' => [
                     'label' => 'User',
                     'icon' => 'fa fa-users',
                     'css_classname' => 'crud-user'
                 ]
             ],
             [
-                'menu_items_access_user' => [
+                'menu_items_compte_salaire_access_user' => [
                     'label' => 'Compte salaire',
                     'icon' => 'fa fa-users',
                     'css_classname' => 'compte-salaire'
                 ]
             ],
             [
-                'menu_items_access_user' => [
+                'menu_items_captial_access_user' => [
                     'label' => 'Capital',
                     'icon' => 'fa fa-users',
                     'css_classname' => 'capital'
@@ -183,12 +183,19 @@ class DashboardControllerTest extends WebTestCase
 
             ],
             [
-                'menu_items_access_user' => [
+                'menu_items_category_access_user' => [
                     'label' => 'Categories',
                     'icon' => 'fa fa-users',
                     'css_classname' => 'categories'
                 ],
 
+            ],
+            [
+                'menu_items_quantity_access_user' => [
+                    'label' => 'Quantity',
+                    'icon' => 'fa fa-users',
+                    'css_classname' => 'quantity'
+                ],
             ],
         ];
     }
