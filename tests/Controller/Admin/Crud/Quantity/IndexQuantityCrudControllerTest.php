@@ -18,6 +18,11 @@ class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
         $this->assertResponseStatusCodeSame(302);
     }
 
+    public function testUserAuthorizedForPageIndexQuantity(): void
+    {
+        $this->simulateUserAccessIndexQuantityPage();
+    }
+
 
     protected function tearDown(): void
     {
