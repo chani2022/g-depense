@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\QuantityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: QuantityRepository::class)]
@@ -19,6 +21,14 @@ class Quantity
     #[ORM\ManyToOne(inversedBy: 'quantities')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
+
+    #[ORM\OneToMany(mappedBy: 'quantity', targetEntity: Category::class)]
+    private Collection $categories;
+
+    public function __construct()
+    {
+        $this->categories = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -45,6 +55,36 @@ class Quantity
     public function setOwner(?User $owner): static
     {
         $this->owner = $owner;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Category>
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Category $category): static
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+            $category->setQuantity($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): static
+    {
+        if ($this->categories->removeElement($category)) {
+            // set the owning side to null (unless already changed)
+            if ($category->getQuantity() === $this) {
+                $category->setQuantity(null);
+            }
+        }
 
         return $this;
     }

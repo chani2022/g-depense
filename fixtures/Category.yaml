@@ -4,11 +4,13 @@ App\Entity\Category:
     prix: 150.5
     isVital: true
     owner: '@user_credentials_ok'
+    quantity: '@quantity_user_credentials_ok'
   category_facultatif:
     nom: 'jean'
     prix: 150.5
     isVital: false
     owner: '@user_credentials_other'
+    quantity: '@quantity_user_credentials_ok'
   category_already_exist:
     nom: 'alreadyExist'
     prix: 150.5

@@ -31,6 +31,9 @@ class Category
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
+    #[ORM\ManyToOne(inversedBy: 'categories')]
+    private ?Quantity $quantity = null;
+
     public function __construct()
     {
         $this->depenses = new ArrayCollection();
@@ -115,6 +118,18 @@ class Category
     public function setOwner(?User $owner): static
     {
         $this->owner = $owner;
+
+        return $this;
+    }
+
+    public function getQuantity(): ?Quantity
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity(?Quantity $quantity): static
+    {
+        $this->quantity = $quantity;
 
         return $this;
     }

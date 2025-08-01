@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Category;
+use App\Entity\Quantity;
 use App\Validator\UniqueCategory;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
@@ -10,6 +11,7 @@ use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
@@ -44,7 +46,10 @@ class CategoryCrudController extends AbstractCrudController
                     new Positive()
                 ]
             ]),
-            BooleanField::new('isVital', 'Primordial')->onlyOnForms()
+            BooleanField::new('isVital', 'Primordial')->onlyOnForms(),
+            AssociationField::new('quantity', 'Quantity')->formatValue(function (Quantity $quantity) {
+                return $quantity->getUnite();
+            })
         ];
     }
 
