@@ -17,6 +17,13 @@ abstract class AbstractQuantityCrudTest extends AbstractCrudTestCase
 
     protected ?Crawler $crawler;
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->crawler = null;
+    }
+
     protected function getControllerFqcn(): string
     {
         return QuantityCrudController::class;
@@ -27,10 +34,18 @@ abstract class AbstractQuantityCrudTest extends AbstractCrudTestCase
         return DashboardController::class;
     }
 
-    protected function tearDown(): void
+    protected function logUser(): void
     {
-        parent::tearDown();
+        $this->client->loginUser($this->getSimpeUserAuthenticated());
+    }
 
-        $this->crawler = null;
+    protected function logAdmin(): void
+    {
+        $this->client->loginUser($this->getAdminAuthenticated());
+    }
+
+    protected function logOtherUser(): void
+    {
+        $this->client->loginUser($this->getSimpeOtherUserAuthenticated());
     }
 }
