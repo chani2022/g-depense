@@ -47,9 +47,10 @@ class CategoryCrudController extends AbstractCrudController
                 ]
             ]),
             BooleanField::new('isVital', 'Primordial')->onlyOnForms(),
-            AssociationField::new('quantity', 'Quantity')->formatValue(function (Quantity $quantity) {
-                return $quantity->getUnite();
-            })
+            AssociationField::new('quantity', 'Quantity')
+                ->formatValue(function (?Quantity $quantity = null) {
+                    return $quantity ? $quantity->getUnite() : '';
+                })
         ];
     }
 
