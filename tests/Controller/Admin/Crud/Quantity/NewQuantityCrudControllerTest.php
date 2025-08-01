@@ -71,7 +71,7 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
     /**
      * @dataProvider formDataValid
      */
-    public function testCreateNewCategoryWithFormDataValid(array $formData): void
+    public function testCreateNewQuantityWithFormDataValid(array $formData): void
     {
         $this->simulateAccessPageNewQuantitySuccessfullyWithUser();
 
@@ -171,9 +171,7 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
         return [
             [
                 'formData' => [
-                    'nom' => 'new category',
-                    'prix' => 15.25,
-                    'isVital' => true
+                    'unite' => 'test',
                 ]
             ]
         ];

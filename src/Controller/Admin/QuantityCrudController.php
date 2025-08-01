@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[IsGranted('ROLE_USER')]
 class QuantityCrudController extends AbstractCrudController
@@ -27,7 +28,11 @@ class QuantityCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            TextField::new('unite', 'Unité'),
+            TextField::new('unite', 'Unité')->setFormTypeOptions([
+                'constraints' => [
+                    new NotBlank()
+                ]
+            ]),
             AvatarField::new('owner', 'Propriétaire')
                 ->formatValue(function (User $value) {
                     return $value->getImageName() ? '/images/users/' . $value->getImageName() : '/images/users/user-default.png';
