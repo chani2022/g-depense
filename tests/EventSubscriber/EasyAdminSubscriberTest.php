@@ -5,6 +5,7 @@ namespace App\Tests\EventSubscriber;
 use App\Entity\Capital;
 use App\Entity\Category;
 use App\Entity\CompteSalaire;
+use App\Entity\Quantity;
 use App\Entity\User;
 use App\EventSubscriber\EasyAdminSubscriber;
 use App\Repository\CompteSalaireRepository;
@@ -112,6 +113,20 @@ class EasyAdminSubscriberTest extends TestCase
         $eventDispatcher->dispatch($beforeEntityPersistEvent, BeforeEntityPersistedEvent::class);
 
         $this->assertInstanceOf(User::class, $category->getOwner());
+    }
+    /**
+     * --------------------------unity----------------------
+     */
+    public function testSetOwnerForEntityQuantity(): void
+    {
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
+
+        $quantity = new Quantity();
+        $beforeEntityPersistEvent = new BeforeEntityPersistedEvent($quantity);
+        $eventDispatcher->dispatch($beforeEntityPersistEvent, BeforeEntityPersistedEvent::class);
+
+        $this->assertInstanceOf(User::class, $quantity->getOwner());
     }
 
     protected function tearDown(): void
