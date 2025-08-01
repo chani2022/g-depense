@@ -90,7 +90,8 @@ class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
         return [
             ['id'],
             ['nom'],
-            ['prix']
+            ['prix'],
+            ['isVital']
         ];
     }
 }
