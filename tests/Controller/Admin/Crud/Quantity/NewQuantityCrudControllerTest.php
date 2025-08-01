@@ -77,14 +77,28 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
 
         $this->simulateSubmitForm($formData);
 
+        $this->simulateSubmitForm($formData);
+
         $this->assertResponseStatusCodeSame(302);
+    }
+    /**
+     * @dataProvider formDataAlreadyExist
+     */
+    public function testCreateNewQuantityWithFormDataAlreadyExist(array $formData, int $expected): void
+    {
+        $this->simulateAccessPageNewQuantitySuccessfullyWithUser();
+
+        $this->simulateSubmitForm($formData);
+
+        $numberErrorActual = $this->crawler->filter('.invalid-feedback')->count();
+        $this->assertSame($expected, $numberErrorActual);
     }
     /**
      * @dataProvider formDataValidButNomCategoryOwnerUserOther
      */
     public function testCreateNewQuantityWithFormDataValidWithOtherUser(array $formData): void
     {
-        $this->simulateAccessPageNewCategorySuccessfullyWithOtherUser();
+        $this->simulateAccessPageNewQuantitySuccessfullyWithOtherUser();
 
         $this->simulateSubmitForm($formData);
 
@@ -110,7 +124,7 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
         $this->assertResponseIsSuccessful();
     }
 
-    private function simulateAccessPageNewCategorySuccessfullyWithOtherUser(): void
+    private function simulateAccessPageNewQuantitySuccessfullyWithOtherUser(): void
     {
         $this->logOtherUser();
         $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
@@ -184,6 +198,18 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
                 'formData' => [
                     'unite' => 'alreadyExist',
                 ]
+            ]
+        ];
+    }
+
+    public function formDataAlreadyExist(): array
+    {
+        return [
+            [
+                'formData' => [
+                    'unite' => 'alreadyExist',
+                ],
+                'expected' => 1
             ]
         ];
     }
