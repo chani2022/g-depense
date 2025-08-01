@@ -182,9 +182,7 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
         return [
             [
                 'formData' => [
-                    'nom' => 'alreadyExist',
-                    'prix' => 15.25,
-                    'isVital' => true
+                    'unite' => 'alreadyExist',
                 ]
             ]
         ];
