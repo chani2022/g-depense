@@ -3,10 +3,10 @@
 namespace App\Tests\Controller\Admin\Crud\Category;
 
 use App\Tests\Controller\Admin\Crud\Category\AbstractCategoryCrudTest;
+use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestIndexAsserts;
 
 class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
 {
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -91,7 +91,6 @@ class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
             ['id'],
             ['nom'],
             ['prix'],
-            ['isVital']
         ];
     }
 }
