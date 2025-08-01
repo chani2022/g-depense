@@ -82,7 +82,7 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
     /**
      * @dataProvider formDataValidButNomCategoryOwnerUserOther
      */
-    public function testCreateNewCategoryWithFormDataValidWithOtherUser(array $formData): void
+    public function testCreateNewQuantityWithFormDataValidWithOtherUser(array $formData): void
     {
         $this->simulateAccessPageNewCategorySuccessfullyWithOtherUser();
 
