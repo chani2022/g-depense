@@ -91,6 +91,7 @@ class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
             ['id'],
             ['nom'],
             ['prix'],
+            ['quantity']
         ];
     }
 }
