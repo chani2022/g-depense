@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Quantity;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -21,28 +23,27 @@ class QuantityRepository extends ServiceEntityRepository
         parent::__construct($registry, Quantity::class);
     }
 
-//    /**
-//     * @return Quantity[] Returns an array of Quantity objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('q')
-//            ->andWhere('q.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('q.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    //    /**
+    //     * @return Quantity[] Returns an array of Quantity objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('q')
+    //            ->andWhere('q.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('q.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
 
-//    public function findOneBySomeField($value): ?Quantity
-//    {
-//        return $this->createQueryBuilder('q')
-//            ->andWhere('q.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    // public function getQueryBuilderByUser(User $user): QueryBuilder
+    // {
+    //     return $this->createQueryBuilder('q')
+    //         ->join('q.owner', 'ow')
+    //         ->addSelect('ow')
+    //         ->where('ow = :owner')
+    //         ->setParameter('owner', $user);
+    // }
 }

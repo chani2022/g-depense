@@ -84,6 +84,9 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
      */
     public function testCreateNewCategoryWithFormDataValidWithQuantitySuccess(array $formData): void
     {
+        $quantity = $this->getQuantity();
+        $formData['quantity'] = $quantity->getId();
+
         $this->simulateAccessPageNewCategorySuccessfullyWithUser();
 
         $this->simulateSubmitForm($formData);
@@ -227,7 +230,6 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
                     'nom' => 'new category',
                     'prix' => 15.25,
                     'isVital' => true,
-                    'quantity' => $this->getQuantity()
                 ]
             ]
         ];

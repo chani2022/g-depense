@@ -16,5 +16,6 @@ App\Entity\Category:
     prix: 150.5
     isVital: true
     owner: '@user_credentials_ok'
+    quantity: '@quantity_user_credentials_ok'
 
     
