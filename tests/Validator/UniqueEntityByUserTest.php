@@ -2,16 +2,16 @@
 
 namespace App\Tests\Validator;
 
-use App\Validator\UniqueCategory;
+use App\Validator\UniqueEntityByUser;
 use PHPUnit\Framework\TestCase;
 
-class UniqueCategoryTest extends TestCase
+class UniqueEntityByUserTest extends TestCase
 {
-    private ?UniqueCategory $uniqueCategory;
+    private ?UniqueEntityByUser $uniqueCategory;
 
     protected function setUp(): void
     {
-        $this->uniqueCategory = new UniqueCategory();
+        $this->uniqueCategory = new UniqueEntityByUser();
     }
 
     public function testMessageSameCategory(): void

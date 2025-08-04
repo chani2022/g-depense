@@ -14,13 +14,14 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use App\Repository\CategoryRepository;
+use App\Validator\UniqueEntityByUser;
 use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
 
 class UniqueCategoryValidatorTest extends TestCase
 {
     // === Properties ===
     private ?UniqueCategoryValidator $uniqueCategoryValidator;
-    private ?UniqueCategory $constraint;
+    private ?UniqueEntityByUser $constraint;
     /** @var MockObject&ExecutionContextInterface&null */
     private $context;
     /** @var MockObject&CategoryRepository&null */
@@ -34,7 +35,7 @@ class UniqueCategoryValidatorTest extends TestCase
         $this->categoryRepository = $this->createMock(CategoryRepository::class);
         $this->token = new TokenStorage();
         $this->uniqueCategoryValidator = new UniqueCategoryValidator($this->categoryRepository, $this->token);
-        $this->constraint = new UniqueCategory();
+        $this->constraint = new UniqueEntityByUser();
         $this->constraint->message = 'test';
         $this->context = $this->createMock(ExecutionContextInterface::class);
     }
