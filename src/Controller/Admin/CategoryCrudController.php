@@ -47,6 +47,7 @@ class CategoryCrudController extends AbstractCrudController
             ]),
             BooleanField::new('isVital', 'Primordial')->onlyOnForms(),
             AssociationField::new('quantity', 'Quantity')
+                ->autocomplete()
                 ->formatValue(function (?Quantity $quantity = null) {
                     return $quantity ? $quantity->getUnite() : '';
                 })
