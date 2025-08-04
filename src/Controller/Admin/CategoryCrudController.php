@@ -48,6 +48,15 @@ class CategoryCrudController extends AbstractCrudController
             BooleanField::new('isVital', 'Primordial')->onlyOnForms(),
             AssociationField::new('quantity', 'Quantity')
                 ->autocomplete()
+                ->setQueryBuilder(
+                    function (QueryBuilder $queryBuilder) {
+                        $queryBuilder->select('q')
+                            ->from(Category::class, 'c')
+                            ->join('c.quantity', 'q')
+                            ->where('c.owner = :owner')
+                            ->setParameter('owner', $this->security->getUser());
+                    }
+                )
                 ->formatValue(function (?Quantity $quantity = null) {
                     return $quantity ? $quantity->getUnite() : '';
                 })
