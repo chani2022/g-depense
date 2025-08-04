@@ -69,7 +69,7 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
     /**
      * @dataProvider formDataValid
      */
-    public function testCreateNewCategoryWithFormDataValid(array $formData): void
+    public function testCreateNewCategoryWithFormDataValidSuccess(array $formData): void
     {
         $this->simulateAccessPageNewCategorySuccessfullyWithUser();
 
@@ -80,7 +80,7 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
     /**
      * @dataProvider formDataValidButNomCategoryOwnerUserOther
      */
-    public function testCreateNewCategoryWithFormDataValidWithOtherUser(array $formData): void
+    public function testCreateNewCategoryWithFormDataValidWithOtherUserSuccess(array $formData): void
     {
         $this->simulateAccessPageNewCategorySuccessfullyWithOtherUser();
 
@@ -193,7 +193,7 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
         ];
     }
 
-    public function formDataValid(): array
+    public static function formDataValid(): array
     {
         return [
             [
@@ -206,7 +206,7 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
         ];
     }
 
-    public function formDataValidButNomCategoryOwnerUserOther(): array
+    public static function formDataValidButNomCategoryOwnerUserOther(): array
     {
         return [
             [
