@@ -6,14 +6,14 @@ use App\Repository\CategoryRepository;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use App\Validator\UniqueCategory;
+use App\Validator\UniqueEntityByUser;
 
-class UniqueCategoryValidator extends ConstraintValidator
+class UniqueEntityByUserValidator extends ConstraintValidator
 {
     public function __construct(private CategoryRepository $categoryRepository, private TokenStorageInterface $token) {}
     /**
      * @param string $value
-     * @param UniqueCategory $constraint
+     * @param UniqueEntityByUser $constraint
      */
     public function validate($value, Constraint $constraint)
     {

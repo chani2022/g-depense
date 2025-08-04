@@ -7,20 +7,19 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use App\Entity\User;
-use App\Validator\UniqueCategory;
-use App\Validator\UniqueCategoryValidator;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use App\Repository\CategoryRepository;
 use App\Validator\UniqueEntityByUser;
+use App\Validator\UniqueEntityByUserValidator;
 use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
 
 class UniqueCategoryValidatorTest extends TestCase
 {
     // === Properties ===
-    private ?UniqueCategoryValidator $uniqueCategoryValidator;
+    private ?UniqueEntityByUserValidator $uniqueEntityByUserValidator;
     private ?UniqueEntityByUser $constraint;
     /** @var MockObject&ExecutionContextInterface&null */
     private $context;
@@ -34,7 +33,7 @@ class UniqueCategoryValidatorTest extends TestCase
     {
         $this->categoryRepository = $this->createMock(CategoryRepository::class);
         $this->token = new TokenStorage();
-        $this->uniqueCategoryValidator = new UniqueCategoryValidator($this->categoryRepository, $this->token);
+        $this->uniqueEntityByUserValidator = new UniqueEntityByUserValidator($this->categoryRepository, $this->token);
         $this->constraint = new UniqueEntityByUser();
         $this->constraint->message = 'test';
         $this->context = $this->createMock(ExecutionContextInterface::class);
@@ -45,7 +44,7 @@ class UniqueCategoryValidatorTest extends TestCase
         parent::tearDown();
 
         $this->constraint = null;
-        $this->uniqueCategoryValidator = null;
+        $this->uniqueEntityByUserValidator = null;
         $this->context = null;
         $this->categoryRepository = null;
         $this->token = null;
@@ -61,7 +60,7 @@ class UniqueCategoryValidatorTest extends TestCase
         $this->context->expects($this->never())
             ->method('buildViolation');
 
-        $this->uniqueCategoryValidator->validate($value, $this->constraint);
+        $this->uniqueEntityByUserValidator->validate($value, $this->constraint);
     }
 
     public function testCategoryAlreadyExist(): void
@@ -90,7 +89,7 @@ class UniqueCategoryValidatorTest extends TestCase
             ->expects($this->once())
             ->method('addViolation');
 
-        $this->uniqueCategoryValidator->validate($value, $this->constraint);
+        $this->uniqueEntityByUserValidator->validate($value, $this->constraint);
     }
 
     public function testCategoryNotExist(): void
@@ -108,7 +107,7 @@ class UniqueCategoryValidatorTest extends TestCase
             ->expects($this->never())
             ->method('buildViolation');
 
-        $this->uniqueCategoryValidator->validate($value, $this->constraint);
+        $this->uniqueEntityByUserValidator->validate($value, $this->constraint);
     }
 
     // === Data providers ===
@@ -123,7 +122,7 @@ class UniqueCategoryValidatorTest extends TestCase
 
     private function initializeValidatorContext(): void
     {
-        $this->uniqueCategoryValidator->initialize($this->context);
+        $this->uniqueEntityByUserValidator->initialize($this->context);
     }
 
     // === Private helper methods ===

@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Category;
 use App\Entity\Quantity;
 use App\Validator\UniqueCategory;
+use App\Validator\UniqueEntityByUser;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use Doctrine\ORM\QueryBuilder;
@@ -36,7 +37,7 @@ class CategoryCrudController extends AbstractCrudController
             IdField::new('id', '#')->onlyOnIndex(),
             TextField::new('nom', 'Nom')->setFormTypeOption('constraints', [
                 new NotBlank(),
-                new UniqueCategory()
+                new UniqueEntityByUser()
             ]),
             NumberField::new('prix', 'Prix')->setFormTypeOptions([
                 'constraints' => [
