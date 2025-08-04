@@ -67,7 +67,7 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
     }
 
     /**
-     * @dataProvider formDataValid
+     * @dataProvider formDataValidWithoutQuantity
      */
     public function testCreateNewCategoryWithFormDataValidSuccess(array $formData): void
     {
@@ -193,7 +193,7 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
         ];
     }
 
-    public static function formDataValid(): array
+    public static function formDataValidWithoutQuantity(): array
     {
         return [
             [
