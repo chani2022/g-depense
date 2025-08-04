@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Quantity;
 use App\Entity\User;
+use App\Validator\UniqueCategory;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use Doctrine\ORM\QueryBuilder;
@@ -30,7 +31,10 @@ class QuantityCrudController extends AbstractCrudController
         return [
             TextField::new('unite', 'Unité')->setFormTypeOptions([
                 'constraints' => [
-                    new NotBlank()
+                    new NotBlank(),
+                    new UniqueCategory([
+                        'post:quantity'
+                    ])
                 ]
             ]),
             AvatarField::new('owner', 'Propriétaire')

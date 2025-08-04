@@ -17,6 +17,7 @@ class UniqueCategoryValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
+        $groups = $constraint->groups;
         if (null === $value || '' === $value) {
             return;
         }
