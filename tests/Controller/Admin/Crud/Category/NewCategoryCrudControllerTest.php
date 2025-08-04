@@ -3,11 +3,13 @@
 namespace App\Tests\Controller\Admin\Crud\Category;
 
 use App\Tests\Controller\Admin\Crud\Category\AbstractCategoryCrudTest;
+use App\Tests\Trait\QuantityTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestFormAsserts;
 
 class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
 {
     use CrudTestFormAsserts;
+    use QuantityTrait;
 
     protected function setUp(): void
     {
@@ -69,7 +71,18 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
     /**
      * @dataProvider formDataValidWithoutQuantity
      */
-    public function testCreateNewCategoryWithFormDataValidSuccess(array $formData): void
+    public function testCreateNewCategoryWithFormDataValidWidthoutQuantitySuccess(array $formData): void
+    {
+        $this->simulateAccessPageNewCategorySuccessfullyWithUser();
+
+        $this->simulateSubmitForm($formData);
+
+        $this->assertResponseStatusCodeSame(302);
+    }
+    /**
+     * @dataProvider formDataValidWithQuantity
+     */
+    public function testCreateNewCategoryWithFormDataValidWithQuantitySuccess(array $formData): void
     {
         $this->simulateAccessPageNewCategorySuccessfullyWithUser();
 
@@ -201,6 +214,20 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
                     'nom' => 'new category',
                     'prix' => 15.25,
                     'isVital' => true
+                ]
+            ]
+        ];
+    }
+
+    public function formDataValidWithQuantity(): array
+    {
+        return [
+            [
+                'formData' => [
+                    'nom' => 'new category',
+                    'prix' => 15.25,
+                    'isVital' => true,
+                    'quantity' => $this->getQuantity()
                 ]
             ]
         ];
