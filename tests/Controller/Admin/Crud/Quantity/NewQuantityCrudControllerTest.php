@@ -77,8 +77,6 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
 
         $this->simulateSubmitForm($formData);
 
-        $this->simulateSubmitForm($formData);
-
         $this->assertResponseStatusCodeSame(302);
     }
     /**
