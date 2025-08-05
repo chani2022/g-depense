@@ -47,7 +47,7 @@ class CategoryCrudController extends AbstractCrudController
             ]),
             BooleanField::new('isVital', 'Primordial')->onlyOnForms(),
             AssociationField::new('quantity', 'Quantity')
-                ->autocomplete()
+                // ->autocomplete()
                 ->setQueryBuilder(
                     function (QueryBuilder $queryBuilder) {
                         $queryBuilder
@@ -56,6 +56,13 @@ class CategoryCrudController extends AbstractCrudController
                             ->findByOwner($this->security->getUser());
                     }
                 )
+                // ->setFormTypeOption('by_reference', false)
+                // ->setFormTypeOption('choice_label', 'unite')
+                ->setFormTypeOptions([
+                    'by_reference' => false,
+                    'choice_label' => 'unite',
+                    'placeholder' => '-Selectionnez-'
+                ])
                 ->setSortProperty('unite')
                 ->formatValue(function (?Quantity $quantity = null) {
                     return $quantity ? $quantity->getUnite() : '';
