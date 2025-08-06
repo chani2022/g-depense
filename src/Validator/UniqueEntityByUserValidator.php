@@ -21,6 +21,7 @@ class UniqueEntityByUserValidator extends ConstraintValidator
      */
     public function validate(mixed $object, Constraint $constraint)
     {
+
         if (null === $object) {
             return;
         }
@@ -29,8 +30,14 @@ class UniqueEntityByUserValidator extends ConstraintValidator
         $user = $this->token->getToken()->getUser();
 
         $value = $this->getFieldValue($object, $constraint);
+        $field = $constraint->field;
 
-        $resultat = $this->findOneBy($object::class, $user);
+        $critere = [
+            'owner' => $user,
+            $field => $value
+        ];
+
+        $resultat = $this->findOneBy($object::class, $critere);
 
         if ($resultat) {
             $this->context->buildViolation($constraint->message)
@@ -51,12 +58,10 @@ class UniqueEntityByUserValidator extends ConstraintValidator
         return $object->$getter();
     }
 
-    protected function findOneBy(mixed $classname, User $user): ?object
+    protected function findOneBy(mixed $classname, array $critere): ?object
     {
         $entityOrNull = $this->em->getRepository($classname)
-            ->findOneBy([
-                'owner' => $user
-            ]);
+            ->findOneBy($critere);
 
         return $entityOrNull;
     }

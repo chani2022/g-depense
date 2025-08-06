@@ -3,11 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\CategoryRepository;
+use App\Validator\UniqueEntityByUser;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
+#[UniqueEntityByUser(field: 'nom', entityClass: Category::class)]
 class Category
 {
     #[ORM\Id]
