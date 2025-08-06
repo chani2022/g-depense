@@ -37,7 +37,6 @@ class UniqueCategoryValidatorTest extends TestCase
             new UsernamePasswordToken(new User(), 'main')
         );
         $this->uniqueEntityByUserValidator = new UniqueEntityByUserValidator($this->categoryRepository, $this->token);
-        // $this->constraint->message = 'test';
         $this->context = $this->createMock(ExecutionContextInterface::class);
     }
 
