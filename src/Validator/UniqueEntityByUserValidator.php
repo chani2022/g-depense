@@ -30,10 +30,6 @@ class UniqueEntityByUserValidator extends ConstraintValidator
         /** @var User */
         $user = $this->token->getToken()->getUser();
 
-        if ($user && !$user->getId()) {
-            return;
-        }
-
         $field = $constraint->field;
         $entityClass = $constraint->entityClass;
 
@@ -42,7 +38,7 @@ class UniqueEntityByUserValidator extends ConstraintValidator
             throw new \LogicException("La méthode $getter n'existe pas dans " . get_class($object));
         }
 
-        if ($this->categoryRepository->getCategoryByUser($this->token->getToken()->getUser(), $object)) {
+        if ($this->categoryRepository->getCategoryByUser($user, $object)) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $object)
                 ->addViolation();

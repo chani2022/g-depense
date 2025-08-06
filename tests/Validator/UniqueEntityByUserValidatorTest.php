@@ -61,27 +61,19 @@ class UniqueCategoryValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testStopForUserNotAuthenticated(): void
-    {
-        $constraint = $this->simulateUniqueEntityByUserWithFieldAndEntityClass(field: 'test', entityClass: 'test');
-
-        $this->uniqueEntityByUserValidator->validate(new Category(), $constraint);
-
-        $this->assertTrue(true);
-    }
     /**
      * @dataProvider providePropsObjectNotExist
      */
     public function testGetterObjectNotExist(string $object, string $props): void
     {
-        $this->simulateUniqueEntityByUserWithFieldAndEntityClass(field: $props, entityClass: $object);
+        $constraint = $this->simulateUniqueEntityByUserWithFieldAndEntityClass(field: $props, entityClass: $object);
 
         $object = match ($object) {
             'category' => new Category()
         };
 
         $this->expectException(LogicException::class);
-        $this->uniqueEntityByUserValidator->validate($object, $this->constraint);
+        $this->uniqueEntityByUserValidator->validate($object, $constraint);
     }
 
     public function testGetterObjectValid(): void {}
@@ -150,6 +142,15 @@ class UniqueCategoryValidatorTest extends TestCase
     // === Private helper methods ===
 
     private function simulateUserAuthenticated(): User
+    {
+        $this->token->setToken(
+            new UsernamePasswordToken((new User())->setId(1), 'main')
+        );
+
+        return $this->token->getToken()->getUser();
+    }
+
+    private function simulateUserNotAuthenticated(): User
     {
         $this->token->setToken(
             new UsernamePasswordToken(new User, 'main')
