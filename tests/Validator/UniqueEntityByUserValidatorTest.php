@@ -85,25 +85,15 @@ class UniqueCategoryValidatorTest extends TestCase
         $constraint = $this->simulateConstraint(field: 'nom', entityClass: Category::class);
 
         $entityRepository = $this->createMock(EntityRepository::class);
-        $this->entityManager
-            ->expects($this->once())
-            ->method('getRepository')
-            ->with($constraint->entityClass)
-            ->willReturn($entityRepository);
 
-        $entityRepository
-            ->expects($this->once())
-            ->method('findOneBy')
-            ->with(['owner' => $user])
-            ->willReturn($object);
+        $this->simulateGetRepository($entityRepository, $constraint->entityClass);
+
+        $this->simulateFindOneBy($entityRepository, $user, $object);
 
         $this->uniqueEntityByUserValidator->initialize($this->context);
         $constraintViolationBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
-        $this->context
-            ->expects($this->once())
-            ->method('buildViolation')
-            ->with($constraint->message)
-            ->willReturn($constraintViolationBuilder);
+
+        $this->simulateBuildViolation(1, $constraint->message, $constraintViolationBuilder);
 
         $constraintViolationBuilder
             ->expects($this->once())
@@ -161,6 +151,36 @@ class UniqueCategoryValidatorTest extends TestCase
         );
 
         return $this->token->getToken()->getUser();
+    }
+
+    private function simulateGetRepository(MockObject $entityRepository, string $argument): void
+    {
+        $this->entityManager
+            ->expects($this->once())
+            ->method('getRepository')
+            ->with($argument)
+            ->willReturn($entityRepository);
+    }
+
+    private function simulateFindOneBy(MockObject $entityRepository, User $user, object|null $object = null): void
+    {
+        $entityRepository
+            ->expects($this->once())
+            ->method('findOneBy')
+            ->with(['owner' => $user])
+            ->willReturn($object);
+    }
+
+    private function simulateBuildViolation(
+        int $nombreExpects,
+        string $argument,
+        MockObject $constraintViolationBuilder
+    ): void {
+        $this->context
+            ->expects($nombreExpects == 0 ? $this->never() : $this->exactly($nombreExpects))
+            ->method('buildViolation')
+            ->with($argument)
+            ->willReturn($constraintViolationBuilder);
     }
 
     private function simulateUserNotAuthenticated(): User
