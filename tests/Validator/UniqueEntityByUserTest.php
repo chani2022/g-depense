@@ -16,7 +16,7 @@ class UniqueEntityByUserTest extends TestCase
 
     public function testMessageSameCategory(): void
     {
-        $messageExpected = 'Catogory "{{ value }}" already exist.';
+        $messageExpected = 'this "{{ value }}" already exist.';
 
         $this->assertSame($messageExpected, $this->uniqueCategory->message);
     }
