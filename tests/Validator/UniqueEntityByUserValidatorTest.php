@@ -3,6 +3,7 @@
 namespace App\Tests\Validator;
 
 use App\Entity\Category;
+use App\Entity\Quantity;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -16,7 +17,7 @@ use App\Validator\UniqueEntityByUserValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use LogicException;
-use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
+
 
 class UniqueCategoryValidatorTest extends TestCase
 {
@@ -24,7 +25,7 @@ class UniqueCategoryValidatorTest extends TestCase
     private ?UniqueEntityByUserValidator $uniqueEntityByUserValidator;
     /** @var MockObject&ExecutionContextInterface&null */
     private $context;
-    /** @var MockObject&CategoryRepository&null */
+    /** @var MockObject&EntityManagerInterface&null */
     private  $entityManager;
 
     private ?TokenStorageInterface $token;
@@ -70,7 +71,8 @@ class UniqueCategoryValidatorTest extends TestCase
         $constraint = $this->simulateConstraint(field: $props, entityClass: $object);
 
         $object = match ($object) {
-            'category' => new Category()
+            'category' => new Category(),
+            'quantity' => new Quantity()
         };
 
         $this->expectException(LogicException::class);
@@ -90,8 +92,7 @@ class UniqueCategoryValidatorTest extends TestCase
 
         $this->simulateFindOneBy($entityRepository, $user, $object);
 
-        $this->uniqueEntityByUserValidator->initialize($this->context);
-        $constraintViolationBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
+        $constraintViolationBuilder = $this->mockConstraintViolationBuilder();
 
         $this->simulateBuildViolation(1, $constraint->message, $constraintViolationBuilder);
 
@@ -110,22 +111,24 @@ class UniqueCategoryValidatorTest extends TestCase
         $this->uniqueEntityByUserValidator->validate($object, $constraint);
     }
 
-    public function testCategoryNotExist(): void
+    public function testPropsEntityNotExist(): void
     {
-        $value = 'newCategory';
+        $object = (new Category())
+            ->setNom('test');
         $user = $this->simulateUserAuthenticated();
+        $constraint = $this->simulateConstraint(field: 'nom', entityClass: Category::class);
 
-        $this->simulateCategoryNotExist($user, $value);
+        $entityRepository = $this->createMock(EntityRepository::class);
 
-        $this->initializeValidatorContext();
+        $this->simulateGetRepository($entityRepository, $constraint->entityClass);
 
-        $constraintBuilder = $this->initConstraintBuilder();
+        $this->simulateFindOneBy($entityRepository, $user);
 
-        $this->context
-            ->expects($this->never())
-            ->method('buildViolation');
+        $constraintViolationBuilder = $this->mockConstraintViolationBuilder();
 
-        $this->uniqueEntityByUserValidator->validate($value, $this->constraint);
+        $this->simulateBuildViolation(0, $constraint->message, $constraintViolationBuilder);
+
+        $this->uniqueEntityByUserValidator->validate($object, $constraint);
     }
 
     // === Data providers ===
@@ -133,13 +136,9 @@ class UniqueCategoryValidatorTest extends TestCase
     public static function providePropsObjectNotExist(): array
     {
         return [
-            ['category', 'NotExist']
+            ['category', 'NotExist'],
+            ['quantity', 'NotExist']
         ];
-    }
-
-    private function initializeValidatorContext(): void
-    {
-        $this->uniqueEntityByUserValidator->initialize($this->context);
     }
 
     // === Private helper methods ===
@@ -162,13 +161,16 @@ class UniqueCategoryValidatorTest extends TestCase
             ->willReturn($entityRepository);
     }
 
-    private function simulateFindOneBy(MockObject $entityRepository, User $user, object|null $object = null): void
-    {
+    private function simulateFindOneBy(
+        MockObject $entityRepository,
+        User $user,
+        object|null $objectWillReturn = null
+    ): void {
         $entityRepository
             ->expects($this->once())
             ->method('findOneBy')
             ->with(['owner' => $user])
-            ->willReturn($object);
+            ->willReturn($objectWillReturn);
     }
 
     private function simulateBuildViolation(
@@ -183,59 +185,16 @@ class UniqueCategoryValidatorTest extends TestCase
             ->willReturn($constraintViolationBuilder);
     }
 
-    private function simulateUserNotAuthenticated(): User
+    private function mockConstraintViolationBuilder(): MockObject
     {
-        $this->token->setToken(
-            new UsernamePasswordToken(new User, 'main')
-        );
-
-        return $this->token->getToken()->getUser();
-    }
-
-    private function simulatePropsAlreadyExist(User $user, string $value)
-    {
-        $category = new Category();
-        $invocation = $this->simulateExpectCategoryByUser($user, $value);
-        $invocation->willReturn($category);
-    }
-
-    private function simulateCategoryNotExist(User $user, string $value)
-    {
-        $invocation = $this->simulateExpectCategoryByUser($user, $value);
-        $invocation->willReturn(null);
-    }
-
-    private function simulateExpectCategoryByUser(User $user, $value): InvocationMocker
-    {
-        return $this->categoryRepository
-            ->expects($this->once())
-            ->method('getCategoryByUser')
-            ->with($user, $value);
-    }
-
-    private function initConstraintBuilder(): MockObject
-    {
+        $this->uniqueEntityByUserValidator->initialize($this->context);
         return $this->createMock(ConstraintViolationBuilderInterface::class);
     }
 
-    /**
-     * @return array<string, {string, mixed}>
-     */
-    // private function simulateObject(): array
-    // {
-    //     $field = $this->constraint->field;
-    //     $object = $this->constraint->entityClass;
-
-    //     $getter = 'get' . ucfirst($field);
-
-    //     return [
-    //         'object' => $object,
-    //         'getter' => $getter
-    //     ];
-    // }
-
-    private function simulateConstraint(string $field, string $entityClass): UniqueEntityByUser
-    {
+    private function simulateConstraint(
+        string $field,
+        string $entityClass
+    ): UniqueEntityByUser {
         $constraint = new UniqueEntityByUser(field: $field, entityClass: $entityClass);
         $constraint->message = 'test';
 

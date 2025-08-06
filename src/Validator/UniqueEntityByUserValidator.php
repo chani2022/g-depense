@@ -16,7 +16,7 @@ class UniqueEntityByUserValidator extends ConstraintValidator
         private TokenStorageInterface $token
     ) {}
     /**
-     * @param mixed $value
+     * @param object $object
      * @param UniqueEntityByUser $constraint
      */
     public function validate(mixed $object, Constraint $constraint)
@@ -28,18 +28,18 @@ class UniqueEntityByUserValidator extends ConstraintValidator
         /** @var User */
         $user = $this->token->getToken()->getUser();
 
-        $getter = $this->getGetter($object, $constraint);
+        $value = $this->getFieldValue($object, $constraint);
 
         $resultat = $this->findOneBy($object::class, $user);
 
         if ($resultat) {
             $this->context->buildViolation($constraint->message)
-                ->setParameter('{{ value }}', $object->$getter())
+                ->setParameter('{{ value }}', $value)
                 ->addViolation();
         }
     }
 
-    protected function getGetter(mixed $object, Constraint $constraint)
+    protected function getFieldValue(mixed $object, Constraint $constraint)
     {
         $field = $constraint->field;
 
@@ -48,10 +48,10 @@ class UniqueEntityByUserValidator extends ConstraintValidator
             throw new \LogicException("La méthode $getter n'existe pas dans " . get_class($object));
         }
 
-        return $getter;
+        return $object->$getter();
     }
 
-    protected function findOneBy(mixed $classname, User $user): mixed
+    protected function findOneBy(mixed $classname, User $user): ?object
     {
         $entityOrNull = $this->em->getRepository($classname)
             ->findOneBy([
