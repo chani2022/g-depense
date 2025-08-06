@@ -18,12 +18,29 @@ class UniqueEntityByUser extends Constraint
      * Then, use these in your validator class.
      */
     public $message = 'this "{{ value }}" already exist.';
+    public string $field;
+    public string $entityClass;
 
     #[HasNamedArguments]
     public function __construct(
+        string $field,
+        string $entityClass,
         array $groups = null,
         mixed $payload = null,
     ) {
-        parent::__construct([], $groups, $payload);
+        parent::__construct([
+            'field' => $field,
+            'entityClass' => $entityClass
+        ], $groups, $payload);
+        $this->field = $field;
+        $this->entityClass = $entityClass;
+    }
+
+    public function getRequiredOptions()
+    {
+        return [
+            'field',
+            'entityClass'
+        ];
     }
 }

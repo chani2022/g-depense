@@ -3,6 +3,7 @@
 namespace App\Tests\Validator;
 
 use App\Validator\UniqueEntityByUser;
+use Dom\Entity;
 use PHPUnit\Framework\TestCase;
 
 class UniqueEntityByUserTest extends TestCase
@@ -11,10 +12,10 @@ class UniqueEntityByUserTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->uniqueEntityByUser = new UniqueEntityByUser();
+        $this->uniqueEntityByUser = new UniqueEntityByUser(field: 'test', entityClass: 'test');
     }
 
-    public function testMessageSameCategory(): void
+    public function testMessageSameUniqueEntityByUser(): void
     {
         $messageExpected = 'this "{{ value }}" already exist.';
 
