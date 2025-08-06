@@ -3,7 +3,6 @@
 namespace App\Tests\Validator;
 
 use App\Validator\UniqueEntityByUser;
-use Dom\Entity;
 use PHPUnit\Framework\TestCase;
 
 class UniqueEntityByUserTest extends TestCase
@@ -13,6 +12,12 @@ class UniqueEntityByUserTest extends TestCase
     protected function setUp(): void
     {
         $this->uniqueEntityByUser = new UniqueEntityByUser(field: 'test', entityClass: 'test');
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->uniqueEntityByUser = null;
     }
 
     public function testMessageSameUniqueEntityByUser(): void
@@ -32,9 +37,11 @@ class UniqueEntityByUserTest extends TestCase
         $this->assertSame($requiredOptionsExpected, $requiredOptionsActual);
     }
 
-    protected function tearDown(): void
+    public function testTargetsUniqueEntityByUser(): void
     {
-        parent::tearDown();
-        $this->uniqueEntityByUser = null;
+        $targetActual = $this->uniqueEntityByUser->getTargets();
+        $targetExpected = $this->uniqueEntityByUser::CLASS_CONSTRAINT;
+
+        $this->assertSame($targetExpected, $targetActual);
     }
 }
