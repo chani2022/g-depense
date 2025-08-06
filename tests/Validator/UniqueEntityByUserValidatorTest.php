@@ -17,6 +17,7 @@ use App\Validator\UniqueEntityByUserValidator;
 use Dom\Entity;
 use LogicException;
 use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class UniqueCategoryValidatorTest extends TestCase
 {
@@ -63,6 +64,13 @@ class UniqueCategoryValidatorTest extends TestCase
         $this->context->expects($this->never())
             ->method('buildViolation');
 
+        $this->uniqueEntityByUserValidator->validate(null, $this->constraint);
+    }
+
+    public function testUserNotAuthenticated(): void
+    {
+        $this->simulateUniqueEntityByUserWithFieldAndEntityClass(field: 'test', entityClass: 'test');
+        $this->expectException(UnauthorizedHttpException::class);
         $this->uniqueEntityByUserValidator->validate(null, $this->constraint);
     }
     /**
