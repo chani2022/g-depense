@@ -4,8 +4,6 @@ namespace App\Controller\Admin;
 
 use App\Entity\Category;
 use App\Entity\Quantity;
-use App\Validator\UniqueCategory;
-use App\Validator\UniqueEntityByUser;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use Doctrine\ORM\QueryBuilder;
@@ -46,7 +44,6 @@ class CategoryCrudController extends AbstractCrudController
             ]),
             BooleanField::new('isVital', 'Primordial')->onlyOnForms(),
             AssociationField::new('quantity', 'Quantity')
-                // ->autocomplete()
                 ->setQueryBuilder(
                     function (QueryBuilder $queryBuilder) {
                         $queryBuilder
@@ -55,8 +52,6 @@ class CategoryCrudController extends AbstractCrudController
                             ->findByOwner($this->security->getUser());
                     }
                 )
-                // ->setFormTypeOption('by_reference', false)
-                // ->setFormTypeOption('choice_label', 'unite')
                 ->setFormTypeOptions([
                     'by_reference' => false,
                     'choice_label' => 'unite',
