@@ -14,6 +14,7 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use App\Repository\CategoryRepository;
 use App\Validator\UniqueEntityByUser;
 use App\Validator\UniqueEntityByUserValidator;
+use Dom\Entity;
 use LogicException;
 use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
 
@@ -58,21 +59,28 @@ class UniqueCategoryValidatorTest extends TestCase
 
     public function testObjectToValidateNull(): void
     {
-        $this->simulateUniqueEntityByUserWithFieldAndEntityClassInvalid();
+        $this->simulateUniqueEntityByUserWithFieldAndEntityClass(field: 'notExist', entityClass: 'notExist');
         $this->context->expects($this->never())
             ->method('buildViolation');
 
         $this->uniqueEntityByUserValidator->validate(null, $this->constraint);
     }
-
-    public function testGetterObjectNotExist(): void
+    /**
+     * @dataProvider providePropsObjectNotExist
+     */
+    public function testGetterObjectNotExist(string $object, string $props): void
     {
-        $this->expectException(LogicException::class);
+        $this->simulateUniqueEntityByUserWithFieldAndEntityClass(field: $props, entityClass: $object);
 
-        $object = new User();
-        $this->simulateUniqueEntityByUserWithFieldAndEntityClassInvalid();
+        $object = match ($object) {
+            'category' => new Category()
+        };
+
+        $this->expectException(LogicException::class);
         $this->uniqueEntityByUserValidator->validate($object, $this->constraint);
     }
+
+    public function testGetterObjectValid(): void {}
 
     public function testCategoryEntityAlreadyExist(): void
     {
@@ -123,13 +131,12 @@ class UniqueCategoryValidatorTest extends TestCase
 
     // === Data providers ===
 
-    // public static function provideInvalid(): array
-    // {
-    //     return [
-    //         [''],
-    //         [null]
-    //     ];
-    // }
+    public static function providePropsObjectNotExist(): array
+    {
+        return [
+            ['category', 'NotExist']
+        ];
+    }
 
     private function initializeValidatorContext(): void
     {
@@ -176,7 +183,7 @@ class UniqueCategoryValidatorTest extends TestCase
     /**
      * @return array<string, {string, mixed}>
      */
-    private function simulateGetterObject(): array
+    private function simulateObject(): array
     {
         $field = $this->constraint->field;
         $object = $this->constraint->entityClass;
@@ -189,9 +196,9 @@ class UniqueCategoryValidatorTest extends TestCase
         ];
     }
 
-    private function simulateUniqueEntityByUserWithFieldAndEntityClassInvalid(): void
+    private function simulateUniqueEntityByUserWithFieldAndEntityClass(string $field, string $entityClass): void
     {
-        $this->constraint = new UniqueEntityByUser(field: 'test', entityClass: 'test');
+        $this->constraint = new UniqueEntityByUser(field: $field, entityClass: $entityClass);
         $this->constraint->message = 'test';
     }
 }
