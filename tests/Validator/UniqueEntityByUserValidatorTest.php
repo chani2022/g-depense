@@ -14,6 +14,7 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use App\Validator\UniqueEntityByUser;
 use App\Validator\UniqueEntityByUserValidator;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use LogicException;
 use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
 
@@ -78,43 +79,45 @@ class UniqueCategoryValidatorTest extends TestCase
 
     public function testPropsEntityAlreadyExist(): void
     {
-        $object = new Category();
+        $object = (new Category())
+            ->setNom('test');
         $user = $this->simulateUserAuthenticated();
-        $constraint = $this->simulateConstraint(field: 'nom', entityClass: 'category');
+        $constraint = $this->simulateConstraint(field: 'nom', entityClass: Category::class);
 
+        $entityRepository = $this->createMock(EntityRepository::class);
         $this->entityManager
             ->expects($this->once())
             ->method('getRepository')
-            ->with($object)
-            ->willReturn(null);
+            ->with($constraint->entityClass)
+            ->willReturn($entityRepository);
+
+        $entityRepository
+            ->expects($this->once())
+            ->method('findOneBy')
+            ->with(['owner' => $user])
+            ->willReturn($object);
+
+        $this->uniqueEntityByUserValidator->initialize($this->context);
+        $constraintViolationBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
+        $this->context
+            ->expects($this->once())
+            ->method('buildViolation')
+            ->with($constraint->message)
+            ->willReturn($constraintViolationBuilder);
+
+        $constraintViolationBuilder
+            ->expects($this->once())
+            ->method('setParameter')
+            ->with('{{ value }}', $object->getNom())
+            ->willReturnSelf();
+
+        $constraintViolationBuilder
+            ->expects($this->once())
+            ->method('addViolation')
+            ->willReturnSelf();
 
 
         $this->uniqueEntityByUserValidator->validate($object, $constraint);
-        // $value = 'alreadyExist';
-        // $user = $this->simulateUserAuthenticated();
-        // $this->simulatePropsAlreadyExist($user, $value);
-
-        // $this->initializeValidatorContext();
-
-        // $constraintBuilder = $this->initConstraintBuilder();
-
-        // $this->context
-        //     ->expects($this->once())
-        //     ->method('buildViolation')
-        //     ->with($this->constraint->message)
-        //     ->willReturn($constraintBuilder);
-
-        // $constraintBuilder
-        //     ->expects($this->once())
-        //     ->method('setParameter')
-        //     ->with('{{ value }}', $value)
-        //     ->willReturnSelf();
-
-        // $constraintBuilder
-        //     ->expects($this->once())
-        //     ->method('addViolation');
-
-        // $this->uniqueEntityByUserValidator->validate($value, $this->constraint);
     }
 
     public function testCategoryNotExist(): void

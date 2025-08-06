@@ -2,6 +2,7 @@
 
 namespace App\Validator;
 
+use App\Entity\Category;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -36,9 +37,14 @@ class UniqueEntityByUserValidator extends ConstraintValidator
             throw new \LogicException("La méthode $getter n'existe pas dans " . get_class($object));
         }
 
-        if ($this->em->getCategoryByUser($user, $object)) {
+        $resultat = $this->em->getRepository($entityClass)
+            ->findOneBy([
+                'owner' => $user
+            ]);
+
+        if ($resultat) {
             $this->context->buildViolation($constraint->message)
-                ->setParameter('{{ value }}', $object)
+                ->setParameter('{{ value }}', $object->$getter())
                 ->addViolation();
         }
     }
