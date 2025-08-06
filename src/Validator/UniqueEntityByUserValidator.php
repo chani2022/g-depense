@@ -10,14 +10,17 @@ use App\Validator\UniqueEntityByUser;
 
 class UniqueEntityByUserValidator extends ConstraintValidator
 {
-    public function __construct(private CategoryRepository $categoryRepository, private TokenStorageInterface $token) {}
+    public function __construct(
+        private CategoryRepository $categoryRepository,
+        private TokenStorageInterface $token
+    ) {}
     /**
      * @param string $value
      * @param UniqueEntityByUser $constraint
      */
     public function validate($value, Constraint $constraint)
     {
-        $groups = $constraint->groups;
+
         if (null === $value || '' === $value) {
             return;
         }

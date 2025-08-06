@@ -14,6 +14,7 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use App\Repository\CategoryRepository;
 use App\Validator\UniqueEntityByUser;
 use App\Validator\UniqueEntityByUserValidator;
+use LogicException;
 use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
 
 class UniqueCategoryValidatorTest extends TestCase
@@ -33,9 +34,12 @@ class UniqueCategoryValidatorTest extends TestCase
     {
         $this->categoryRepository = $this->createMock(CategoryRepository::class);
         $this->token = new TokenStorage();
+        $this->token->setToken(
+            new UsernamePasswordToken(new User(), 'main')
+        );
         $this->uniqueEntityByUserValidator = new UniqueEntityByUserValidator($this->categoryRepository, $this->token);
-        $this->constraint = new UniqueEntityByUser();
-        $this->constraint->message = 'test';
+        $this->constraint = null;
+        // $this->constraint->message = 'test';
         $this->context = $this->createMock(ExecutionContextInterface::class);
     }
 
@@ -55,15 +59,25 @@ class UniqueCategoryValidatorTest extends TestCase
     /**
      * @dataProvider provideInvalid
      */
-    public function testValueMissingCategory(?string $value): void
+    public function testValueMissingEntity(?string $value): void
     {
+        $this->simulateUniqueEntityByUserWithFieldAndEntityClassInvalid();
         $this->context->expects($this->never())
             ->method('buildViolation');
 
         $this->uniqueEntityByUserValidator->validate($value, $this->constraint);
     }
 
-    public function testCategoryAlreadyExist(): void
+    public function testGetterObjectNotExist(): void
+    {
+        $this->expectException(LogicException::class);
+
+        $object = new User();
+        $this->simulateUniqueEntityByUserWithFieldAndEntityClassInvalid();
+        $this->uniqueEntityByUserValidator->validate($object, $this->constraint);
+    }
+
+    public function testCategoryEntityAlreadyExist(): void
     {
         $value = 'alreadyExist';
         $user = $this->simulateUserAuthenticated();
@@ -160,5 +174,27 @@ class UniqueCategoryValidatorTest extends TestCase
     private function initConstraintBuilder(): MockObject
     {
         return $this->createMock(ConstraintViolationBuilderInterface::class);
+    }
+
+    /**
+     * @return array<string, {string, mixed}>
+     */
+    private function simulateGetterObject(): array
+    {
+        $field = $this->constraint->field;
+        $object = $this->constraint->entityClass;
+
+        $getter = 'get' . ucfirst($field);
+
+        return [
+            'object' => $object,
+            'getter' => $getter
+        ];
+    }
+
+    private function simulateUniqueEntityByUserWithFieldAndEntityClassInvalid(): void
+    {
+        $this->constraint = new UniqueEntityByUser(field: 'test', entityClass: 'test');
+        $this->constraint->message = 'test';
     }
 }
