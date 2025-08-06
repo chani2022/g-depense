@@ -15,19 +15,26 @@ class UniqueEntityByUserValidator extends ConstraintValidator
         private TokenStorageInterface $token
     ) {}
     /**
-     * @param string $value
+     * @param mixed $value
      * @param UniqueEntityByUser $constraint
      */
-    public function validate($value, Constraint $constraint)
+    public function validate(mixed $object, Constraint $constraint)
     {
-
-        if (null === $value || '' === $value) {
+        if (null === $object) {
             return;
         }
 
-        if ($this->categoryRepository->getCategoryByUser($this->token->getToken()->getUser(), $value)) {
+        $field = $constraint->field;
+        $entityClass = $constraint->entityClass;
+
+        $getter = 'get' . ucfirst($field);
+        if (!method_exists($object, $getter)) {
+            throw new \LogicException("La méthode $getter n'existe pas dans " . get_class($object));
+        }
+
+        if ($this->categoryRepository->getCategoryByUser($this->token->getToken()->getUser(), $object)) {
             $this->context->buildViolation($constraint->message)
-                ->setParameter('{{ value }}', $value)
+                ->setParameter('{{ value }}', $object)
                 ->addViolation();
         }
     }

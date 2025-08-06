@@ -56,16 +56,13 @@ class UniqueCategoryValidatorTest extends TestCase
 
     // === Test cases ===
 
-    /**
-     * @dataProvider provideInvalid
-     */
-    public function testValueMissingEntity(?string $value): void
+    public function testObjectToValidateNull(): void
     {
         $this->simulateUniqueEntityByUserWithFieldAndEntityClassInvalid();
         $this->context->expects($this->never())
             ->method('buildViolation');
 
-        $this->uniqueEntityByUserValidator->validate($value, $this->constraint);
+        $this->uniqueEntityByUserValidator->validate(null, $this->constraint);
     }
 
     public function testGetterObjectNotExist(): void
@@ -126,13 +123,13 @@ class UniqueCategoryValidatorTest extends TestCase
 
     // === Data providers ===
 
-    public static function provideInvalid(): array
-    {
-        return [
-            [''],
-            [null]
-        ];
-    }
+    // public static function provideInvalid(): array
+    // {
+    //     return [
+    //         [''],
+    //         [null]
+    //     ];
+    // }
 
     private function initializeValidatorContext(): void
     {
