@@ -7,6 +7,9 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use App\Validator\UniqueEntityByUser;
+use App\Entity\User;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class UniqueEntityByUserValidator extends ConstraintValidator
 {
@@ -21,6 +24,13 @@ class UniqueEntityByUserValidator extends ConstraintValidator
     public function validate(mixed $object, Constraint $constraint)
     {
         if (null === $object) {
+            return;
+        }
+
+        /** @var User */
+        $user = $this->token->getToken()->getUser();
+
+        if ($user && !$user->getId()) {
             return;
         }
 
