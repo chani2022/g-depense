@@ -3,11 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\QuantityRepository;
+use App\Validator\UniqueEntityByUser;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: QuantityRepository::class)]
+#[UniqueEntityByUser(field: 'unite', entityClass: Quantity::class)]
 class Quantity
 {
     #[ORM\Id]
