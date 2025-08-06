@@ -43,4 +43,9 @@ class UniqueEntityByUser extends Constraint
             'entityClass'
         ];
     }
+
+    public function getTargets()
+    {
+        return self::CLASS_CONSTRAINT;
+    }
 }
