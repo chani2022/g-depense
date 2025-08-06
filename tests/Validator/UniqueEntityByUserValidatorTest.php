@@ -90,7 +90,9 @@ class UniqueCategoryValidatorTest extends TestCase
 
         $this->simulateGetRepository($entityRepository, $constraint->entityClass);
 
-        $this->simulateFindOneBy($entityRepository, $user, $object);
+        $critere = $this->simulateCritereFindOnyBy($user, $constraint, $object->getNom());
+
+        $this->simulateFindOneBy($entityRepository, $critere, $object);
 
         $constraintViolationBuilder = $this->mockConstraintViolationBuilder();
 
@@ -122,7 +124,9 @@ class UniqueCategoryValidatorTest extends TestCase
 
         $this->simulateGetRepository($entityRepository, $constraint->entityClass);
 
-        $this->simulateFindOneBy($entityRepository, $user);
+        $critere = $this->simulateCritereFindOnyBy($user, $constraint, $object->getNom());
+
+        $this->simulateFindOneBy($entityRepository, $critere);
 
         $constraintViolationBuilder = $this->mockConstraintViolationBuilder();
 
@@ -161,15 +165,23 @@ class UniqueCategoryValidatorTest extends TestCase
             ->willReturn($entityRepository);
     }
 
+    private function simulateCritereFindOnyBy(User $user, UniqueEntityByUser $constraint, string $valuePropsToValidate): array
+    {
+        return [
+            'owner' => $user,
+            $constraint->field => $valuePropsToValidate
+        ];
+    }
+
     private function simulateFindOneBy(
         MockObject $entityRepository,
-        User $user,
+        array $critere,
         object|null $objectWillReturn = null
     ): void {
         $entityRepository
             ->expects($this->once())
             ->method('findOneBy')
-            ->with(['owner' => $user])
+            ->with($critere)
             ->willReturn($objectWillReturn);
     }
 
