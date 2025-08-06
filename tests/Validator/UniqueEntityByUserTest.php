@@ -7,23 +7,33 @@ use PHPUnit\Framework\TestCase;
 
 class UniqueEntityByUserTest extends TestCase
 {
-    private ?UniqueEntityByUser $uniqueCategory;
+    private ?UniqueEntityByUser $uniqueEntityByUser;
 
     protected function setUp(): void
     {
-        $this->uniqueCategory = new UniqueEntityByUser();
+        $this->uniqueEntityByUser = new UniqueEntityByUser();
     }
 
     public function testMessageSameCategory(): void
     {
         $messageExpected = 'this "{{ value }}" already exist.';
 
-        $this->assertSame($messageExpected, $this->uniqueCategory->message);
+        $this->assertSame($messageExpected, $this->uniqueEntityByUser->message);
+    }
+
+    public function testRequiredOptionsSuccess(): void
+    {
+        $requiredOptionsActual = $this->uniqueEntityByUser->getRequiredOptions();
+        $requiredOptionsExpected = [
+            'field',
+            'entityClass'
+        ];
+        $this->assertSame($requiredOptionsExpected, $requiredOptionsActual);
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
-        $this->uniqueCategory = null;
+        $this->uniqueEntityByUser = null;
     }
 }
