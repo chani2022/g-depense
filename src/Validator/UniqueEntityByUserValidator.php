@@ -2,7 +2,6 @@
 
 namespace App\Validator;
 
-use App\Entity\Category;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -29,23 +28,36 @@ class UniqueEntityByUserValidator extends ConstraintValidator
         /** @var User */
         $user = $this->token->getToken()->getUser();
 
-        $field = $constraint->field;
-        $entityClass = $constraint->entityClass;
+        $getter = $this->getGetter($object, $constraint);
 
-        $getter = 'get' . ucfirst($field);
-        if (!method_exists($object, $getter)) {
-            throw new \LogicException("La méthode $getter n'existe pas dans " . get_class($object));
-        }
-
-        $resultat = $this->em->getRepository($entityClass)
-            ->findOneBy([
-                'owner' => $user
-            ]);
+        $resultat = $this->findOneBy($object::class, $user);
 
         if ($resultat) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $object->$getter())
                 ->addViolation();
         }
+    }
+
+    protected function getGetter(mixed $object, Constraint $constraint)
+    {
+        $field = $constraint->field;
+
+        $getter = 'get' . ucfirst($field);
+        if (!method_exists($object, $getter)) {
+            throw new \LogicException("La méthode $getter n'existe pas dans " . get_class($object));
+        }
+
+        return $getter;
+    }
+
+    protected function findOneBy(mixed $classname, User $user): mixed
+    {
+        $entityOrNull = $this->em->getRepository($classname)
+            ->findOneBy([
+                'owner' => $user
+            ]);
+
+        return $entityOrNull;
     }
 }
