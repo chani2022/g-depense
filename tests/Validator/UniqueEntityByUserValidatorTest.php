@@ -262,18 +262,6 @@ class UniqueCategoryValidatorTest extends TestCase
             ->willReturn($objectWillReturn);
     }
 
-    private function simulateNeverExpectEntityExist(
-        MockObject $entityRepository,
-        array $critere,
-        object|null $objectWillReturn = null
-    ): void {
-        $entityRepository
-            ->expects($this->never())
-            ->method('findOneBy')
-            ->with($critere)
-            ->willReturn($objectWillReturn);
-    }
-
     private function simulateBuildViolation(
         int $nombreExpects,
         string $argument,
