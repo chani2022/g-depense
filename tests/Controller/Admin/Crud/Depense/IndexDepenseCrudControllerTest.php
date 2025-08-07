@@ -22,29 +22,29 @@ class IndexDepenseControllerTest extends AbstractDepenseCrudTest
         $this->assertResponseStatusCodeSame(302);
     }
 
-    public function testIndexPageCapitalAccessUserSuccessfully(): void
+    public function testIndexPageDepenseAccessUserSuccessfully(): void
     {
-        $this->simulateUserAccessPageIndexCapitalSuccessfully();
+        $this->simulateUserAccessPageIndexDepenseSuccessfully();
     }
 
-    public function testIndexPageCapitalAccessAdminSuccessfully(): void
+    public function testIndexPageDepenseAccessAdminSuccessfully(): void
     {
-        $this->simulateUserAccessPageIndexCapitalSuccessfully();
+        $this->simulateUserAccessPageIndexDepenseSuccessfully();
     }
 
-    public function testShowOnlyCapitalsOwnerIfUserAuthenticated(): void
+    public function testShowOnlyDepensesOwnerIfUserAuthenticated(): void
     {
-        $this->simulateUserAccessPageIndexCapitalSuccessfully();
+        $this->simulateUserAccessPageIndexDepenseSuccessfully();
         $this->assertIndexPageEntityCount(2);
     }
 
-    public function testShowAllCapitalIfAdminAuthenticated(): void
+    public function testShowAllDepenseIfAdminAuthenticated(): void
     {
-        $this->simulateAdminAccessPageIndexCapitalSuccessfully();
+        $this->simulateAdminAccessPageIndexDepenseSuccessfully();
         $this->assertIndexPageEntityCount(3);
     }
 
-    private function simulateUserAccessPageIndexCapitalSuccessfully(): void
+    private function simulateUserAccessPageIndexDepenseSuccessfully(): void
     {
         $this->client->loginUser($this->getSimpeUserAuthenticated());
 
@@ -52,7 +52,7 @@ class IndexDepenseControllerTest extends AbstractDepenseCrudTest
         $this->assertResponseIsSuccessful();
     }
 
-    private function simulateAdminAccessPageIndexCapitalSuccessfully(): void
+    private function simulateAdminAccessPageIndexDepenseSuccessfully(): void
     {
         $this->client->loginUser($this->getAdminAuthenticated());
 
@@ -63,9 +63,9 @@ class IndexDepenseControllerTest extends AbstractDepenseCrudTest
     /**
      * @dataProvider fieldsHidden
      */
-    public function testIndexPageCapitalFieldsHidden(string $field): void
+    public function testIndexPageDepenseFieldsHidden(string $field): void
     {
-        $this->simulateUserAccessPageIndexCapitalSuccessfully();
+        $this->simulateUserAccessPageIndexDepenseSuccessfully();
 
         $this->assertIndexColumnNotExists($field);
     }
@@ -73,9 +73,9 @@ class IndexDepenseControllerTest extends AbstractDepenseCrudTest
     /**
      * @dataProvider fieldsShowing
      */
-    public function testIndexPageCapitalFieldsShowing(string $field): void
+    public function testIndexPageDepenseFieldsShowing(string $field): void
     {
-        $this->simulateUserAccessPageIndexCapitalSuccessfully();
+        $this->simulateUserAccessPageIndexDepenseSuccessfully();
 
         $this->assertIndexColumnExists($field);
     }
