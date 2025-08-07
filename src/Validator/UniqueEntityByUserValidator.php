@@ -66,6 +66,6 @@ class UniqueEntityByUserValidator extends ConstraintValidator
         $entity = $this->em->getRepository($classname)
             ->findOneBy($critere);
 
-        return $entity ? true : false;
+        return $entity !== null;
     }
 }
