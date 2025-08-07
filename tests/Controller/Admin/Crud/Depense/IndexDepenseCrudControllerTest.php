@@ -2,9 +2,9 @@
 
 namespace App\Tests\Controller\Admin\Crud\Capital;
 
-use App\Tests\Controller\Admin\Crud\Capital\AbstractCapitalCrudTest;
+use App\Tests\Controller\Admin\Crud\Depense\AbstractDepenseCrudTest;
 
-class IndexCapitalControllerTest extends AbstractCapitalCrudTest
+class IndexDepenseControllerTest extends AbstractDepenseCrudTest
 {
 
     protected function setUp(): void
@@ -17,7 +17,7 @@ class IndexCapitalControllerTest extends AbstractCapitalCrudTest
         parent::tearDown();
     }
 
-    public function testAccessDeniedPageIndexCapitalIfUserNotAuthenticated(): void
+    public function testAccessDeniedPageIndexDepenseIfUserNotAuthenticated(): void
     {
         $this->client->request('GET', $this->generateIndexUrl());
         $this->assertResponseStatusCodeSame(302);
