@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
-#[UniqueEntityByUser(field: 'nom', entityClass: Category::class)]
+#[UniqueEntityByUser(field: 'nom', mappingOwner: 'owner', entityClass: Category::class)]
 class Category
 {
     #[ORM\Id]

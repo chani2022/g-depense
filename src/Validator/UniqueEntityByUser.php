@@ -34,8 +34,9 @@ class UniqueEntityByUser extends Constraint
         parent::__construct([
             'field' => $field,
             'mappingOwner' => $mappingOwner,
-            'entityClass' => $entityClass,
+            'entityClass' => $entityClass
         ], $groups, $payload);
+
         $this->field = $field;
         $this->mappingOwner = $mappingOwner;
         $this->entityClass = $entityClass;
@@ -45,8 +46,8 @@ class UniqueEntityByUser extends Constraint
     {
         return [
             'field',
+            'mappingOwner',
             'entityClass',
-            'mappingOwner'
         ];
     }
 
