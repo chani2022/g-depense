@@ -64,35 +64,50 @@ class UniqueCategoryValidatorTest extends TestCase
     }
 
     /**
+     * @dataProvider providePropsObjectExist
+     */
+    public function testStopIfUserAuthenticatedNotHaveId(string $object, string $mappingOwner, string $field): void
+    {
+        $userAuthenticated = $this->mockUserWithoutId();
+        $this->simulateUserAuthenticated($userAuthenticated);
+        $constraint = $this->simulateConstraint($field, $mappingOwner, $object);
+        $mockObjectToValidate = $this->mockObjectToValidate($object);
+
+        $entityRepository = $this->createMock(EntityRepository::class);
+
+        $this->simulateNeverExpectEntityExist($entityRepository, []);
+
+        $this->uniqueEntityByUserValidator->validate($mockObjectToValidate, $constraint);
+    }
+
+    /**
      * @dataProvider providePropsObjectNotExist
      */
     public function testGetterObjectNotExist(string $object, string $mappingOwner, string $props): void
     {
         $constraint = $this->simulateConstraint(field: $props, mappingOwner: $mappingOwner, entityClass: $object);
-
-        $object = match ($object) {
-            'category' => new Category(),
-            'quantity' => new Quantity()
-        };
+        $object = $this->mockObjectToValidate($object);
 
         $this->expectException(LogicException::class);
         $this->uniqueEntityByUserValidator->validate($object, $constraint);
     }
-
-    public function testValueForPropsEntityAlreadyExist(): void
+    /**
+     * @dataProvider providePropsObjectExist
+     */
+    public function testValueForPropsEntityAlreadyExist(string $object, string $mappingOwner, string $field): void
     {
-        $object = (new Category())
-            ->setNom('test');
-        $user = $this->simulateUserAuthenticated();
-        $constraint = $this->simulateConstraint(field: 'nom', mappingOwner: 'owner', entityClass: Category::class);
+        $constraint = $this->simulateConstraint(field: $field, mappingOwner: $mappingOwner, entityClass: $object);
+
+        $user = $this->mockUserWithId();
+        $this->simulateUserAuthenticated($user);
+        $objectToValidate = $this->mockObjectToValidate($object);
 
         $entityRepository = $this->createMock(EntityRepository::class);
+        $this->simulateGetRepository($entityRepository, $object);
+        $value = $this->getValueField($objectToValidate, $field);
+        $critere = $this->simulateCritereFindOnyBy($user, $constraint, $value);
 
-        $this->simulateGetRepository($entityRepository, $constraint->entityClass);
-
-        $critere = $this->simulateCritereFindOnyBy($user, $constraint, $object->getNom());
-
-        $this->simulateFindOneBy($entityRepository, $critere, $object);
+        $this->simulateEntityExist($entityRepository, $critere, $objectToValidate);
 
         $constraintViolationBuilder = $this->mockConstraintViolationBuilder();
 
@@ -101,7 +116,7 @@ class UniqueCategoryValidatorTest extends TestCase
         $constraintViolationBuilder
             ->expects($this->once())
             ->method('setParameter')
-            ->with('{{ value }}', $object->getNom())
+            ->with('{{ value }}', $value)
             ->willReturnSelf();
 
         $constraintViolationBuilder
@@ -110,47 +125,97 @@ class UniqueCategoryValidatorTest extends TestCase
             ->willReturnSelf();
 
 
-        $this->uniqueEntityByUserValidator->validate($object, $constraint);
+        $this->uniqueEntityByUserValidator->validate($objectToValidate, $constraint);
     }
 
-    public function testPropsEntityNotExist(): void
+    /**
+     * @dataProvider providePropsObjectExist
+     */
+    public function testValuePropsEntityNotExist(string $object, string $mappingOwner, string $field): void
     {
-        $object = (new Category())
-            ->setNom('test');
-        $user = $this->simulateUserAuthenticated();
-        $constraint = $this->simulateConstraint(field: 'nom', entityClass: Category::class);
+        // $object = (new Category())
+        //     ->setNom('test');
+        // $user = $this->simulateUserAuthenticated();
+        // $constraint = $this->simulateConstraint(field: 'nom', mappingOwner: 'owner', entityClass: Category::class);
+        $constraint = $this->simulateConstraint(field: $field, mappingOwner: $mappingOwner, entityClass: $object);
+
+        $user = $this->mockUserWithId();
+        $this->simulateUserAuthenticated($user);
+        $objectToValidate = $this->mockObjectToValidate($object);
 
         $entityRepository = $this->createMock(EntityRepository::class);
 
         $this->simulateGetRepository($entityRepository, $constraint->entityClass);
 
-        $critere = $this->simulateCritereFindOnyBy($user, $constraint, $object->getNom());
+        $getter = 'get' . ucfirst($field);
+        $critere = $this->simulateCritereFindOnyBy($objectToValidate, $user, $constraint);
 
-        $this->simulateFindOneBy($entityRepository, $critere);
+        $this->simulateEntityExist($entityRepository, $critere);
 
         $constraintViolationBuilder = $this->mockConstraintViolationBuilder();
 
         $this->simulateBuildViolation(0, $constraint->message, $constraintViolationBuilder);
 
-        $this->uniqueEntityByUserValidator->validate($object, $constraint);
+        $this->uniqueEntityByUserValidator->validate($objectToValidate, $constraint);
     }
 
     // === Data providers ===
-
     public static function providePropsObjectNotExist(): array
     {
         return [
-            ['category', 'owner', 'NotExist'],
-            ['quantity', 'user', 'NotExist']
+            [
+                'entityClass' => 'category',
+                'mappingOwner' => 'owner',
+                'field' => 'NotExist'
+            ],
+            [
+                'entityClass' => 'quantity',
+                'mappingOwner' => 'user',
+                'field' => 'NotExist'
+            ]
+        ];
+    }
+
+    public static function providePropsObjectExist(): array
+    {
+        return [
+            [
+                'entityClass' => Category::class,
+                'mappingOwner' => 'owner',
+                'field' => 'nom',
+            ],
+            [
+                'entityClass' => Quantity::class,
+                'mappingOwner' => 'owner',
+                'field' => 'unite',
+            ]
         ];
     }
 
     // === Private helper methods ===
 
-    private function simulateUserAuthenticated(): User
+    private function mockUserWithId(): User
+    {
+        return (new User())->setId(1);
+    }
+
+    private function mockUserWithoutId(): user
+    {
+        return new User();
+    }
+
+    private function mockObjectToValidate(string $object): object
+    {
+        return match ($object) {
+            'App\Entity\Category' => (new Category())->setNom('test'),
+            'App\Entity\Quantity' => (new Quantity())->setUnite('test')
+        };
+    }
+
+    private function simulateUserAuthenticated(User $user): User
     {
         $this->token->setToken(
-            new UsernamePasswordToken((new User())->setId(1), 'main')
+            new UsernamePasswordToken($user, 'main')
         );
 
         return $this->token->getToken()->getUser();
@@ -165,21 +230,40 @@ class UniqueCategoryValidatorTest extends TestCase
             ->willReturn($entityRepository);
     }
 
-    private function simulateCritereFindOnyBy(User $user, UniqueEntityByUser $constraint, string $valuePropsToValidate): array
+    private function simulateCritereFindOnyBy(User $user, UniqueEntityByUser $constraint, string $valueField): array
     {
         return [
-            'owner' => $user,
-            $constraint->field => $valuePropsToValidate
+            $constraint->mappingOwner => $user,
+            $constraint->field => $valueField
         ];
     }
 
-    private function simulateFindOneBy(
+    private function getValueField(object $objectToValidate, string $field): string
+    {
+        $getter = 'get' . ucfirst($field);
+
+        return $objectToValidate->$getter();
+    }
+
+    private function simulateEntityExist(
         MockObject $entityRepository,
         array $critere,
         object|null $objectWillReturn = null
     ): void {
         $entityRepository
             ->expects($this->once())
+            ->method('findOneBy')
+            ->with($critere)
+            ->willReturn($objectWillReturn);
+    }
+
+    private function simulateNeverExpectEntityExist(
+        MockObject $entityRepository,
+        array $critere,
+        object|null $objectWillReturn = null
+    ): void {
+        $entityRepository
+            ->expects($this->never())
             ->method('findOneBy')
             ->with($critere)
             ->willReturn($objectWillReturn);
