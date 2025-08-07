@@ -197,6 +197,13 @@ class DashboardControllerTest extends WebTestCase
                     'css_classname' => 'quantity'
                 ],
             ],
+            [
+                'menu_items_depense_access_user' => [
+                    'label' => 'Depense',
+                    'icon' => 'fa fa-users',
+                    'css_classname' => 'depense'
+                ],
+            ],
         ];
     }
 

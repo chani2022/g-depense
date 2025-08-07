@@ -3,15 +3,24 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Depense;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
+use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_USER')]
 class DepenseCrudController extends AbstractCrudController
 {
+    public function __construct(private Security $security) {}
     public static function getEntityFqcn(): string
     {
         return Depense::class;
@@ -23,8 +32,30 @@ class DepenseCrudController extends AbstractCrudController
             DateTimeField::new('compteSalaire.dateDebutCompte', 'Compte du'),
             DateTimeField::new('compteSalaire.dateFinCompte', 'Au'),
             TextField::new('category.nom', 'Depense'),
-            TextField::new('category.prix', 'Prix'),
-            BooleanField::new('category.isVital')
+            MoneyField::new('category.prix', 'Prix')
+                ->setNumDecimals(3)
+                ->setCurrency('MGA'),
+            BooleanField::new('category.isVital', 'Obligatoire')
         ];
+    }
+
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+    {
+        $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
+        $aliasDepense = $qb->getAllAliases()[0];
+        $qb->select($aliasDepense)
+            ->join($aliasDepense . '.compteSalaire', 'cs')
+            ->addSelect('cs')
+            ->join('cs.owner', 'ow')
+            ->addSelect('ow')
+            ->join($aliasDepense . '.category', 'cat')
+            ->addSelect('cat');
+
+        if (!$this->security->isGranted('ROLE_ADMIN', $this->getUser())) {
+            $qb->where('cs.owner = :user')
+                ->setParameter('user', $this->getUser());
+        }
+
+        return $qb;
     }
 }

@@ -1,4 +1,10 @@
-# App\Entity\Depense:
-#   depense_now:
-#     category: '@category_vital'
-#     compteSalaire: '@compte_salaire_user_credentials_with_date_now'
+App\Entity\Depense:
+  depense_user_crendentials_ok_1:
+    category: '@category_vital'
+    compteSalaire: '@compte_salaire_user_credentials_ok_1'
+  depense_user_crendentials_ok_2:
+    category: '@category_already_exist'
+    compteSalaire: '@compte_salaire_user_credentials_with_date_now'
+  depense_user_crendentials_other_1:
+    category: '@category_facultatif'
+    compteSalaire: '@compte_salaire_user_credentials_other'
