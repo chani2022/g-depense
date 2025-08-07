@@ -21,7 +21,6 @@ class UniqueEntityByUserValidator extends ConstraintValidator
      */
     public function validate(mixed $object, Constraint $constraint)
     {
-
         if (null === $object) {
             return;
         }

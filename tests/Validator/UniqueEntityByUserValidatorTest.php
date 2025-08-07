@@ -160,13 +160,13 @@ class UniqueCategoryValidatorTest extends TestCase
     {
         return [
             [
-                'entityClass' => 'category',
+                'entityClass' => Category::class,
                 'mappingOwner' => 'owner',
                 'field' => 'NotExist'
             ],
             [
-                'entityClass' => 'quantity',
-                'mappingOwner' => 'user',
+                'entityClass' => Quantity::class,
+                'mappingOwner' => 'owner',
                 'field' => 'NotExist'
             ]
         ];
