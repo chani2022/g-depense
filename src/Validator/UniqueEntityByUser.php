@@ -31,6 +31,7 @@ class UniqueEntityByUser extends Constraint
         array $groups = null,
         mixed $payload = null,
     ) {
+
         parent::__construct([
             'field' => $field,
             'mappingOwner' => $mappingOwner,
@@ -42,7 +43,7 @@ class UniqueEntityByUser extends Constraint
         $this->entityClass = $entityClass;
     }
 
-    public function getRequiredOptions()
+    public function getRequiredOptions(): array
     {
         return [
             'field',

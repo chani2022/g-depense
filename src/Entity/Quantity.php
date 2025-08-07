@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: QuantityRepository::class)]
-#[UniqueEntityByUser(field: 'unite', entityClass: Quantity::class)]
+#[UniqueEntityByUser(field: 'unite', mappingOwner: 'owner', entityClass: Quantity::class)]
 class Quantity
 {
     #[ORM\Id]
