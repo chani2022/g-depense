@@ -56,7 +56,7 @@ class UniqueCategoryValidatorTest extends TestCase
 
     public function testObjectToValidateNull(): void
     {
-        $constraint = $this->simulateConstraint(field: 'notExist', entityClass: 'notExist');
+        $constraint = $this->simulateConstraint(field: 'notExist', mappingOwner: 'test', entityClass: 'notExist');
 
         $this->uniqueEntityByUserValidator->validate(null, $constraint);
 
@@ -66,9 +66,9 @@ class UniqueCategoryValidatorTest extends TestCase
     /**
      * @dataProvider providePropsObjectNotExist
      */
-    public function testGetterObjectNotExist(string $object, string $props): void
+    public function testGetterObjectNotExist(string $object, string $mappingOwner, string $props): void
     {
-        $constraint = $this->simulateConstraint(field: $props, entityClass: $object);
+        $constraint = $this->simulateConstraint(field: $props, mappingOwner: $mappingOwner, entityClass: $object);
 
         $object = match ($object) {
             'category' => new Category(),
@@ -79,12 +79,12 @@ class UniqueCategoryValidatorTest extends TestCase
         $this->uniqueEntityByUserValidator->validate($object, $constraint);
     }
 
-    public function testPropsEntityAlreadyExist(): void
+    public function testValueForPropsEntityAlreadyExist(): void
     {
         $object = (new Category())
             ->setNom('test');
         $user = $this->simulateUserAuthenticated();
-        $constraint = $this->simulateConstraint(field: 'nom', entityClass: Category::class);
+        $constraint = $this->simulateConstraint(field: 'nom', mappingOwner: 'owner', entityClass: Category::class);
 
         $entityRepository = $this->createMock(EntityRepository::class);
 
@@ -140,8 +140,8 @@ class UniqueCategoryValidatorTest extends TestCase
     public static function providePropsObjectNotExist(): array
     {
         return [
-            ['category', 'NotExist'],
-            ['quantity', 'NotExist']
+            ['category', 'owner', 'NotExist'],
+            ['quantity', 'user', 'NotExist']
         ];
     }
 
@@ -205,9 +205,10 @@ class UniqueCategoryValidatorTest extends TestCase
 
     private function simulateConstraint(
         string $field,
+        string $mappingOwner,
         string $entityClass
     ): UniqueEntityByUser {
-        $constraint = new UniqueEntityByUser(field: $field, entityClass: $entityClass);
+        $constraint = new UniqueEntityByUser(field: $field, mappingOwner: $mappingOwner, entityClass: $entityClass);
         $constraint->message = 'test';
 
         return $constraint;
