@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Capital;
 use App\Entity\Category;
 use App\Entity\CompteSalaire;
+use App\Entity\Depense;
 use App\Entity\Quantity;
 use App\Entity\User;
 use App\Form\ChangePasswordType;
@@ -77,7 +78,9 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Categories', 'fa fa-users', Category::class)
                 ->setCssClass('categories'),
             MenuItem::linkToCrud('Quantity', 'fa fa-users', Quantity::class)
-                ->setCssClass('quantity')
+                ->setCssClass('quantity'),
+            MenuItem::linkToCrud('Depense', 'fa fa-users', Depense::class)
+                ->setCssClass('depense')
         ];
     }
 
