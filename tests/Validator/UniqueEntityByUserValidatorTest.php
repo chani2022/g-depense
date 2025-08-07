@@ -83,9 +83,11 @@ class UniqueCategoryValidatorTest extends TestCase
     /**
      * @dataProvider providePropsObjectNotExist
      */
-    public function testGetterObjectNotExist(string $object, string $mappingOwner, string $props): void
+    public function testGetterObjectNotExist(string $object, string $mappingOwner, string $field): void
     {
-        $constraint = $this->simulateConstraint(field: $props, mappingOwner: $mappingOwner, entityClass: $object);
+        $userAuthenticated = $this->mockUserWithId();
+        $this->simulateUserAuthenticated($userAuthenticated);
+        $constraint = $this->simulateConstraint($field, $mappingOwner, $object);
         $object = $this->mockObjectToValidate($object);
 
         $this->expectException(LogicException::class);
