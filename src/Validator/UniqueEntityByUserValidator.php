@@ -31,15 +31,16 @@ class UniqueEntityByUserValidator extends ConstraintValidator
 
         $value = $this->getFieldValue($object, $constraint);
         $field = $constraint->field;
+        $mappingOwner = $constraint->mappingOwner;
 
         $critere = [
-            'owner' => $user,
+            $mappingOwner => $user,
             $field => $value
         ];
 
-        $resultat = $this->findOneBy($object::class, $critere);
+        $entityExist = $this->entityExist($object::class, $critere);
 
-        if ($resultat) {
+        if ($entityExist) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)
                 ->addViolation();
@@ -58,11 +59,11 @@ class UniqueEntityByUserValidator extends ConstraintValidator
         return $object->$getter();
     }
 
-    protected function findOneBy(mixed $classname, array $critere): ?object
+    protected function entityExist(mixed $classname, array $critere): bool
     {
-        $entityOrNull = $this->em->getRepository($classname)
+        $entity = $this->em->getRepository($classname)
             ->findOneBy($critere);
 
-        return $entityOrNull;
+        return $entity ? true : false;
     }
 }
