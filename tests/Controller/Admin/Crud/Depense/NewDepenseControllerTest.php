@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Tests\Controller\Admin\Crud\Capital;
+namespace App\Tests\Controller\Admin\Crud\Depense;
 
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestFormAsserts;
 
-class NewCapitalControllerTest extends AbstractCapitalCrudTest
+class NewDepenseControllerTest extends AbstractDepenseCrudTest
 {
     use CrudTestFormAsserts;
 

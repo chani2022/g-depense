@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Tests\Controller\Admin\Crud\Capital;
+namespace App\Tests\Controller\Admin\Crud\Depense;
 
 use App\Tests\Controller\Admin\Crud\Depense\AbstractDepenseCrudTest;
 
 class IndexDepenseControllerTest extends AbstractDepenseCrudTest
 {
-
     protected function setUp(): void
     {
         parent::setUp();
