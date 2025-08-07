@@ -32,8 +32,8 @@ class UniqueEntityByUserTest extends TestCase
         $requiredOptionsActual = $this->uniqueEntityByUser->getRequiredOptions();
         $requiredOptionsExpected = [
             'field',
+            'mappingOwner',
             'entityClass',
-            'mappingOwner'
         ];
         $this->assertSame($requiredOptionsExpected, $requiredOptionsActual);
     }
