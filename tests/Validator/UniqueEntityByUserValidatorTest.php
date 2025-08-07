@@ -71,13 +71,13 @@ class UniqueCategoryValidatorTest extends TestCase
         $userAuthenticated = $this->mockUserWithoutId();
         $this->simulateUserAuthenticated($userAuthenticated);
         $constraint = $this->simulateConstraint($field, $mappingOwner, $object);
-        $mockObjectToValidate = $this->mockObjectToValidate($object);
+        $objectToValidate = $this->mockObjectToValidate($object);
 
         $entityRepository = $this->createMock(EntityRepository::class);
 
-        $this->simulateNeverExpectEntityExist($entityRepository, []);
+        $this->simulateNeverCallGetRepository($entityRepository);
 
-        $this->uniqueEntityByUserValidator->validate($mockObjectToValidate, $constraint);
+        $this->uniqueEntityByUserValidator->validate($objectToValidate, $constraint);
     }
 
     /**
@@ -133,10 +133,6 @@ class UniqueCategoryValidatorTest extends TestCase
      */
     public function testValuePropsEntityNotExist(string $object, string $mappingOwner, string $field): void
     {
-        // $object = (new Category())
-        //     ->setNom('test');
-        // $user = $this->simulateUserAuthenticated();
-        // $constraint = $this->simulateConstraint(field: 'nom', mappingOwner: 'owner', entityClass: Category::class);
         $constraint = $this->simulateConstraint(field: $field, mappingOwner: $mappingOwner, entityClass: $object);
 
         $user = $this->mockUserWithId();
@@ -147,8 +143,8 @@ class UniqueCategoryValidatorTest extends TestCase
 
         $this->simulateGetRepository($entityRepository, $constraint->entityClass);
 
-        $getter = 'get' . ucfirst($field);
-        $critere = $this->simulateCritereFindOnyBy($objectToValidate, $user, $constraint);
+        $value = $this->getValueField($objectToValidate, $field);
+        $critere = $this->simulateCritereFindOnyBy($user, $constraint, $value);
 
         $this->simulateEntityExist($entityRepository, $critere);
 
@@ -228,6 +224,13 @@ class UniqueCategoryValidatorTest extends TestCase
             ->method('getRepository')
             ->with($argument)
             ->willReturn($entityRepository);
+    }
+
+    private function simulateNeverCallGetRepository(MockObject $entityRepository): void
+    {
+        $this->entityManager
+            ->expects($this->never())
+            ->method('getRepository');
     }
 
     private function simulateCritereFindOnyBy(User $user, UniqueEntityByUser $constraint, string $valueField): array
