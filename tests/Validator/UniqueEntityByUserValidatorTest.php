@@ -197,7 +197,7 @@ class UniqueCategoryValidatorTest extends TestCase
         return (new User())->setId(1);
     }
 
-    private function mockUserWithoutId(): user
+    private function mockUserWithoutId(): User
     {
         return new User();
     }
