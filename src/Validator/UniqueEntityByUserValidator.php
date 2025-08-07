@@ -25,9 +25,12 @@ class UniqueEntityByUserValidator extends ConstraintValidator
         if (null === $object) {
             return;
         }
-
         /** @var User */
         $user = $this->token->getToken()->getUser();
+
+        if (!$user->getId()) {
+            return;
+        }
 
         $value = $this->getFieldValue($object, $constraint);
         $field = $constraint->field;
