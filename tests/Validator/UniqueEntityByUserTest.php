@@ -11,7 +11,7 @@ class UniqueEntityByUserTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->uniqueEntityByUser = new UniqueEntityByUser(field: 'test', entityClass: 'test');
+        $this->uniqueEntityByUser = new UniqueEntityByUser(field: 'test', mappingOwner: 'test', entityClass: 'test');
     }
 
     protected function tearDown(): void

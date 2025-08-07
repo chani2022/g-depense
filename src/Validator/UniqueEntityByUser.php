@@ -19,20 +19,25 @@ class UniqueEntityByUser extends Constraint
      */
     public $message = 'this "{{ value }}" already exist.';
     public string $field;
+    public string $mappingOwner;
     public string $entityClass;
+
 
     #[HasNamedArguments]
     public function __construct(
         string $field,
+        string $mappingOwner,
         string $entityClass,
         array $groups = null,
         mixed $payload = null,
     ) {
         parent::__construct([
             'field' => $field,
-            'entityClass' => $entityClass
+            'mappingOwner' => $mappingOwner,
+            'entityClass' => $entityClass,
         ], $groups, $payload);
         $this->field = $field;
+        $this->mappingOwner = $mappingOwner;
         $this->entityClass = $entityClass;
     }
 
@@ -40,7 +45,8 @@ class UniqueEntityByUser extends Constraint
     {
         return [
             'field',
-            'entityClass'
+            'entityClass',
+            'mappingOwner'
         ];
     }
 
