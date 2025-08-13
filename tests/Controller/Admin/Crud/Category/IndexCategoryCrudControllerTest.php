@@ -88,9 +88,7 @@ class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
     {
         return [
             ['id'],
-            ['nom'],
-            ['prix'],
-            ['quantity']
+            ['nom']
         ];
     }
 }

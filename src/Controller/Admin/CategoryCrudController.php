@@ -33,34 +33,9 @@ class CategoryCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id', '#')->onlyOnIndex(),
-            TextField::new('nom', 'Nom')->setFormTypeOption('constraints', [
+            TextField::new('nom', 'Nom du categorie')->setFormTypeOption('constraints', [
                 new NotBlank()
-            ]),
-            NumberField::new('prix', 'Prix')->setFormTypeOptions([
-                'constraints' => [
-                    new NotBlank(),
-                    new Positive()
-                ]
-            ]),
-            BooleanField::new('isVital', 'Primordial')->onlyOnForms(),
-            AssociationField::new('quantity', 'Quantity')
-                ->setQueryBuilder(
-                    function (QueryBuilder $queryBuilder) {
-                        $queryBuilder
-                            ->getEntityManager()
-                            ->getRepository(Quantity::class)
-                            ->findByOwner($this->security->getUser());
-                    }
-                )
-                ->setFormTypeOptions([
-                    'by_reference' => false,
-                    'choice_label' => 'unite',
-                    'placeholder' => '-Selectionnez-'
-                ])
-                ->setSortProperty('unite')
-                ->formatValue(function (?Quantity $quantity = null) {
-                    return $quantity ? $quantity->getUnite() : '';
-                })
+            ])
         ];
     }
 
