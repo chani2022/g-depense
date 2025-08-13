@@ -18,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -36,22 +37,11 @@ class DepenseCrudController extends AbstractCrudController
         return [
             DateTimeField::new('compteSalaire.dateDebutCompte', 'Compte du'),
             DateTimeField::new('compteSalaire.dateFinCompte', 'Au'),
-
-            // AssociationField::new('category')
-            //     ->formatValue(function (Category $category) {
-            //         return $category->getNom() . ' ' . $category->getPrix();
-            //     }),
-
-            TextField::new('category.nom', 'Depense')
-                ->formatValue(function (string $nom) {
-                    return $nom ?? '';
-                }),
+            TextField::new('category.nom', 'Depense'),
             MoneyField::new('category.prix', 'Prix')
                 ->setNumDecimals(3)
-                ->setCurrency('MGA')
-                ->formatValue(function (float $prix) {
-                    return $prix ?? 0;
-                }),
+                ->setCurrency('MGA'),
+            NumberField::new('category.quantity.quantity', 'Quantite')
         ];
     }
 
