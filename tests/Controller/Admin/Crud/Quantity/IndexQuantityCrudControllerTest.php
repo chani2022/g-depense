@@ -70,7 +70,7 @@ class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
     public static function fieldsShowIfUserAdmin(): array
     {
         return [
-            ['quantite'],
+            ['quantity'],
             ['unite'],
             ['owner']
         ];

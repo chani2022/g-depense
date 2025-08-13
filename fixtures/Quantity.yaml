@@ -1,7 +1,9 @@
 App\Entity\Quantity:
   quantity_user_credentials_ok:
     unite: 'alreadyExist'
+    quantity: 2
     owner: '@user_credentials_ok'
   quantity_user_credentials_ok_other:
     unite: 'Pièce'
+    quantity: 1.5
     owner: '@user_credentials_other'
