@@ -33,6 +33,15 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
     {
         $this->simulateUserAccessPageNewSuccessfully();
     }
+    /**
+     * @dataProvider provideFieldShowing
+     */
+    public function testOnlyFieldShowingInNewDepense(string $field): void
+    {
+        $this->simulateUserAccessPageNewSuccessfully();
+
+        $this->assertFormFieldExists($field);
+    }
 
     /**
      * @dataProvider provideFormDataInvalid
@@ -110,6 +119,15 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
                 ],
                 'expected' => 1
             ]
+        ];
+    }
+
+    public static function provideFieldShowing(): array
+    {
+        return [
+            ['category.nom'],
+            ['category.prix'],
+            ['category.quantity.quantity']
         ];
     }
 }
