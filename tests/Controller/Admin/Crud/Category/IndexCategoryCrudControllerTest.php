@@ -32,13 +32,22 @@ class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
      * -----------------------------------------------------------------
      * --------------------------------utilisateur simple---------------
      * -----------------------------------------------------------------
-     * @dataProvider fieldShowing
+     * @dataProvider fieldShowingUserAuthenticated
      */
-    public function testPageIndexCategoryFieldShowing(string $field): void
+    public function testPageIndexCategoryFieldShowingIfUserAuthenticated(string $field): void
     {
         $this->simulateAccessPageIndexCategorySuccessfullyWithUser();
 
         $this->assertIndexColumnExists($field);
+    }
+    /**
+     * @dataProvider fieldNotShowingUserAuthenticated
+     */
+    public function testPageIndexCategoryFieldNotShowingIfUserAuthenticated(string $field): void
+    {
+        $this->simulateAccessPageIndexCategorySuccessfullyWithUser();
+
+        $this->assertIndexColumnNotExists($field);
     }
 
     public function testShowOnlyOwnerEntityCategory(): void
@@ -56,6 +65,15 @@ class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
     public function testPageIndexCategorySuccessfullyIfAdminAuthenticated(): void
     {
         $this->simulateAccessPageIndexCategorySuccessfullyWithAdmin();
+    }
+    /**
+     * @dataProvider fieldShowingUserAdmin
+     */
+    public function testPageIndexCategoryAllFieldShowingIfAdminAuthenticated(string $field): void
+    {
+        $this->simulateAccessPageIndexCategorySuccessfullyWithAdmin();
+
+        $this->assertIndexColumnExists($field);
     }
 
     public function testShowAllEntityCategoryIfAdmin(): void
@@ -84,11 +102,30 @@ class IndexCategoryControllerCrudTest extends AbstractCategoryCrudTest
     /**
      * @return array<string[]>
      */
-    public static function fieldShowing(): array
+    public static function fieldShowingUserAuthenticated(): array
     {
         return [
             ['id'],
-            ['nom']
+            ['nom'],
+        ];
+    }
+
+    public static function fieldNotShowingUserAuthenticated(): array
+    {
+        return [
+            ['owner.imageName']
+        ];
+    }
+
+    /**
+     * @return array<string[]>
+     */
+    public static function fieldShowingUserAdmin(): array
+    {
+        return [
+            ['id'],
+            ['nom'],
+            ['owner.imageName']
         ];
     }
 }

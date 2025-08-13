@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
@@ -35,7 +36,11 @@ class CategoryCrudController extends AbstractCrudController
             IdField::new('id', '#')->onlyOnIndex(),
             TextField::new('nom', 'Nom du categorie')->setFormTypeOption('constraints', [
                 new NotBlank()
-            ])
+            ]),
+            AvatarField::new('owner.imageName', 'Avatar')
+                ->formatValue(function (?string $imageName) {
+                    return $imageName ? '/images/users/' . $imageName : '/images/users/user-default.png';
+                })->setPermission('ROLE_ADMIN')
         ];
     }
 
@@ -43,10 +48,11 @@ class CategoryCrudController extends AbstractCrudController
     {
         $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
         $aliasCategory = $qb->getAllAliases()[0];
+        $qb->join($aliasCategory . '.owner', 'ow')
+            ->addSelect('ow');
 
         if (!$this->security->isGranted('ROLE_ADMIN', $this->security->getUser())) {
-            $qb->join($aliasCategory . '.owner', 'ow')
-                ->where('ow = :owner')
+            $qb->where('ow = :owner')
                 ->setParameter('owner', $this->security->getUser());
         }
         return $qb;

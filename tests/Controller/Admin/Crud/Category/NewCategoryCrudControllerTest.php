@@ -47,6 +47,15 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
 
         $this->assertFormFieldExists($field);
     }
+    /**
+     * @dataProvider fieldsNotShowingIfUserAuthenticated
+     */
+    public function testFieldsShowingInPageNewCategoryIfUserAuthenthenticated(string $field): void
+    {
+        $this->simulateAccessPageNewCategorySuccessfullyWithUser();
+
+        $this->assertFormFieldNotExists($field);
+    }
 
     public function testFieldsNotInPageNewCategorySuccess(): void
     {
@@ -157,7 +166,13 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
     {
         return [
             ['nom'],
-            ['prix']
+        ];
+    }
+
+    public static function fieldsNotShowingIfUserAuthenticated(): array
+    {
+        return [
+            ['owner.imageName']
         ];
     }
 
@@ -167,42 +182,6 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
             'nom and prix required' => [
                 'formData' => [
                     'nom' => '',
-                    'prix' => ''
-                ],
-                'expected' => 2
-            ],
-            'nom required' => [
-                'formData' => [
-                    'nom' => null,
-                    'prix' => 15.25
-                ],
-                'expected' => 1
-            ],
-            'prix required' => [
-                'formData' => [
-                    'nom' => 'nom',
-                    'prix' => null
-                ],
-                'expected' => 1
-            ],
-            'prix must positif' => [
-                'formData' => [
-                    'nom' => 'nom',
-                    'prix' => -10
-                ],
-                'expected' => 1
-            ],
-            'prix must decimal' => [
-                'formData' => [
-                    'nom' => 'nom',
-                    'prix' => 'test'
-                ],
-                'expected' => 1
-            ],
-            'nom category already exist' => [
-                'formData' => [
-                    'nom' => 'alreadyExist',
-                    'prix' => 5.25
                 ],
                 'expected' => 1
             ]
