@@ -51,11 +51,14 @@ class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
         $this->assertIndexPageEntityCount(2);
     }
 
-    public function testFieldsShowingIfUserAuthenticated(): void
+    /**
+     * @dataProvider fieldShowIfUserAuthenticated
+     */
+    public function testFieldsShowingIfUserAuthenticated($field): void
     {
         $this->simulateUserAccessIndexQuantityPage();
 
-        $this->assertIndexColumnExists('unite');
+        $this->assertIndexColumnExists($field);
     }
     /**
      * @dataProvider fieldsShowIfUserAdmin
@@ -65,6 +68,14 @@ class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
         $this->simulateAdminAccessIndexQuantityPage();
 
         $this->assertIndexColumnExists($field);
+    }
+
+    public static function fieldsShowIfUserAuthenticated(): array
+    {
+        return [
+            ['quantity'],
+            ['unite'],
+        ];
     }
 
     public static function fieldsShowIfUserAdmin(): array
