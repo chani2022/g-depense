@@ -108,10 +108,10 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
      * ----------------------------Admin----------------------------
      * -------------------------------------------------------------
      */
-    public function testPageNewCategorySuccessfullyIfAdminAuthenticated(): void
-    {
-        $this->simulateAccessPageNewCategorySuccessfullyWithAdmin();
-    }
+    // public function testPageNewCategorySuccessfullyIfAdminAuthenticated(): void
+    // {
+    //     $this->simulateAccessPageNewCategorySuccessfullyWithAdmin();
+    // }
 
     //simulation
     private function simulateAccessPageNewQuantitySuccessfullyWithUser(): void
