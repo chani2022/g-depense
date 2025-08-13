@@ -70,7 +70,7 @@ class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
         $this->assertIndexColumnExists($field);
     }
 
-    public static function fieldsShowIfUserAuthenticated(): array
+    public static function fieldShowIfUserAuthenticated(): array
     {
         return [
             ['quantity'],
