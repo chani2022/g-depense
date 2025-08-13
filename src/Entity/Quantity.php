@@ -6,6 +6,7 @@ use App\Repository\QuantityRepository;
 use App\Validator\UniqueEntityByUser;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: QuantityRepository::class)]
@@ -26,6 +27,9 @@ class Quantity
 
     #[ORM\OneToMany(mappedBy: 'quantity', targetEntity: Category::class)]
     private Collection $categories;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
+    private ?string $quantity = null;
 
     public function __construct()
     {
@@ -87,6 +91,18 @@ class Quantity
                 $category->setQuantity(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getQuantity(): ?string
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity(string $quantity): static
+    {
+        $this->quantity = $quantity;
 
         return $this;
     }
