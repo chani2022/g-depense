@@ -4,7 +4,6 @@ namespace App\Controller\Admin;
 
 use App\Entity\Quantity;
 use App\Entity\User;
-use Doctrine\DBAL\Types\DecimalType;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use Doctrine\ORM\QueryBuilder;
