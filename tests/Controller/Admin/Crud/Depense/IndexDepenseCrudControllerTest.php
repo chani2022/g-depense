@@ -94,7 +94,7 @@ class IndexDepenseControllerTest extends AbstractDepenseCrudTest
             ['compteSalaire.dateFinCompte'],
             ['category.nom'],
             ['category.prix'],
-            ['category.isVital']
+            ['category.quantity.quantity']
         ];
     }
     /**
