@@ -29,7 +29,7 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
         $this->simulateAdminAccessPageNewSuccessfully();
     }
 
-    public function testPageNewCapitalSuccessfullyWithUser(): void
+    public function testPageNewDepenseSuccessfullyWithUser(): void
     {
         $this->simulateUserAccessPageNewSuccessfully();
     }
@@ -125,9 +125,7 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
     public static function provideFieldShowing(): array
     {
         return [
-            ['category.nom'],
-            ['category.prix'],
-            ['category.quantity.quantity']
+            ['category'],
         ];
     }
 }

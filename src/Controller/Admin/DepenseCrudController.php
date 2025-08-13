@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Category;
 use App\Entity\Depense;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
@@ -9,6 +10,7 @@ use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
@@ -28,13 +30,27 @@ class DepenseCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            DateTimeField::new('compteSalaire.dateDebutCompte', 'Compte du'),
-            DateTimeField::new('compteSalaire.dateFinCompte', 'Au'),
-            TextField::new('category.nom', 'Depense'),
+            // index et detail
+            DateTimeField::new('compteSalaire.dateDebutCompte', 'Compte du')
+                ->onlyOnIndex()
+                ->onlyOnDetail(),
+            DateTimeField::new('compteSalaire.dateFinCompte', 'Au')
+                ->onlyOnIndex()
+                ->onlyOnDetail(),
+            TextField::new('category.nom', 'Depense')
+                ->onlyOnIndex()
+                ->onlyOnDetail(),
             MoneyField::new('category.prix', 'Prix')
+                ->onlyOnIndex()
+                ->onlyOnDetail()
                 ->setNumDecimals(3)
                 ->setCurrency('MGA'),
             NumberField::new('category.quantity.quantity', 'Quantite')
+                ->onlyOnIndex()
+                ->onlyOnDetail(),
+            //form
+            AssociationField::new('category', 'Category')
+                ->onlyOnForms(),
         ];
     }
 
