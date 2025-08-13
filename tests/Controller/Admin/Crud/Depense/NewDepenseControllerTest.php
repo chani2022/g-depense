@@ -18,7 +18,7 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
         parent::tearDown();
     }
 
-    public function testAccessDeniedPageNewCapitalIfUserNotAuthenticated(): void
+    public function testAccessDeniedPageNewDepenseIfUserNotAuthenticated(): void
     {
         $this->client->request('GET', $this->generateNewFormUrl());
         $this->assertResponseStatusCodeSame(302);
@@ -37,7 +37,7 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
     /**
      * @dataProvider provideFormDataInvalid
      */
-    public function testCreateCapitalWithFormDataInvalid(array $formData, int $expected): void
+    public function testCreateDepenseWithFormDataInvalid(array $formData, int $expected): void
     {
         $this->simulateUserAccessPageNewSuccessfully();
 
