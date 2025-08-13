@@ -16,6 +16,18 @@ abstract class AbstractDepenseCrudTest extends AbstractCrudTestCase
 
     protected ?Crawler $crawler;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->crawler = null;
+    }
+
     protected function getControllerFqcn(): string
     {
         return DepenseCrudController::class;
@@ -24,12 +36,5 @@ abstract class AbstractDepenseCrudTest extends AbstractCrudTestCase
     protected function getDashboardFqcn(): string
     {
         return DashboardController::class;
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        $this->crawler = null;
     }
 }
