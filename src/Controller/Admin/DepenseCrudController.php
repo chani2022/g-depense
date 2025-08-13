@@ -39,23 +39,23 @@ class DepenseCrudController extends AbstractCrudController
         ];
     }
 
-    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
-    {
-        $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
-        $aliasDepense = $qb->getAllAliases()[0];
-        $qb->select($aliasDepense)
-            ->join($aliasDepense . '.compteSalaire', 'cs')
-            ->addSelect('cs')
-            ->join('cs.owner', 'ow')
-            ->addSelect('ow')
-            ->join($aliasDepense . '.category', 'cat')
-            ->addSelect('cat');
+    // public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
+    // {
+    //     $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
+    //     $aliasDepense = $qb->getAllAliases()[0];
+    //     $qb->select($aliasDepense)
+    //         ->join($aliasDepense . '.compteSalaire', 'cs')
+    //         ->addSelect('cs')
+    //         ->join('cs.owner', 'ow')
+    //         ->addSelect('ow')
+    //         ->join($aliasDepense . '.category', 'cat')
+    //         ->addSelect('cat');
 
-        if (!$this->security->isGranted('ROLE_ADMIN', $this->getUser())) {
-            $qb->where('cs.owner = :user')
-                ->setParameter('user', $this->getUser());
-        }
+    //     if (!$this->security->isGranted('ROLE_ADMIN', $this->getUser())) {
+    //         $qb->where('cs.owner = :user')
+    //             ->setParameter('user', $this->getUser());
+    //     }
 
-        return $qb;
-    }
+    //     return $qb;
+    // }
 }

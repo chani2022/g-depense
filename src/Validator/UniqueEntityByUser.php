@@ -43,7 +43,10 @@ class UniqueEntityByUser extends Constraint
         $this->entityClass = $entityClass;
     }
 
-    public function getRequiredOptions(): array
+    /**
+     * @return string[]
+     */
+    public function getRequiredOptions()
     {
         return [
             'field',
@@ -52,6 +55,9 @@ class UniqueEntityByUser extends Constraint
         ];
     }
 
+    /**
+     * @return string|string[] One or more constant values
+     */
     public function getTargets()
     {
         return self::CLASS_CONSTRAINT;
