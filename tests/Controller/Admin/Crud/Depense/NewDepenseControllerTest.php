@@ -24,7 +24,7 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
         $this->assertResponseStatusCodeSame(302);
     }
 
-    public function testPageNewCapitalSuccessfullyWithAdmin(): void
+    public function testPageNewDepenseSuccessfullyWithAdmin(): void
     {
         $this->simulateAdminAccessPageNewSuccessfully();
     }
