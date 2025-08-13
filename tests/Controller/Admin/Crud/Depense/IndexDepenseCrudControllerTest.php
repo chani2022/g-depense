@@ -90,9 +90,11 @@ class IndexDepenseControllerTest extends AbstractDepenseCrudTest
     public static function fieldsShowing(): array
     {
         return [
-            ['montant'],
-            ['ajout'],
-            ['compteSalaire.owner.imageName']
+            ['compteSalaire.dateDebutCompte'],
+            ['compteSalaire.dateFinCompte'],
+            ['category.nom'],
+            ['category.prix'],
+            ['category.isVital']
         ];
     }
     /**
