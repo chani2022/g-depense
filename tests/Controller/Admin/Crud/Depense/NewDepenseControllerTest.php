@@ -44,6 +44,16 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
     }
 
     /**
+     * @dataProvider provideFieldNotShowing
+     */
+    public function testOnlyFieldNotShowingInNewDepense(string $field): void
+    {
+        $this->simulateUserAccessPageNewSuccessfully();
+
+        $this->assertFormFieldNotExists($field);
+    }
+
+    /**
      * @dataProvider provideFormDataInvalid
      */
     public function testCreateDepenseWithFormDataInvalid(array $formData, int $expected): void
@@ -126,6 +136,17 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
     {
         return [
             ['category'],
+        ];
+    }
+
+    public static function provideFieldNotShowing(): array
+    {
+        return [
+            ['compteSalaire.dateDebutCompte'],
+            ['compteSalaire.dateFinCompte'],
+            ['category.nom'],
+            ['category.prix'],
+            ['category.quantity.quantity'],
         ];
     }
 }
