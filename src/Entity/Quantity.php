@@ -32,9 +32,6 @@ class Quantity
     private Collection $depenses;
 
     #[ORM\Column]
-    private ?float $quantity = null;
-
-    #[ORM\Column]
     private ?float $quantite = null;
 
     public function __construct()
@@ -128,18 +125,6 @@ class Quantity
                 $depense->setQuantity(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getQuantity(): ?float
-    {
-        return $this->quantity;
-    }
-
-    public function setQuantity(float $quantity): static
-    {
-        $this->quantity = $quantity;
 
         return $this;
     }

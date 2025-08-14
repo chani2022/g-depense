@@ -23,8 +23,6 @@ class Depense
     #[ORM\Column]
     private ?float $prix = null;
 
-    #[ORM\Column]
-    private ?bool $isVital = null;
 
     #[ORM\ManyToOne(inversedBy: 'depenses')]
     #[ORM\JoinColumn(nullable: false)]
@@ -33,6 +31,9 @@ class Depense
     #[ORM\ManyToOne(inversedBy: 'depenses')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
+
+    #[ORM\Column(options: ['default' => false])]
+    private ?bool $vital = false;
 
     public function getId(): ?int
     {
@@ -75,18 +76,6 @@ class Depense
         return $this;
     }
 
-    public function isIsVital(): ?bool
-    {
-        return $this->isVital;
-    }
-
-    public function setIsVital(bool $isVital): static
-    {
-        $this->isVital = $isVital;
-
-        return $this;
-    }
-
     public function getQuantity(): ?Quantity
     {
         return $this->quantity;
@@ -107,6 +96,18 @@ class Depense
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getIsVital(): ?bool
+    {
+        return $this->vital;
+    }
+
+    public function setVital(bool $vital): static
+    {
+        $this->vital = $vital;
 
         return $this;
     }
