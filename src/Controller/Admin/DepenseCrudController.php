@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
@@ -37,15 +38,21 @@ class DepenseCrudController extends AbstractCrudController
             DateTimeField::new('compteSalaire.dateFinCompte', 'Au')
                 ->onlyOnIndex()
                 ->onlyOnDetail(),
-            TextField::new('category.nom', 'Depense')
+            TextField::new('nom', 'Nom de la Depense')
                 ->onlyOnIndex()
                 ->onlyOnDetail(),
-            MoneyField::new('category.prix', 'Prix')
+            MoneyField::new('prix', 'Prix')
                 ->onlyOnIndex()
                 ->onlyOnDetail()
                 ->setNumDecimals(3)
                 ->setCurrency('MGA'),
-            NumberField::new('category.quantity.quantity', 'Quantite')
+            BooleanField::new('isVital', 'Obligatoire')
+                ->onlyOnIndex()
+                ->onlyOnDetail(),
+            TextField::new('quantity.nom', 'Unité')
+                ->onlyOnIndex()
+                ->onlyOnDetail(),
+            NumberField::new('quantity.quantity', 'Quantite')
                 ->onlyOnIndex()
                 ->onlyOnDetail(),
             //form
@@ -58,14 +65,13 @@ class DepenseCrudController extends AbstractCrudController
     {
         $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
         $aliasDepense = $qb->getAllAliases()[0];
-        $qb->select($aliasDepense)
-            ->join($aliasDepense . '.compteSalaire', 'cs')
+        $qb->join($aliasDepense . '.compteSalaire', 'cs')
             ->addSelect('cs')
             ->join('cs.owner', 'ow')
             ->addSelect('ow')
             ->join($aliasDepense . '.category', 'cat')
             ->addSelect('cat')
-            ->join('cat.quantity', 'q')
+            ->join($aliasDepense . '.quantity', 'q')
             ->addSelect('q');
 
         if (!$this->security->isGranted('ROLE_ADMIN', $this->getUser())) {

@@ -29,7 +29,16 @@ class IndexDepenseControllerTest extends AbstractDepenseCrudTest
 
     public function testIndexPageDepenseAccessAdminSuccessfully(): void
     {
+        $this->simulateAdminAccessPageIndexDepenseSuccessfully();
+    }
+    /**
+     * @dataProvider fieldShowingUserAuthenticated
+     */
+    public function testFieldShowingInIndexPageDepenseIfUserAuthenticated(string $field): void
+    {
         $this->simulateUserAccessPageIndexDepenseSuccessfully();
+
+        $this->assertIndexColumnExists($field);
     }
 
     public function testShowOnlyDepensesOwnerIfUserAuthenticated(): void
@@ -87,14 +96,16 @@ class IndexDepenseControllerTest extends AbstractDepenseCrudTest
         ];
     }
 
-    public static function fieldsShowing(): array
+    public static function fieldShowingUserAuthenticated(): array
     {
         return [
             ['compteSalaire.dateDebutCompte'],
             ['compteSalaire.dateFinCompte'],
-            ['category.nom'],
-            ['category.prix'],
-            ['category.quantity.quantity']
+            ['nom'],
+            ['prix'],
+            ['isVital'],
+            ['quantity.unite'],
+            ['quantity.quantite']
         ];
     }
     /**

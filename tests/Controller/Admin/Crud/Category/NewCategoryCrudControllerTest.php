@@ -3,13 +3,11 @@
 namespace App\Tests\Controller\Admin\Crud\Category;
 
 use App\Tests\Controller\Admin\Crud\Category\AbstractCategoryCrudTest;
-use App\Tests\Trait\QuantityTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestFormAsserts;
 
 class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
 {
     use CrudTestFormAsserts;
-    use QuantityTrait;
 
     protected function setUp(): void
     {
