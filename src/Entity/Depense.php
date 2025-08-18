@@ -6,6 +6,7 @@ use App\Repository\DepenseRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DepenseRepository::class)]
+
 class Depense
 {
     #[ORM\Id]
@@ -98,6 +99,11 @@ class Depense
         $this->category = $category;
 
         return $this;
+    }
+
+    public function isVital(): ?bool
+    {
+        return $this->vital;
     }
 
     public function getIsVital(): ?bool

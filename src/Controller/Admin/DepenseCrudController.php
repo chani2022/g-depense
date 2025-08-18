@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Depense;
+use App\Form\QuantityType;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use Doctrine\ORM\QueryBuilder;
@@ -20,8 +21,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 
 #[IsGranted('ROLE_USER')]
+
 class DepenseCrudController extends AbstractCrudController
 {
     /**
@@ -124,7 +127,8 @@ class DepenseCrudController extends AbstractCrudController
         $fields = [
             AssociationField::new('category', 'Category')
                 ->onlyOnForms(),
-            AssociationField::new('quantity', 'Quantité')
+            Field::new('quantity', 'Quantité')
+                ->setFormType(QuantityType::class)
                 ->onlyOnForms(),
         ];
         return array_merge($fields, self::getFieldsDefault());
