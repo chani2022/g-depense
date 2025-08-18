@@ -112,6 +112,8 @@ class DepenseCrudController extends AbstractCrudController
                 ->onlyOnIndex(),
             DateTimeField::new('compteSalaire.dateFinCompte', 'au')
                 ->onlyOnIndex(),
+            // TextField::new('category', 'Nom du category')
+            //     ->onlyOnIndex(),
             TextField::new('quantity.unite', 'Unité')
                 ->onlyOnIndex(),
             NumberField::new('quantity.quantite', 'Quantite')

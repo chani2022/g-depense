@@ -97,11 +97,11 @@ class IndexDepenseControllerTest extends AbstractDepenseCrudTest
         return [
             ['compteSalaire.dateDebutCompte'],
             ['compteSalaire.dateFinCompte'],
+            ['quantity.unite'],
+            ['quantity.quantite'],
             ['nomDepense'],
             ['prix'],
             ['vital'],
-            ['quantity.unite'],
-            ['quantity.quantite']
         ];
     }
 
