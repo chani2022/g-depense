@@ -154,6 +154,7 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
     public static function fieldsShowing(): array
     {
         return [
+            ['quantite'],
             ['unite'],
         ];
     }
@@ -161,7 +162,6 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
     public static function fieldsHiddenWithUserAuthenticated(): array
     {
         return [
-            ['id'],
             ['owner']
         ];
     }
@@ -171,9 +171,10 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
         return [
             'unite required' => [
                 'formData' => [
+                    'quantite' => '',
                     'unite' => '',
                 ],
-                'expected' => 1
+                'expected' => 2
             ],
         ];
     }
