@@ -2,12 +2,14 @@
 
 namespace App\Tests\Form;
 
+use App\Entity\Quantity;
 use App\Form\QuantityType;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\FormBuilderInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class QuantityTypeTest extends TestCase
@@ -56,5 +58,21 @@ class QuantityTypeTest extends TestCase
             ->willReturnSelf();
 
         $this->quantityType->buildForm($mockFormBuilder, $mockOptions);
+    }
+
+    public function testConfigureOptionsQuantity(): void
+    {
+        /** @var MockObject|OptionsResolver */
+        $mockResolver = $this->createMock(OptionsResolver::class);
+        $mockResolver
+            ->expects($this->once())
+            ->method('setDefaults')
+            ->with([
+                'data_class' => Quantity::class
+            ])
+            ->willReturnSelf();
+
+
+        $this->quantityType->configureOptions($mockResolver);
     }
 }
