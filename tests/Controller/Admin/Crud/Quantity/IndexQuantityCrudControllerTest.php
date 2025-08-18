@@ -73,7 +73,7 @@ class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
     public static function fieldShowIfUserAuthenticated(): array
     {
         return [
-            ['quantity'],
+            ['quantite'],
             ['unite'],
         ];
     }
@@ -81,7 +81,7 @@ class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
     public static function fieldsShowIfUserAdmin(): array
     {
         return [
-            ['quantity'],
+            ['quantite'],
             ['unite'],
             ['owner']
         ];
