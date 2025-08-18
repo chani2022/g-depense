@@ -97,6 +97,7 @@ class IndexDepenseControllerTest extends AbstractDepenseCrudTest
         return [
             ['compteSalaire.dateDebutCompte'],
             ['compteSalaire.dateFinCompte'],
+            ['category.nom'],
             ['nomDepense'],
             ['prix'],
             ['vital'],
