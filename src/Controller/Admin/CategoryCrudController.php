@@ -38,8 +38,7 @@ class CategoryCrudController extends AbstractCrudController
                 ->formatValue(function (?string $imageName) {
                     return $imageName ? '/images/users/' . $imageName : '/images/users/user-default.png';
                 })->setPermission('ROLE_ADMIN')
-                ->onlyOnIndex()
-                ->onlyOnDetail(),
+                ->onlyOnIndex(),
 
             AssociationField::new('owner', 'Proprietaire')
                 ->onlyOnForms()
