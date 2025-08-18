@@ -6,7 +6,6 @@ use App\Repository\QuantityRepository;
 use App\Validator\UniqueEntityByUser;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: QuantityRepository::class)]
@@ -28,12 +27,17 @@ class Quantity
     #[ORM\OneToMany(mappedBy: 'quantity', targetEntity: Category::class)]
     private Collection $categories;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: '0')]
-    private ?string $quantity = null;
+
+    #[ORM\OneToMany(mappedBy: 'quantity', targetEntity: Depense::class)]
+    private Collection $depenses;
+
+    #[ORM\Column]
+    private ?float $quantite = null;
 
     public function __construct()
     {
         $this->categories = new ArrayCollection();
+        $this->depenses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -95,14 +99,44 @@ class Quantity
         return $this;
     }
 
-    public function getQuantity(): ?string
+    /**
+     * @return Collection<int, Depense>
+     */
+    public function getDepenses(): Collection
     {
-        return $this->quantity;
+        return $this->depenses;
     }
 
-    public function setQuantity(string $quantity): static
+    public function addDepense(Depense $depense): static
     {
-        $this->quantity = $quantity;
+        if (!$this->depenses->contains($depense)) {
+            $this->depenses->add($depense);
+            $depense->setQuantity($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDepense(Depense $depense): static
+    {
+        if ($this->depenses->removeElement($depense)) {
+            // set the owning side to null (unless already changed)
+            if ($depense->getQuantity() === $this) {
+                $depense->setQuantity(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getQuantite(): ?float
+    {
+        return $this->quantite;
+    }
+
+    public function setQuantite(float $quantite): static
+    {
+        $this->quantite = $quantite;
 
         return $this;
     }

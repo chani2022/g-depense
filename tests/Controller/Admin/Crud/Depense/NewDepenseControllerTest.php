@@ -61,11 +61,13 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
         $this->simulateUserAccessPageNewSuccessfully();
 
         $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
-        $nameForm = $this->getFormEntity();
-        $form = $this->crawler->filter(sprintf('form[name="%s"]', $nameForm))
+        $formName = $this->getFormEntity();
+        $form = $this->crawler->filter(sprintf('form[name="%s"]', $formName))
             ->form([
-                $nameForm => $formData
+                $formName => $formData
             ]);
+
+
         $this->crawler = $this->client->submit($form);
 
         $numberActual = $this->crawler->filter('.invalid-feedback')->count();
@@ -108,27 +110,16 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
     public static function provideFormDataInvalid(): array
     {
         return [
-            'montant et ajout chaine de caractère' => [
+            'nom , prix,  isVital required' => [
                 'data' => [
-                    'montant' => '2024-01-02',
-                    'ajout' => '2024-01-14'
+                    'category' => [
+                        'nom' => null,
+                        'prix' => null,
+                        'isVital' => null
+                    ]
                 ],
-                'expected' => 2
+                'expected' => 3
             ],
-            'montant chaine de caractère' => [
-                'data' => [
-                    'montant' => '2024-01-02',
-                    'ajout' => 25
-                ],
-                'expected' => 1
-            ],
-            'ajout chaine de caractère' => [
-                'data' => [
-                    'montant' => 15,
-                    'ajout' => 'test'
-                ],
-                'expected' => 1
-            ]
         ];
     }
 

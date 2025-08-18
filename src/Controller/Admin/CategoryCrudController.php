@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Category;
-use App\Entity\Quantity;
+use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use Doctrine\ORM\QueryBuilder;
@@ -11,14 +11,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Positive;
 
 #[IsGranted('ROLE_USER')]
 class CategoryCrudController extends AbstractCrudController
@@ -33,34 +31,25 @@ class CategoryCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id', '#')->onlyOnIndex(),
-            TextField::new('nom', 'Nom')->setFormTypeOption('constraints', [
+            TextField::new('nom', 'Nom du categorie')->setFormTypeOption('constraints', [
                 new NotBlank()
             ]),
-            NumberField::new('prix', 'Prix')->setFormTypeOptions([
-                'constraints' => [
-                    new NotBlank(),
-                    new Positive()
-                ]
-            ]),
-            BooleanField::new('isVital', 'Primordial')->onlyOnForms(),
-            AssociationField::new('quantity', 'Quantity')
-                ->setQueryBuilder(
-                    function (QueryBuilder $queryBuilder) {
-                        $queryBuilder
-                            ->getEntityManager()
-                            ->getRepository(Quantity::class)
-                            ->findByOwner($this->security->getUser());
-                    }
-                )
+            AvatarField::new('owner.imageName', 'Avatar')
+                ->formatValue(function (?string $imageName) {
+                    return $imageName ? '/images/users/' . $imageName : '/images/users/user-default.png';
+                })->setPermission('ROLE_ADMIN')
+                ->onlyOnIndex()
+                ->onlyOnDetail(),
+
+            AssociationField::new('owner', 'Proprietaire')
+                ->onlyOnForms()
+                ->setPermission('ROLE_ADMIN')
                 ->setFormTypeOptions([
-                    'by_reference' => false,
-                    'choice_label' => 'unite',
-                    'placeholder' => '-Selectionnez-'
+                    'placeholder' => '-Selectionnez-',
+                    'constraints' => [
+                        new NotBlank()
+                    ]
                 ])
-                ->setSortProperty('unite')
-                ->formatValue(function (?Quantity $quantity = null) {
-                    return $quantity ? $quantity->getUnite() : '';
-                })
         ];
     }
 
@@ -68,10 +57,11 @@ class CategoryCrudController extends AbstractCrudController
     {
         $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
         $aliasCategory = $qb->getAllAliases()[0];
+        $qb->join($aliasCategory . '.owner', 'ow')
+            ->addSelect('ow');
 
         if (!$this->security->isGranted('ROLE_ADMIN', $this->security->getUser())) {
-            $qb->join($aliasCategory . '.owner', 'ow')
-                ->where('ow = :owner')
+            $qb->where('ow = :owner')
                 ->setParameter('owner', $this->security->getUser());
         }
         return $qb;

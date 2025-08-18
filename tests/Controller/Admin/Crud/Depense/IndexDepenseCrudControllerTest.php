@@ -21,21 +21,53 @@ class IndexDepenseControllerTest extends AbstractDepenseCrudTest
         $this->client->request('GET', $this->generateIndexUrl());
         $this->assertResponseStatusCodeSame(302);
     }
+    //-------------utilisateur simple------------------------------------
 
     public function testIndexPageDepenseAccessUserSuccessfully(): void
     {
         $this->simulateUserAccessPageIndexDepenseSuccessfully();
     }
 
-    public function testIndexPageDepenseAccessAdminSuccessfully(): void
+    /**
+     * @dataProvider fieldShowingUserAuthenticated
+     */
+    public function testFieldShowingInIndexPageDepenseIfUserAuthenticated(string $field): void
     {
         $this->simulateUserAccessPageIndexDepenseSuccessfully();
+
+        $this->assertIndexColumnExists($field);
+    }
+    /**
+     * @dataProvider fieldNotShowingUserAuthenticated
+     */
+    public function testFieldNotShowingInIndexPageDepenseIfUserAuthenticated(string $field): void
+    {
+        $this->simulateUserAccessPageIndexDepenseSuccessfully();
+
+        $this->assertIndexColumnNotExists($field);
     }
 
     public function testShowOnlyDepensesOwnerIfUserAuthenticated(): void
     {
         $this->simulateUserAccessPageIndexDepenseSuccessfully();
         $this->assertIndexPageEntityCount(2);
+    }
+
+    //------------------admin-----------------------------------
+
+    public function testIndexPageDepenseAccessAdminSuccessfully(): void
+    {
+        $this->simulateAdminAccessPageIndexDepenseSuccessfully();
+    }
+
+    /**
+     * @dataProvider fieldShowingAdminAuthenticated
+     */
+    public function testFieldShowingInIndexPageDepenseIfAdminAuthenticated(string $field): void
+    {
+        $this->simulateAdminAccessPageIndexDepenseSuccessfully();
+
+        $this->assertIndexColumnExists($field);
     }
 
     public function testShowAllDepenseIfAdminAuthenticated(): void
@@ -60,51 +92,39 @@ class IndexDepenseControllerTest extends AbstractDepenseCrudTest
         $this->assertResponseIsSuccessful();
     }
 
-    /**
-     * @dataProvider fieldsHidden
-     */
-    public function testIndexPageDepenseFieldsHidden(string $field): void
-    {
-        $this->simulateUserAccessPageIndexDepenseSuccessfully();
-
-        $this->assertIndexColumnNotExists($field);
-    }
-
-    /**
-     * @dataProvider fieldsShowing
-     */
-    public function testIndexPageDepenseFieldsShowing(string $field): void
-    {
-        $this->simulateUserAccessPageIndexDepenseSuccessfully();
-
-        $this->assertIndexColumnExists($field);
-    }
-
-    public static function fieldsHidden(): array
-    {
-        return [
-            ['id'],
-        ];
-    }
-
-    public static function fieldsShowing(): array
+    public static function fieldShowingUserAuthenticated(): array
     {
         return [
             ['compteSalaire.dateDebutCompte'],
             ['compteSalaire.dateFinCompte'],
-            ['category.nom'],
-            ['category.prix'],
-            ['category.quantity.quantity']
+            ['nomDepense'],
+            ['prix'],
+            ['vital'],
+            ['quantity.unite'],
+            ['quantity.quantite']
         ];
     }
-    /**
-     * @return array<array{string, string}>
-     */
-    public static function userAccessDenied(): array
+
+    public static function fieldNotShowingUserAuthenticated(): array
     {
         return [
-            ['anonymous'],
-            ['roleUser']
+            ['category'],
+            ['quantity'],
+            ['compteSalaire.owner.imageName']
+        ];
+    }
+
+    public static function fieldShowingAdminAuthenticated(): array
+    {
+        return [
+            ['compteSalaire.owner.imageName'],
+            ['compteSalaire.dateDebutCompte'],
+            ['compteSalaire.dateFinCompte'],
+            ['nomDepense'],
+            ['prix'],
+            ['vital'],
+            ['quantity.unite'],
+            ['quantity.quantite']
         ];
     }
 }

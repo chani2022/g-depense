@@ -3,13 +3,11 @@
 namespace App\Tests\Controller\Admin\Crud\Category;
 
 use App\Tests\Controller\Admin\Crud\Category\AbstractCategoryCrudTest;
-use App\Tests\Trait\QuantityTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestFormAsserts;
 
 class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
 {
     use CrudTestFormAsserts;
-    use QuantityTrait;
 
     protected function setUp(): void
     {
@@ -47,6 +45,15 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
 
         $this->assertFormFieldExists($field);
     }
+    /**
+     * @dataProvider fieldsNotShowingIfUserAuthenticated
+     */
+    public function testFieldsShowingInPageNewCategoryIfUserAuthenthenticated(string $field): void
+    {
+        $this->simulateAccessPageNewCategorySuccessfullyWithUser();
+
+        $this->assertFormFieldNotExists($field);
+    }
 
     public function testFieldsNotInPageNewCategorySuccess(): void
     {
@@ -69,36 +76,23 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
     }
 
     /**
-     * @dataProvider formDataValidWithoutQuantity
-     */
-    public function testCreateNewCategoryWithFormDataValidWidthoutQuantitySuccess(array $formData): void
-    {
-        $this->simulateAccessPageNewCategorySuccessfullyWithUser();
-
-        $this->simulateSubmitForm($formData);
-
-        $this->assertResponseStatusCodeSame(302);
-    }
-    /**
-     * @dataProvider formDataValidWithQuantity
-     */
-    public function testCreateNewCategoryWithFormDataValidWithQuantitySuccess(array $formData): void
-    {
-        $quantity = $this->getQuantity();
-        $formData['quantity'] = $quantity->getId();
-
-        $this->simulateAccessPageNewCategorySuccessfullyWithUser();
-
-        $this->simulateSubmitForm($formData);
-
-        $this->assertResponseStatusCodeSame(302);
-    }
-    /**
      * @dataProvider formDataValidButNomCategoryOwnerUserOther
      */
-    public function testCreateNewCategoryWithFormDataValidWithOtherUserSuccess(array $formData): void
+    public function testCreateNewCategoryWithDataAlreadyExistButWithOtherUserSuccess(array $formData): void
     {
         $this->simulateAccessPageNewCategorySuccessfullyWithOtherUser();
+
+        $this->simulateSubmitForm($formData);
+
+        $this->assertResponseStatusCodeSame(302);
+    }
+
+    /**
+     * @dataProvider formDataValid
+     */
+    public function testCreateNewCategoryWithUserAuthenticatedSuccess(array $formData): void
+    {
+        $this->simulateAccessPageNewCategorySuccessfullyWithUser();
 
         $this->simulateSubmitForm($formData);
 
@@ -113,6 +107,42 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
     public function testPageNewCategorySuccessfullyIfAdminAuthenticated(): void
     {
         $this->simulateAccessPageNewCategorySuccessfullyWithAdmin();
+    }
+
+    /**
+     * @dataProvider provideFieldShowingAdminAuthenticated
+     */
+    public function testFieldShowingInPageNewCategoryIfAdminAuthenticated(string $field): void
+    {
+        $this->simulateAccessPageNewCategorySuccessfullyWithAdmin();
+
+        $this->assertFormFieldExists($field);
+    }
+
+    /**
+     * @dataProvider formDataInValidAdminAuthenticated
+     */
+    public function testCreateNewCategoryWithDataInvalidAdminAuthenticatedSuccess(array $formData, int $expected): void
+    {
+        $this->simulateAccessPageNewCategorySuccessfullyWithAdmin();
+
+        $this->simulateSubmitForm($formData);
+
+        $numberErrorActual = $this->crawler->filter('.invalid-feedback')->count();
+        $this->assertSame($expected, $numberErrorActual);
+    }
+
+    /**
+     * @dataProvider formDataValidAdminAuthenticated
+     */
+    public function testCreateNewCategoryWithAdminAuthenticatedSuccess(array $formData): void
+    {
+        $formData['owner'] = $this->getSimpeUserAuthenticated()->getId();
+        $this->simulateAccessPageNewCategorySuccessfullyWithAdmin();
+
+        $this->simulateSubmitForm($formData);
+
+        $this->assertResponseStatusCodeSame(302);
     }
 
     //simulation
@@ -157,7 +187,13 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
     {
         return [
             ['nom'],
-            ['prix']
+        ];
+    }
+
+    public static function fieldsNotShowingIfUserAuthenticated(): array
+    {
+        return [
+            ['owner.imageName']
         ];
     }
 
@@ -167,70 +203,8 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
             'nom and prix required' => [
                 'formData' => [
                     'nom' => '',
-                    'prix' => ''
-                ],
-                'expected' => 2
-            ],
-            'nom required' => [
-                'formData' => [
-                    'nom' => null,
-                    'prix' => 15.25
                 ],
                 'expected' => 1
-            ],
-            'prix required' => [
-                'formData' => [
-                    'nom' => 'nom',
-                    'prix' => null
-                ],
-                'expected' => 1
-            ],
-            'prix must positif' => [
-                'formData' => [
-                    'nom' => 'nom',
-                    'prix' => -10
-                ],
-                'expected' => 1
-            ],
-            'prix must decimal' => [
-                'formData' => [
-                    'nom' => 'nom',
-                    'prix' => 'test'
-                ],
-                'expected' => 1
-            ],
-            'nom category already exist' => [
-                'formData' => [
-                    'nom' => 'alreadyExist',
-                    'prix' => 5.25
-                ],
-                'expected' => 1
-            ]
-        ];
-    }
-
-    public static function formDataValidWithoutQuantity(): array
-    {
-        return [
-            [
-                'formData' => [
-                    'nom' => 'new category',
-                    'prix' => 15.25,
-                    'isVital' => true
-                ]
-            ]
-        ];
-    }
-
-    public function formDataValidWithQuantity(): array
-    {
-        return [
-            [
-                'formData' => [
-                    'nom' => 'new category with quantity',
-                    'prix' => 15.25,
-                    'isVital' => true,
-                ]
             ]
         ];
     }
@@ -241,8 +215,50 @@ class NewCategoryControllerCrudTest extends AbstractCategoryCrudTest
             [
                 'formData' => [
                     'nom' => 'alreadyExist',
-                    'prix' => 15.25,
-                    'isVital' => true
+                ]
+            ]
+        ];
+    }
+
+    public static function formDataValid(): array
+    {
+        return [
+            [
+                'formData' => [
+                    'nom' => 'not exist',
+                ]
+            ]
+        ];
+    }
+
+    public static function provideFieldShowingAdminAuthenticated(): array
+    {
+        return [
+            ['nom'],
+            ['owner']
+        ];
+    }
+
+    public static function formDataInValidAdminAuthenticated(): array
+    {
+        return [
+            [
+                'formData' => [
+                    'nom' => '',
+                    'owner' => ''
+                ],
+                'expected' => 2
+            ]
+        ];
+    }
+
+    public static function formDataValidAdminAuthenticated(): array
+    {
+        return [
+            [
+                'formData' => [
+                    'nom' => 'not exist',
+                    'owner' => 'user'
                 ]
             ]
         ];
