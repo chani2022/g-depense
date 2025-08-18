@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Depense;
 use App\Form\QuantityType;
+use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use Doctrine\ORM\QueryBuilder;
@@ -126,9 +127,32 @@ class DepenseCrudController extends AbstractCrudController
     {
         $fields = [
             AssociationField::new('category', 'Category')
+                ->setFormTypeOptions([
+                    'placeholder' => '-Selectionnez-',
+                    'choice_label' => 'nom',
+                    'query_builder' => function (EntityRepository $er) {
+                        $qb =  $er->createQueryBuilder('c');
+                        if (!$this->security->isGranted('ROLE_ADMIN', $this->getUser())) {
+                            $qb->andWhere('c.owner = :user')
+                                ->setParameter('user', $this->getUser());
+                        }
+                        $qb->orderBy('c.id', 'ASC');
+                    }
+                ])
                 ->onlyOnForms(),
-            Field::new('quantity', 'Quantité')
-                ->setFormType(QuantityType::class)
+            AssociationField::new('quantity', 'Quantité')
+                ->setFormTypeOptions([
+                    'placeholder' => '-Selectionnez-',
+                    'choice_label' => 'unite',
+                    'query_builder' => function (EntityRepository $er) {
+                        $qb =  $er->createQueryBuilder('q');
+                        if (!$this->security->isGranted('ROLE_ADMIN', $this->getUser())) {
+                            $qb->andWhere('q.owner = :user')
+                                ->setParameter('user', $this->getUser());
+                        }
+                        $qb->orderBy('q.id', 'ASC');
+                    }
+                ])
                 ->onlyOnForms(),
         ];
         return array_merge($fields, self::getFieldsDefault());
