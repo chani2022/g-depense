@@ -31,6 +31,13 @@ class Depense
     #[ORM\Column(options: ['default' => false])]
     private ?bool $vital = false;
 
+    #[ORM\Column]
+    private ?float $quantite = null;
+
+    #[ORM\ManyToOne(inversedBy: 'depenses')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Unite $unite = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -97,6 +104,30 @@ class Depense
     public function setVital(bool $vital): static
     {
         $this->vital = $vital;
+
+        return $this;
+    }
+
+    public function getQuantite(): ?float
+    {
+        return $this->quantite;
+    }
+
+    public function setQuantite(float $quantite): static
+    {
+        $this->quantite = $quantite;
+
+        return $this;
+    }
+
+    public function getUnite(): ?Unite
+    {
+        return $this->unite;
+    }
+
+    public function setUnite(?Unite $unite): static
+    {
+        $this->unite = $unite;
 
         return $this;
     }

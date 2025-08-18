@@ -58,17 +58,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Category::class)]
     private Collection $categories;
 
-    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Quantity::class)]
-    private Collection $quantities;
-
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Unite::class)]
     private Collection $unites;
+
 
     public function __construct()
     {
         $this->compteSalaires = new ArrayCollection();
         $this->categories = new ArrayCollection();
-        $this->quantities = new ArrayCollection();
         $this->unites = new ArrayCollection();
     }
 
@@ -277,36 +274,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($category->getOwner() === $this) {
                 $category->setOwner(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Quantity>
-     */
-    public function getQuantities(): Collection
-    {
-        return $this->quantities;
-    }
-
-    public function addQuantity(Quantity $quantity): static
-    {
-        if (!$this->quantities->contains($quantity)) {
-            $this->quantities->add($quantity);
-            $quantity->setOwner($this);
-        }
-
-        return $this;
-    }
-
-    public function removeQuantity(Quantity $quantity): static
-    {
-        if ($this->quantities->removeElement($quantity)) {
-            // set the owning side to null (unless already changed)
-            if ($quantity->getOwner() === $this) {
-                $quantity->setOwner(null);
             }
         }
 
