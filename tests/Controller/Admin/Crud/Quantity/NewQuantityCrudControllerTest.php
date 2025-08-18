@@ -197,7 +197,7 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
             [
                 'formData' => [
                     'unite' => 'alreadyExist',
-                    'quantity' => 15
+                    'quantite' => 15
                 ]
             ]
         ];
