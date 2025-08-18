@@ -61,11 +61,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Quantity::class)]
     private Collection $quantities;
 
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Unite::class)]
+    private Collection $unites;
+
     public function __construct()
     {
         $this->compteSalaires = new ArrayCollection();
         $this->categories = new ArrayCollection();
         $this->quantities = new ArrayCollection();
+        $this->unites = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -312,5 +316,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString()
     {
         return $this->id . ' - ' . $this->username;
+    }
+
+    /**
+     * @return Collection<int, Unite>
+     */
+    public function getUnites(): Collection
+    {
+        return $this->unites;
+    }
+
+    public function addUnite(Unite $unite): static
+    {
+        if (!$this->unites->contains($unite)) {
+            $this->unites->add($unite);
+            $unite->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUnite(Unite $unite): static
+    {
+        if ($this->unites->removeElement($unite)) {
+            // set the owning side to null (unless already changed)
+            if ($unite->getOwner() === $this) {
+                $unite->setOwner(null);
+            }
+        }
+
+        return $this;
     }
 }
