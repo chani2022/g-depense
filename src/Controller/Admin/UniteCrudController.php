@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Quantity;
+use App\Entity\Unite;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
@@ -18,12 +18,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[IsGranted('ROLE_USER')]
-class QuantityCrudController extends AbstractCrudController
+class UniteCrudController extends AbstractCrudController
 {
     public function __construct(private Security $security) {}
     public static function getEntityFqcn(): string
     {
-        return Quantity::class;
+        return Unite::class;
     }
 
     public function configureFields(string $pageName): iterable

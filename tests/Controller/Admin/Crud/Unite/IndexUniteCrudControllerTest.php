@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Tests\Controller\Admin\Crud\Quantity;
+namespace App\Tests\Controller\Admin\Crud\Unite;
 
-use App\Tests\Controller\Admin\Crud\Quantity\AbstractQuantityCrudTest;
+use App\Tests\Controller\Admin\Crud\Unite\AbstractUniteCrudTest;
 
-class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
+class IndexUniteCrudControllerTest extends AbstractUniteCrudTest
 {
     protected function setUp(): void
     {
@@ -18,35 +18,35 @@ class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
     /**
      * ---------------------security de la page ----------------------------------
      */
-    public function testAccessDeniedIndexPageQuantityForUserAnonymous(): void
+    public function testAccessDeniedIndexPageUniteForUserAnonymous(): void
     {
         $this->client->request('GET', $this->generateIndexUrl());
 
         $this->assertResponseStatusCodeSame(302);
     }
 
-    public function testUserAuthorizedForPageIndexQuantity(): void
+    public function testUserAuthorizedForPageIndexUnite(): void
     {
-        $this->simulateUserAccessIndexQuantityPage();
+        $this->simulateUserAccessIndexUnitePage();
     }
 
-    public function testAdminAuthorizedForPageIndexQuantity(): void
+    public function testAdminAuthorizedForPageIndexUnite(): void
     {
-        $this->simulateAdminAccessIndexQuantityPage();
+        $this->simulateAdminAccessIndexUnitePage();
     }
     /**
      * -----------------------nombre d'entity affiché par utilisateur-------------
      */
-    public function testShowOnlyOwnerQuantityIfUserAuthenticated(): void
+    public function testShowOnlyOwnerUniteIfUserAuthenticated(): void
     {
-        $this->simulateUserAccessIndexQuantityPage();
+        $this->simulateUserAccessIndexUnitePage();
 
         $this->assertIndexPageEntityCount(1);
     }
 
-    public function testShowAllQuantityIfAdminAuthenticated(): void
+    public function testShowAllUniteIfAdminAuthenticated(): void
     {
-        $this->simulateAdminAccessIndexQuantityPage();
+        $this->simulateAdminAccessIndexUnitePage();
 
         $this->assertIndexPageEntityCount(2);
     }
@@ -56,7 +56,7 @@ class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
      */
     public function testFieldsShowingIfUserAuthenticated($field): void
     {
-        $this->simulateUserAccessIndexQuantityPage();
+        $this->simulateUserAccessIndexUnitePage();
 
         $this->assertIndexColumnExists($field);
     }
@@ -65,7 +65,7 @@ class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
      */
     public function testFieldsShowingIfAdminAuthenticated(string $field): void
     {
-        $this->simulateAdminAccessIndexQuantityPage();
+        $this->simulateAdminAccessIndexUnitePage();
 
         $this->assertIndexColumnExists($field);
     }
@@ -90,7 +90,7 @@ class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
     /**
      * --------------------------simulation----------------------------------------
      */
-    private function simulateUserAccessIndexQuantityPage(): void
+    private function simulateUserAccessIndexUnitePage(): void
     {
         $userAuthenticated = $this->getSimpeUserAuthenticated();
         $this->client->loginUser($userAuthenticated);
@@ -100,7 +100,7 @@ class IndexQuantityCrudControllerTest extends AbstractQuantityCrudTest
         $this->assertResponseIsSuccessful();
     }
 
-    private function simulateAdminAccessIndexQuantityPage(): void
+    private function simulateAdminAccessIndexUnitePage(): void
     {
         $userAuthenticated = $this->getAdminAuthenticated();
         $this->client->loginUser($userAuthenticated);

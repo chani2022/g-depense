@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Tests\Controller\Admin\Crud\Quantity;
+namespace App\Tests\Controller\Admin\Crud\Unite;
 
-use App\Controller\Admin\CapitalCrudController;
 use App\Controller\Admin\DashboardController;
-use App\Controller\Admin\QuantityCrudController;
+use App\Controller\Admin\UniteCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use App\Tests\Trait\UserAuthenticatedTrait;
 use Symfony\Component\DomCrawler\Crawler;
 
-abstract class AbstractQuantityCrudTest extends AbstractCrudTestCase
+abstract class AbstractUniteCrudTest extends AbstractCrudTestCase
 {
     use RefreshDatabaseTrait;
     use UserAuthenticatedTrait;
@@ -26,7 +25,7 @@ abstract class AbstractQuantityCrudTest extends AbstractCrudTestCase
 
     protected function getControllerFqcn(): string
     {
-        return QuantityCrudController::class;
+        return UniteCrudController::class;
     }
 
     protected function getDashboardFqcn(): string

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests\Controller\Admin\Crud\Quantity;
+namespace App\Tests\Controller\Admin\Crud\Unite;
 
-use App\Tests\Controller\Admin\Crud\Quantity\AbstractQuantityCrudTest;
+use App\Tests\Controller\Admin\Crud\Unite\AbstractUniteCrudTest;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestFormAsserts;
 
-class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
+class NewUniteControllerCrudTest extends AbstractUniteCrudTest
 {
     use CrudTestFormAsserts;
 
@@ -19,7 +19,7 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
         parent::tearDown();
     }
 
-    public function testPageNewQuantityAccessDeniedIfUserNotAuthenticated(): void
+    public function testPageNewUniteAccessDeniedIfUserNotAuthenticated(): void
     {
         $this->client->request('GET', $this->generateNewFormUrl());
 
@@ -31,26 +31,26 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
      * --------------------------------utilisateur simple---------------
      * -----------------------------------------------------------------
      */
-    public function testPageNewQuantitySuccessfullyIfUserAuthenticated(): void
+    public function testPageNewUniteSuccessfullyIfUserAuthenticated(): void
     {
-        $this->simulateAccessPageNewQuantitySuccessfullyWithUser();
+        $this->simulateAccessPageNewUniteSuccessfullyWithUser();
     }
 
     /**
      * @dataProvider fieldsShowing
      */
-    public function testFieldsShowingInPageNewQuantitySuccess($field): void
+    public function testFieldsShowingInPageNewUniteSuccess($field): void
     {
-        $this->simulateAccessPageNewQuantitySuccessfullyWithUser();
+        $this->simulateAccessPageNewUniteSuccessfullyWithUser();
 
         $this->assertFormFieldExists($field);
     }
     /**
      * @dataProvider fieldsHiddenWithUserAuthenticated
      */
-    public function testFieldsNotInPageNewQuantitySuccess($fieldHidden): void
+    public function testFieldsNotInPageNewUniteSuccess($fieldHidden): void
     {
-        $this->simulateAccessPageNewQuantitySuccessfullyWithUser();
+        $this->simulateAccessPageNewUniteSuccessfullyWithUser();
 
         $this->assertFormFieldNotExists($fieldHidden);
     }
@@ -58,9 +58,9 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
     /**
      * @dataProvider formDataInvalid
      */
-    public function testCreateNewQuantityWithFormDataInvalid(array $formData, int $expected): void
+    public function testCreateNewUniteWithFormDataInvalid(array $formData, int $expected): void
     {
-        $this->simulateAccessPageNewQuantitySuccessfullyWithUser();
+        $this->simulateAccessPageNewUniteSuccessfullyWithUser();
 
         $this->simulateSubmitForm($formData);
 
@@ -71,9 +71,9 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
     /**
      * @dataProvider formDataValid
      */
-    public function testCreateNewQuantityWithFormDataValid(array $formData): void
+    public function testCreateNewUniteWithFormDataValid(array $formData): void
     {
-        $this->simulateAccessPageNewQuantitySuccessfullyWithUser();
+        $this->simulateAccessPageNewUniteSuccessfullyWithUser();
 
         $this->simulateSubmitForm($formData);
 
@@ -82,9 +82,9 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
     /**
      * @dataProvider formDataAlreadyExist
      */
-    public function testCreateNewQuantityWithFormDataAlreadyExist(array $formData, int $expected): void
+    public function testCreateNewUniteWithFormDataAlreadyExist(array $formData, int $expected): void
     {
-        $this->simulateAccessPageNewQuantitySuccessfullyWithUser();
+        $this->simulateAccessPageNewUniteSuccessfullyWithUser();
 
         $this->simulateSubmitForm($formData);
 
@@ -94,9 +94,9 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
     /**
      * @dataProvider formDataValidButNomCategoryOwnerUserOther
      */
-    public function testCreateNewQuantityWithFormDataValidWithOtherUser(array $formData): void
+    public function testCreateNewUniteWithFormDataValidWithOtherUser(array $formData): void
     {
-        $this->simulateAccessPageNewQuantitySuccessfullyWithOtherUser();
+        $this->simulateAccessPageNewUniteSuccessfullyWithOtherUser();
 
         $this->simulateSubmitForm($formData);
 
@@ -110,7 +110,7 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
      */
 
     //simulation
-    private function simulateAccessPageNewQuantitySuccessfullyWithUser(): void
+    private function simulateAccessPageNewUniteSuccessfullyWithUser(): void
     {
         $this->logUser();
         $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
@@ -118,7 +118,7 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
         $this->assertResponseIsSuccessful();
     }
 
-    private function simulateAccessPageNewQuantitySuccessfullyWithOtherUser(): void
+    private function simulateAccessPageNewUniteSuccessfullyWithOtherUser(): void
     {
         $this->logOtherUser();
         $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
