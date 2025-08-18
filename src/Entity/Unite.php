@@ -3,12 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\UniteRepository;
+use App\Validator\UniqueEntityByUser;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: UniteRepository::class)]
 
+#[ORM\Entity(repositoryClass: UniteRepository::class)]
+#[UniqueEntityByUser(field: 'unite', mappingOwner: 'owner', entityClass: Unite::class)]
 class Unite
 {
     #[ORM\Id]
