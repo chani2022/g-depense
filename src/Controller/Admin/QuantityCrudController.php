@@ -29,7 +29,7 @@ class QuantityCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            NumberField::new('quantity', 'Quantite'),
+            NumberField::new('quantite', 'Quantite'),
             TextField::new('unite', 'Unité')->setFormTypeOptions([
                 'constraints' => [
                     new NotBlank()
