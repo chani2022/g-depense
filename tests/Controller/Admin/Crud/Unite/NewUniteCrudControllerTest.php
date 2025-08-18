@@ -167,10 +167,9 @@ class NewUniteControllerCrudTest extends AbstractUniteCrudTest
         return [
             'unite required' => [
                 'formData' => [
-                    'quantite' => '',
                     'unite' => '',
                 ],
-                'expected' => 2
+                'expected' => 1
             ],
         ];
     }
@@ -181,7 +180,6 @@ class NewUniteControllerCrudTest extends AbstractUniteCrudTest
             [
                 'formData' => [
                     'unite' => 'test',
-                    'quantite' => 30.75
                 ]
             ]
         ];

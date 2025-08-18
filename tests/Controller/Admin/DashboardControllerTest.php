@@ -192,9 +192,9 @@ class DashboardControllerTest extends WebTestCase
             ],
             [
                 'menu_items_quantity_access_user' => [
-                    'label' => 'Quantity',
+                    'label' => 'Unite',
                     'icon' => 'fa fa-users',
-                    'css_classname' => 'quantity'
+                    'css_classname' => 'unite'
                 ],
             ],
             [

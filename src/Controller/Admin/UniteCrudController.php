@@ -29,12 +29,6 @@ class UniteCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            NumberField::new('quantite', 'Quantite')
-                ->setFormTypeOptions([
-                    'constraints' => [
-                        new NotBlank()
-                    ]
-                ]),
             TextField::new('unite', 'Unité')->setFormTypeOptions([
                 'constraints' => [
                     new NotBlank()
