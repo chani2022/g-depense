@@ -92,7 +92,7 @@ class NewUniteControllerCrudTest extends AbstractUniteCrudTest
         $this->assertSame($expected, $numberErrorActual);
     }
     /**
-     * @dataProvider formDataValidButNomCategoryOwnerUserOther
+     * @dataProvider formDataValidButUniteOwnerUserOther
      */
     public function testCreateNewUniteWithFormDataValidWithOtherUser(array $formData): void
     {
@@ -150,7 +150,6 @@ class NewUniteControllerCrudTest extends AbstractUniteCrudTest
     public static function fieldsShowing(): array
     {
         return [
-            ['quantite'],
             ['unite'],
         ];
     }
@@ -185,13 +184,12 @@ class NewUniteControllerCrudTest extends AbstractUniteCrudTest
         ];
     }
 
-    public function formDataValidButNomCategoryOwnerUserOther(): array
+    public function formDataValidButUniteOwnerUserOther(): array
     {
         return [
             [
                 'formData' => [
                     'unite' => 'alreadyExist',
-                    'quantite' => 15
                 ]
             ]
         ];
