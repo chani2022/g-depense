@@ -6,6 +6,7 @@ use App\Entity\Capital;
 use App\Entity\Category;
 use App\Entity\CompteSalaire;
 use App\Entity\Quantity;
+use App\Entity\Unite;
 use App\Entity\User;
 use App\HandleImage\HandleImage;
 use App\Repository\CompteSalaireRepository;
@@ -57,11 +58,11 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         $object->setOwner($this->tokenStorage->getToken()->getUser());
     }
 
-    public function setOwnerForEntityQuantity(BeforeEntityPersistedEvent $event): void
+    public function setOwnerForEntityUnite(BeforeEntityPersistedEvent $event): void
     {
         $object = $event->getEntityInstance();
 
-        if (!$object instanceof Quantity) return;
+        if (!$object instanceof Unite) return;
 
         $object->setOwner($this->tokenStorage->getToken()->getUser());
     }
@@ -73,7 +74,7 @@ class EasyAdminSubscriber implements EventSubscriberInterface
                 ['setOwnerForCompteSalaire'],
                 ['setCompteSalaireForCapital'],
                 ['setOwnerForCategory'],
-                ['setOwnerForEntityQuantity']
+                ['setOwnerForEntityUnite']
             ]
         ];
     }

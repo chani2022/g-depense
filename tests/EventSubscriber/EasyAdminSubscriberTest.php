@@ -6,6 +6,7 @@ use App\Entity\Capital;
 use App\Entity\Category;
 use App\Entity\CompteSalaire;
 use App\Entity\Quantity;
+use App\Entity\Unite;
 use App\Entity\User;
 use App\EventSubscriber\EasyAdminSubscriber;
 use App\Repository\CompteSalaireRepository;
@@ -117,16 +118,16 @@ class EasyAdminSubscriberTest extends TestCase
     /**
      * --------------------------unity----------------------
      */
-    public function testSetOwnerForEntityQuantity(): void
+    public function testSetOwnerForEntityUnite(): void
     {
         $eventDispatcher = new EventDispatcher();
         $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
 
-        $quantity = new Quantity();
-        $beforeEntityPersistEvent = new BeforeEntityPersistedEvent($quantity);
+        $unite = new Unite();
+        $beforeEntityPersistEvent = new BeforeEntityPersistedEvent($unite);
         $eventDispatcher->dispatch($beforeEntityPersistEvent, BeforeEntityPersistedEvent::class);
 
-        $this->assertInstanceOf(User::class, $quantity->getOwner());
+        $this->assertInstanceOf(User::class, $unite->getOwner());
     }
 
     protected function tearDown(): void
