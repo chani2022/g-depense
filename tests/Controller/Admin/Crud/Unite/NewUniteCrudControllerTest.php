@@ -71,7 +71,7 @@ class NewUniteControllerCrudTest extends AbstractUniteCrudTest
     /**
      * @dataProvider formDataValid
      */
-    public function testCreateNewUniteWithFormDataValid(array $formData): void
+    public function testCreateNewUniteWithFormDataValidNotValueAlreadyExist(array $formData): void
     {
         $this->simulateAccessPageNewUniteSuccessfullyWithUser();
 
@@ -203,7 +203,6 @@ class NewUniteControllerCrudTest extends AbstractUniteCrudTest
             [
                 'formData' => [
                     'unite' => 'alreadyExist',
-                    'quantite' => 10.25
                 ],
                 'expected' => 1
             ]

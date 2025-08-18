@@ -5,18 +5,11 @@ namespace App\EventSubscriber;
 use App\Entity\Capital;
 use App\Entity\Category;
 use App\Entity\CompteSalaire;
-use App\Entity\Quantity;
 use App\Entity\Unite;
-use App\Entity\User;
-use App\HandleImage\HandleImage;
 use App\Repository\CompteSalaireRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
-use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
-use Imagine\Gd\Imagine;
-use Imagine\Image\Box;
-use Imagine\Image\ImageInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class EasyAdminSubscriber implements EventSubscriberInterface
