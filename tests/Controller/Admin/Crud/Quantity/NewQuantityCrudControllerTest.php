@@ -108,10 +108,6 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
      * ----------------------------Admin----------------------------
      * -------------------------------------------------------------
      */
-    // public function testPageNewCategorySuccessfullyIfAdminAuthenticated(): void
-    // {
-    //     $this->simulateAccessPageNewCategorySuccessfullyWithAdmin();
-    // }
 
     //simulation
     private function simulateAccessPageNewQuantitySuccessfullyWithUser(): void
@@ -185,7 +181,7 @@ class NewQuantityControllerCrudTest extends AbstractQuantityCrudTest
             [
                 'formData' => [
                     'unite' => 'test',
-                    'quantity' => 30.75
+                    'quantite' => 30.75
                 ]
             ]
         ];
