@@ -24,11 +24,6 @@ class Depense
     #[ORM\Column]
     private ?float $prix = null;
 
-
-    #[ORM\ManyToOne(inversedBy: 'depenses')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Quantity $quantity = null;
-
     #[ORM\ManyToOne(inversedBy: 'depenses')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
@@ -73,18 +68,6 @@ class Depense
     public function setPrix(float $prix): static
     {
         $this->prix = $prix;
-
-        return $this;
-    }
-
-    public function getQuantity(): ?Quantity
-    {
-        return $this->quantity;
-    }
-
-    public function setQuantity(?Quantity $quantity): static
-    {
-        $this->quantity = $quantity;
 
         return $this;
     }
