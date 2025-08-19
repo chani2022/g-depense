@@ -50,24 +50,6 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         }
     }
 
-    // public function setOwnerForCategory(BeforeEntityPersistedEvent $event): void
-    // {
-    //     $object = $event->getEntityInstance();
-
-    //     if (!$object instanceof Category) return;
-
-    //     $object->setOwner($this->tokenStorage->getToken()->getUser());
-    // }
-
-    // public function setOwnerForEntityUnite(BeforeEntityPersistedEvent $event): void
-    // {
-    //     $object = $event->getEntityInstance();
-
-    //     if (!$object instanceof Unite) return;
-
-    //     $object->setOwner($this->tokenStorage->getToken()->getUser());
-    // }
-
     public static function getSubscribedEvents(): array
     {
         return [

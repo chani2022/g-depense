@@ -117,14 +117,14 @@ class IndexDepenseControllerTest extends AbstractDepenseCrudTest
     public static function fieldShowingAdminAuthenticated(): array
     {
         return [
+            ['nomDepense'],
+            ['prix'],
+            ['quantite'],
             ['compteSalaire.owner.imageName'],
             ['compteSalaire.dateDebutCompte'],
             ['compteSalaire.dateFinCompte'],
-            ['nomDepense'],
-            ['prix'],
-            ['vital'],
-            ['quantity.unite'],
-            ['quantity.quantite']
+            ['category.nom'],
+            ['unite.unite']
         ];
     }
 }
