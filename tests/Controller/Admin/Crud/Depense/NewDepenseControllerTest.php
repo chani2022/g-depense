@@ -2,11 +2,15 @@
 
 namespace App\Tests\Controller\Admin\Crud\Depense;
 
+use App\Tests\Trait\CategoryTrait;
+use App\Tests\Trait\UniteTrait;
 use EasyCorp\Bundle\EasyAdminBundle\Test\Trait\CrudTestFormAsserts;
 
 class NewDepenseControllerTest extends AbstractDepenseCrudTest
 {
     use CrudTestFormAsserts;
+    use CategoryTrait;
+    use UniteTrait;
 
     protected function setUp(): void
     {
@@ -67,7 +71,6 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
         $this->assertSame($expectedCount, $numberOptions);
     }
 
-
     /**
      * @dataProvider provideFormDataInvalid
      */
@@ -86,17 +89,20 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
         $this->assertSame($expected, $numberActual);
     }
 
-    public function testCreateCapitalSuccessfully(): void
+    public function testCreateNewDepenseSuccessfully(): void
     {
         $this->simulateUserAccessPageNewSuccessfully();
 
-        $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
         $nameForm = $this->getFormEntity();
         $form = $this->crawler->filter(sprintf('form[name="%s"]', $nameForm))
             ->form([
                 $nameForm => [
-                    'montant' => 25,
-                    'ajout' => 15.25
+                    'nomDepense' => 'exemple',
+                    'prix' => 15.25,
+                    'quantite' => 12,
+                    'category' => $this->getCategory()->getId(),
+                    'unite' => $this->getUnite()->getId(),
+                    'vital' => true
                 ]
             ]);
         $this->crawler = $this->client->submit($form);
