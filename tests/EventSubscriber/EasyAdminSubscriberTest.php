@@ -5,6 +5,7 @@ namespace App\Tests\EventSubscriber;
 use App\Entity\Capital;
 use App\Entity\Category;
 use App\Entity\CompteSalaire;
+use App\Entity\Depense;
 use App\Entity\Quantity;
 use App\Entity\Unite;
 use App\Entity\User;
@@ -128,6 +129,18 @@ class EasyAdminSubscriberTest extends TestCase
         $eventDispatcher->dispatch($beforeEntityPersistEvent, BeforeEntityPersistedEvent::class);
 
         $this->assertInstanceOf(User::class, $unite->getOwner());
+    }
+
+    public function testSetCompteSalaireForDepense(): void
+    {
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
+
+        $depense = new Depense();
+        $event = new BeforeEntityPersistedEvent($depense);
+        $eventDispatcher->dispatch($event, BeforeEntityPersistedEvent::class);
+
+        $this->assertInstanceOf(CompteSalaire::class, $depense->getCompteSalaire());
     }
 
     protected function tearDown(): void

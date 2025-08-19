@@ -67,7 +67,8 @@ class EasyAdminSubscriber implements EventSubscriberInterface
                 ['setOwnerForCompteSalaire'],
                 ['setCompteSalaireForCapital'],
                 ['setOwnerForCategory'],
-                ['setOwnerForEntityUnite']
+                ['setOwnerForEntityUnite'],
+                ['SetCompteSalaireForDepense']
             ]
         ];
     }
