@@ -31,11 +31,11 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         );
     }
 
-    public function setCompteSalaireForCapital(BeforeEntityPersistedEvent $event): void
+    public function setCompteSalaireForCapitalAndDepense(BeforeEntityPersistedEvent $event): void
     {
         $object = $event->getEntityInstance();
 
-        if (!$object instanceof Capital) return;
+        if (!$object instanceof Capital && !$object instanceof Depense) return;
 
         $compteSalaire = $this->compteSalaireRepository->getCompteSalaireWithDateNow($this->tokenStorage->getToken()->getUser());
         if ($compteSalaire) {
@@ -78,10 +78,9 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         return [
             BeforeEntityPersistedEvent::class => [
                 ['setOwnerForCompteSalaire'],
-                ['setCompteSalaireForCapital'],
+                ['setCompteSalaireForCapitalAndDepense'],
                 ['setOwnerForCategory'],
                 ['setOwnerForEntityUnite'],
-                ['setCompteSalaireForDepense']
             ]
         ];
     }

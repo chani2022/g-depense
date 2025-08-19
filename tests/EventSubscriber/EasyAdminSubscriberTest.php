@@ -130,7 +130,9 @@ class EasyAdminSubscriberTest extends TestCase
 
         $this->assertInstanceOf(User::class, $unite->getOwner());
     }
-
+    /**
+     * --------------------------depense--------------------
+     */
     public function testSetCompteSalaireForDepense(): void
     {
         $eventDispatcher = new EventDispatcher();
