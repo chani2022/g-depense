@@ -52,13 +52,27 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
 
         $this->assertFormFieldNotExists($field);
     }
+    /**
+     * @dataProvider providerFormNameSelect
+     */
+    public function testCountOptionsInSelectInNewDepenseIfUserAuthenticated(string $formNameSelect, int $expectedCount): void
+    {
+        $this->simulateUserAccessPageNewSuccessfully();
+        $formName = $this->getFormEntity();
+        $select = 'select[name="' . $formName . '[' . $formNameSelect . ']"]';
+        $formSelect = $this->crawler->filter($select);
+
+        $numberOptions = $formSelect->filter('option:not([value=""])')->count();
+
+        $this->assertSame($expectedCount, $numberOptions);
+    }
+
 
     /**
      * @dataProvider provideFormDataInvalid
      */
     public function testCreateDepenseWithFormDataInvalid(array $formData, int $expected): void
     {
-        // dd($formData, $expected);
         $this->simulateUserAccessPageNewSuccessfully();
 
         $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
@@ -93,7 +107,7 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
     {
         $this->client->loginUser($this->getAdminAuthenticated());
 
-        $this->client->request('GET', $this->generateNewFormUrl());
+        $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
         $this->assertResponseIsSuccessful();
     }
 
@@ -101,7 +115,7 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
     {
         $this->client->loginUser($this->getSimpeUserAuthenticated());
 
-        $this->client->request('GET', $this->generateNewFormUrl());
+        $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
         $this->assertResponseIsSuccessful();
     }
 
@@ -139,6 +153,18 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
             ['category.nom'],
             ['category.prix'],
             ['category.quantity.quantity'],
+        ];
+    }
+    /**
+     * @return array<string, array{string, string|int}>
+     */
+    public static function providerFormNameSelect(): array
+    {
+        return [
+            'form category' => [
+                'formName' => 'category',
+                'expected' => 2
+            ]
         ];
     }
 }
