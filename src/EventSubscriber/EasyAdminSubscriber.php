@@ -20,11 +20,15 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         private CompteSalaireRepository $compteSalaireRepository,
     ) {}
 
-    public function setOwnerForCompteSalaire(BeforeEntityPersistedEvent $event): void
+    public function setOwnerForEntityCompteSalaireCategoryUnite(BeforeEntityPersistedEvent $event): void
     {
         $object = $event->getEntityInstance();
 
-        if (!$object instanceof CompteSalaire) return;
+        if (
+            !$object instanceof CompteSalaire &&
+            !$object instanceof Category &&
+            !$object instanceof Unite
+        ) return;
 
         $object->setOwner(
             $this->tokenStorage->getToken()->getUser()
@@ -35,7 +39,10 @@ class EasyAdminSubscriber implements EventSubscriberInterface
     {
         $object = $event->getEntityInstance();
 
-        if (!$object instanceof Capital && !$object instanceof Depense) return;
+        if (
+            !$object instanceof Capital &&
+            !$object instanceof Depense
+        ) return;
 
         $compteSalaire = $this->compteSalaireRepository->getCompteSalaireWithDateNow($this->tokenStorage->getToken()->getUser());
         if ($compteSalaire) {
@@ -43,44 +50,30 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function setOwnerForCategory(BeforeEntityPersistedEvent $event): void
-    {
-        $object = $event->getEntityInstance();
+    // public function setOwnerForCategory(BeforeEntityPersistedEvent $event): void
+    // {
+    //     $object = $event->getEntityInstance();
 
-        if (!$object instanceof Category) return;
+    //     if (!$object instanceof Category) return;
 
-        $object->setOwner($this->tokenStorage->getToken()->getUser());
-    }
+    //     $object->setOwner($this->tokenStorage->getToken()->getUser());
+    // }
 
-    public function setOwnerForEntityUnite(BeforeEntityPersistedEvent $event): void
-    {
-        $object = $event->getEntityInstance();
+    // public function setOwnerForEntityUnite(BeforeEntityPersistedEvent $event): void
+    // {
+    //     $object = $event->getEntityInstance();
 
-        if (!$object instanceof Unite) return;
+    //     if (!$object instanceof Unite) return;
 
-        $object->setOwner($this->tokenStorage->getToken()->getUser());
-    }
-
-    public function setCompteSalaireForDepense(BeforeEntityPersistedEvent $event): void
-    {
-        $object = $event->getEntityInstance();
-
-        if (!$object instanceof Depense) return;
-
-        $compteSalaire = $this->compteSalaireRepository->getCompteSalaireWithDateNow($this->tokenStorage->getToken()->getUser());
-        if ($compteSalaire) {
-            $object->setCompteSalaire($compteSalaire);
-        }
-    }
+    //     $object->setOwner($this->tokenStorage->getToken()->getUser());
+    // }
 
     public static function getSubscribedEvents(): array
     {
         return [
             BeforeEntityPersistedEvent::class => [
-                ['setOwnerForCompteSalaire'],
+                ['setOwnerForEntityCompteSalaireCategoryUnite'],
                 ['setCompteSalaireForCapitalAndDepense'],
-                ['setOwnerForCategory'],
-                ['setOwnerForEntityUnite'],
             ]
         ];
     }

@@ -6,7 +6,6 @@ use App\Entity\Capital;
 use App\Entity\Category;
 use App\Entity\CompteSalaire;
 use App\Entity\Depense;
-use App\Entity\Quantity;
 use App\Entity\Unite;
 use App\Entity\User;
 use App\EventSubscriber\EasyAdminSubscriber;
@@ -35,6 +34,30 @@ class EasyAdminSubscriberTest extends TestCase
 
         $this->easyAdminSubscriber = new EasyAdminSubscriber($this->tokenStorage, $this->mockCompteSalaireRepository);
     }
+
+    protected function tearDown(): void
+    {
+        $this->easyAdminSubscriber = null;
+        $this->mockCompteSalaireRepository = null;
+        $this->tokenStorage = null;
+    }
+
+    public function testGetSubscribedEvents(): void
+    {
+        $actualSubscribedEvents = $this->easyAdminSubscriber->getSubscribedEvents();
+        $this->assertArrayHasKey(BeforeEntityPersistedEvent::class, $actualSubscribedEvents);
+    }
+
+    /**
+     * @dataProvider provideSubscribedEvents
+     */
+    public function testMethodExistInSubscribedEventsEasyAdmin(string $method): void
+    {
+        $subscribeEvents = $this->easyAdminSubscriber->getSubscribedEvents();
+
+        $this->assertContains([$method], $subscribeEvents[BeforeEntityPersistedEvent::class]);
+    }
+
     /**
      * ----------------------compte salaire --------------
      */
@@ -85,25 +108,11 @@ class EasyAdminSubscriberTest extends TestCase
         $this->assertInstanceOf(CompteSalaire::class, $capital->getCompteSalaire());
     }
 
-
-    public function testGetSubscribedEvents(): void
-    {
-        $actualSubscribedEvents = $this->easyAdminSubscriber->getSubscribedEvents();
-        $this->assertArrayHasKey(BeforeEntityPersistedEvent::class, $actualSubscribedEvents);
-    }
-
     /**
      * -------------------------------------------------------------------------------
      * ------------------------------category------------------------------------------
      * -------------------------------------------------------------------------------
      */
-
-    public function testSetOwnerForCategoryInSubscribedEvents(): void
-    {
-        $subscribeEvents = $this->easyAdminSubscriber->getSubscribedEvents();
-
-        $this->assertSame(['setOwnerForCategory'], $subscribeEvents[BeforeEntityPersistedEvent::class][2]);
-    }
 
     public function testSetOwnerForEntityCategory(): void
     {
@@ -183,10 +192,11 @@ class EasyAdminSubscriberTest extends TestCase
         $this->assertNull($depense->getCompteSalaire());
     }
 
-    protected function tearDown(): void
+    public static function provideSubscribedEvents(): array
     {
-        $this->easyAdminSubscriber = null;
-        $this->mockCompteSalaireRepository = null;
-        $this->tokenStorage = null;
+        return [
+            ['setOwnerForEntityCompteSalaireCategoryUnite'],
+            ['setCompteSalaireForCapitalAndDepense'],
+        ];
     }
 }
