@@ -3,7 +3,7 @@
 namespace App\Tests\Validator;
 
 use App\Entity\Category;
-use App\Entity\Quantity;
+use App\Entity\Unite;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -167,7 +167,7 @@ class UniqueCategoryValidatorTest extends TestCase
                 'field' => 'NotExist'
             ],
             [
-                'entityClass' => Quantity::class,
+                'entityClass' => Unite::class,
                 'mappingOwner' => 'owner',
                 'field' => 'NotExist'
             ]
@@ -183,7 +183,7 @@ class UniqueCategoryValidatorTest extends TestCase
                 'field' => 'nom',
             ],
             [
-                'entityClass' => Quantity::class,
+                'entityClass' => Unite::class,
                 'mappingOwner' => 'owner',
                 'field' => 'unite',
             ]
@@ -206,7 +206,7 @@ class UniqueCategoryValidatorTest extends TestCase
     {
         return match ($object) {
             'App\Entity\Category' => (new Category())->setNom('test'),
-            'App\Entity\Quantity' => (new Quantity())->setUnite('test')
+            'App\Entity\Unite' => (new Unite())->setUnite('test')
         };
     }
 
