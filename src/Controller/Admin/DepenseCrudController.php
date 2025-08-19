@@ -20,6 +20,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[IsGranted('ROLE_USER')]
@@ -171,6 +172,8 @@ class DepenseCrudController extends AbstractCrudController
                     }
                 ])
                 ->onlyOnForms(),
+            BooleanField::new('vital', 'Vital')
+                ->onlyOnForms()
         ];
         return array_merge($fields, self::getFieldsDefault());
     }
