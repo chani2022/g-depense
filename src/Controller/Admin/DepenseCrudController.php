@@ -20,7 +20,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
-
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[IsGranted('ROLE_USER')]
 
@@ -37,11 +37,26 @@ class DepenseCrudController extends AbstractCrudController
     public static function getFieldsDefault(): array
     {
         return [
-            TextField::new('nomDepense', 'Nom de la Depense'),
+            TextField::new('nomDepense', 'Nom de la Depense')
+                ->setFormTypeOptions([
+                    'constraints' => [
+                        new NotBlank()
+                    ]
+                ]),
             MoneyField::new('prix', 'Prix')
                 ->setNumDecimals(3)
-                ->setCurrency('MGA'),
-            NumberField::new('quantite', 'Quantite'),
+                ->setCurrency('MGA')
+                ->setFormTypeOptions([
+                    'constraints' => [
+                        new NotBlank()
+                    ]
+                ]),
+            NumberField::new('quantite', 'Quantite')
+                ->setFormTypeOptions([
+                    'constraints' => [
+                        new NotBlank()
+                    ]
+                ]),
             // BooleanField::new('vital', 'Obligatoire'),
         ];
     }
