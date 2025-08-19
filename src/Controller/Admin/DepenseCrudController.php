@@ -151,10 +151,11 @@ class DepenseCrudController extends AbstractCrudController
                     'query_builder' => function (EntityRepository $er) {
                         $qb =  $er->createQueryBuilder('c');
                         if (!$this->security->isGranted('ROLE_ADMIN', $this->getUser())) {
-                            $qb->andWhere('c.owner = :user')
-                                ->setParameter('user', $this->getUser());
+                            $qb->andWhere('c.owner = :owner')
+                                ->setParameter('owner', $this->getUser());
                         }
-                        $qb->orderBy('c.id', 'ASC');
+
+                        return $qb->orderBy('c.id', 'ASC');
                     }
                 ])
                 ->onlyOnForms(),
@@ -168,7 +169,7 @@ class DepenseCrudController extends AbstractCrudController
                             $qb->andWhere('q.owner = :user')
                                 ->setParameter('user', $this->getUser());
                         }
-                        $qb->orderBy('q.id', 'ASC');
+                        return $qb->orderBy('q.id', 'ASC');
                     }
                 ])
                 ->onlyOnForms(),

@@ -164,7 +164,11 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
             'form category' => [
                 'formName' => 'category',
                 'expected' => 2
-            ]
+            ],
+            'form unite' => [
+                'formName' => 'unite',
+                'expected' => 1
+            ],
         ];
     }
 }
