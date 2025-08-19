@@ -115,7 +115,8 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
                         'prix' => null,
                         'quantite' => null,
                         'category' => 1,
-                        'unite' => 1
+                        'unite' => 1,
+                        'vital' => false
                     ]
                 ],
                 'expected' => 3
