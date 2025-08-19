@@ -12,73 +12,50 @@ class MyChartTest extends TestCase
 {
     /** @var MockObject|ChartBuilderInterface|null */
     private  $chartBuilder;
-    /** @var MockObject|Chart|null */
-    private $mockChart;
     private ?MyChart $myChart;
 
     protected function setUp(): void
     {
         /** @var MockObject|ChartBuilderInterface|null */
         $this->chartBuilder = $this->createMock(ChartBuilderInterface::class);
-        /** @var MockObject|Chart|null */
-        $this->mockChart = $this->createMock(Chart::class);
-        $this->myChart = new MyChart($this->chartBuilder, $this->mockChart);
+        $this->myChart = new MyChart($this->chartBuilder, 'line');
     }
 
     protected function tearDown(): void
     {
         $this->chartBuilder = null;
         $this->myChart = null;
-        $this->mockChart = null;
     }
 
-    public function testCreateChart(): void
+    public function testGetType(): void
     {
-        $type = 'line';
-        $this->chartBuilder
-            ->expects($this->once())
-            ->method('createChart')
-            ->with($type)
-            ->willReturn($this->mockChart);
+        $typeExpected = 'line';
+        $chart = new Chart($typeExpected);
+        $this->myChart->setChart($chart);
+        $typeActual = $this->myChart->getType();
 
-        $this->myChart->createChart($type);
+        $this->assertSame($typeExpected, $typeActual);
     }
 
     public function testSetData(): void
     {
         $data = ['test'];
-
-        $this->mockChart
-            ->expects($this->once())
-            ->method('setData')
-            ->with($data)
-            ->willReturnSelf();
-
-        $this->mockChart
-            ->method('getData')
-            ->willReturn($data);
-
+        $mockChart = new Chart('line');
+        $this->myChart->setChart($mockChart);
         $this->myChart->setData($data);
 
-        $this->assertSame($data, $this->mockChart->getData());
+        $this->assertSame($data, $this->myChart->getData());
     }
 
     public function testSetOptions(): void
     {
         $options = ['options'];
-
-        $this->mockChart
-            ->expects($this->once())
-            ->method('setOptions')
-            ->with($options)
-            ->willReturnSelf();
-
-        $this->mockChart
-            ->method('getOptions')
-            ->willReturn($options);
+        $chart = new Chart('line');
+        $this->myChart->setChart($chart);
 
         $this->myChart->setOptions($options);
 
-        $this->assertSame($options, $this->mockChart->getOptions());
+
+        $this->assertSame($options, $this->myChart->getOptions());
     }
 }

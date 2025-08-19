@@ -7,13 +7,16 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 class MyChart
 {
-    public function __construct(private ChartBuilderInterface $chartBuilder, private Chart $chart) {}
+    private Chart $chart;
 
-    public function createChart(string $type): self
+    public function __construct(private ChartBuilderInterface $chartBuilder, string $type)
     {
         $this->chart = $this->chartBuilder->createChart($type);
+    }
 
-        return $this;
+    public function getType(): string
+    {
+        return $this->chart->getType();
     }
 
     public function setData(array $data): self
@@ -23,9 +26,31 @@ class MyChart
         return $this;
     }
 
+    public function getData(): array
+    {
+        return $this->chart->getData();
+    }
+
     public function setOptions(array $options): self
     {
         $this->chart->setOptions($options);
+
+        return $this;
+    }
+
+    public function getOptions(): array
+    {
+        return $this->chart->getOptions();
+    }
+
+    public function getChart(): Chart
+    {
+        return $this->chart;
+    }
+
+    public function setChart(Chart $chart): self
+    {
+        $this->chart = $chart;
 
         return $this;
     }

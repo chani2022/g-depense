@@ -6,6 +6,7 @@ use App\Controller\Admin\DashboardController;
 use App\Entity\User;
 use App\Tests\Trait\LoadFixtureTrait;
 use App\Tests\Trait\UserAuthenticatedTrait;
+use App\Ux\MyChart;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -34,7 +35,8 @@ class DashboardControllerTest extends WebTestCase
         $this->all_fixtures = $this->getFixtures();
 
         $uploaderHelper = $this->getContainer()->get(UploaderHelper::class);
-        $this->dashboardController = new DashboardController($uploaderHelper);
+        $myChart = $this->getContainer()->get(MyChart::class);
+        $this->dashboardController = new DashboardController($uploaderHelper, $myChart);
         $this->userSimpleAuthenticated = $this->getSimpeUserAuthenticated();
         $this->adminAuthenticated = $this->getAdminAuthenticated();
     }
@@ -102,18 +104,20 @@ class DashboardControllerTest extends WebTestCase
     {
         $adminLogged = $this->all_fixtures['user_admin'];
         $this->client->loginUser($adminLogged);
-        $this->client->request('GET', '/admin');
+        $this->crawler = $this->client->request('GET', '/admin');
 
         $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('.my-chart');
     }
 
     private function simulateAccessPageDashboardWithUser(): void
     {
         $userLogged = $this->all_fixtures['user_credentials_ok'];
         $this->client->loginUser($userLogged);
-        $this->client->request('GET', '/admin');
+        $this->crawler = $this->client->request('GET', '/admin');
 
         $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('.my-chart');
     }
 
     private function assertUserMenuContaintsMenuItems(array $menuItems): void

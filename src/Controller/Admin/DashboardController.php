@@ -10,6 +10,7 @@ use App\Entity\Unite;
 use App\Entity\User;
 use App\Form\ChangePasswordType;
 use App\Form\ProfilType;
+use App\Ux\MyChart;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -34,7 +35,9 @@ class DashboardController extends AbstractDashboardController
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-        return $this->render('admin/dashboard.html.twig');
+        return $this->render('admin/dashboard.html.twig', [
+            'chart' => 'test'
+        ]);
     }
 
     public function configureDashboard(): Dashboard
