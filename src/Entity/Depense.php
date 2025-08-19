@@ -29,7 +29,7 @@ class Depense
     private ?Category $category = null;
 
     #[ORM\Column(options: ['default' => false])]
-    private ?bool $vital = false;
+    private bool $vital = false;
 
     #[ORM\Column]
     private ?float $quantite = null;
@@ -91,12 +91,12 @@ class Depense
         return $this;
     }
 
-    public function isVital(): ?bool
+    public function isVital(): bool
     {
         return $this->vital;
     }
 
-    public function getIsVital(): ?bool
+    public function getIsVital(): bool
     {
         return $this->vital;
     }

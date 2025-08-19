@@ -3,7 +3,6 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Depense;
-use App\Form\QuantityType;
 use Doctrine\ORM\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
@@ -14,7 +13,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AvatarField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
@@ -22,7 +20,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
+
 
 #[IsGranted('ROLE_USER')]
 
@@ -43,7 +41,8 @@ class DepenseCrudController extends AbstractCrudController
             MoneyField::new('prix', 'Prix')
                 ->setNumDecimals(3)
                 ->setCurrency('MGA'),
-            BooleanField::new('vital', 'Obligatoire'),
+            NumberField::new('quantite', 'Quantite'),
+            // BooleanField::new('vital', 'Obligatoire'),
         ];
     }
 
@@ -87,11 +86,13 @@ class DepenseCrudController extends AbstractCrudController
             ->addSelect('ow')
             ->join($aliasDepense . '.category', 'cat')
             ->addSelect('cat')
-            ->join($aliasDepense . '.quantity', 'q')
-            ->addSelect('q');
+            ->join($aliasDepense . '.unite', 'u')
+            ->addSelect('u');
 
         if (!$this->security->isGranted('ROLE_ADMIN', $this->getUser())) {
             $qb->andWhere('cs.owner = :user')
+                ->andWhere('cat.owner = :user')
+                ->andWhere('u.owner = :user')
                 ->setParameter('user', $this->getUser());
         }
 
@@ -112,13 +113,12 @@ class DepenseCrudController extends AbstractCrudController
                 ->onlyOnIndex(),
             DateTimeField::new('compteSalaire.dateFinCompte', 'au')
                 ->onlyOnIndex(),
-            // TextField::new('category', 'Nom du category')
-            //     ->onlyOnIndex(),
-            TextField::new('quantity.unite', 'Unité')
+            TextField::new('category.nom', 'Nom de la category')
                 ->onlyOnIndex(),
-            NumberField::new('quantity.quantite', 'Quantite')
-                ->onlyOnIndex(),
+            TextField::new('unite.unite', 'Unité')
+                ->onlyOnIndex()
         ];
+
         return array_merge($fields, self::getFieldsDefault());
     }
 
@@ -142,7 +142,7 @@ class DepenseCrudController extends AbstractCrudController
                     }
                 ])
                 ->onlyOnForms(),
-            AssociationField::new('quantity', 'Quantité')
+            AssociationField::new('unite', 'Unité')
                 ->setFormTypeOptions([
                     'placeholder' => '-Selectionnez-',
                     'choice_label' => 'unite',

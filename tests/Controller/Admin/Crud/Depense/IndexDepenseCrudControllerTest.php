@@ -80,7 +80,7 @@ class IndexDepenseControllerTest extends AbstractDepenseCrudTest
     {
         $this->client->loginUser($this->getSimpeUserAuthenticated());
 
-        $this->client->request('GET', $this->generateIndexUrl());
+        $crawler = $this->client->request('GET', $this->generateIndexUrl());
         $this->assertResponseIsSuccessful();
     }
 
@@ -95,13 +95,13 @@ class IndexDepenseControllerTest extends AbstractDepenseCrudTest
     public static function fieldShowingUserAuthenticated(): array
     {
         return [
-            ['compteSalaire.dateDebutCompte'],
-            ['compteSalaire.dateFinCompte'],
-            ['quantity.unite'],
-            ['quantity.quantite'],
             ['nomDepense'],
             ['prix'],
-            ['vital'],
+            ['quantite'],
+            ['compteSalaire.dateDebutCompte'],
+            ['compteSalaire.dateFinCompte'],
+            ['category.nom'],
+            ['unite.unite'],
         ];
     }
 
@@ -109,7 +109,7 @@ class IndexDepenseControllerTest extends AbstractDepenseCrudTest
     {
         return [
             ['category'],
-            ['quantity'],
+            ['unite'],
             ['compteSalaire.owner.imageName']
         ];
     }

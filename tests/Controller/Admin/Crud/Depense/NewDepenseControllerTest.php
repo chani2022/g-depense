@@ -58,15 +58,13 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
      */
     public function testCreateDepenseWithFormDataInvalid(array $formData, int $expected): void
     {
+        // dd($formData, $expected);
         $this->simulateUserAccessPageNewSuccessfully();
 
         $this->crawler = $this->client->request('GET', $this->generateNewFormUrl());
         $formName = $this->getFormEntity();
         $form = $this->crawler->filter(sprintf('form[name="%s"]', $formName))
-            ->form([
-                $formName => $formData
-            ]);
-
+            ->form($formData);
 
         $this->crawler = $this->client->submit($form);
 
@@ -110,12 +108,14 @@ class NewDepenseControllerTest extends AbstractDepenseCrudTest
     public static function provideFormDataInvalid(): array
     {
         return [
-            'nom , prix,  isVital required' => [
+            'nom de la depense , prix,  quantite, category required' => [
                 'data' => [
-                    'category' => [
-                        'nom' => null,
+                    'Depense' => [
+                        'nomDepense' => null,
                         'prix' => null,
-                        'isVital' => null
+                        'quantite' => null,
+                        'category' => 1,
+                        'unite' => 1
                     ]
                 ],
                 'expected' => 3
