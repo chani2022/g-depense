@@ -24,19 +24,21 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 #[IsGranted('ROLE_USER')]
 class DashboardController extends AbstractDashboardController
 {
-    public function __construct(private UploaderHelper $uploaderHelper) {}
+    public function __construct(private UploaderHelper $uploaderHelper, private ChartBuilderInterface $chartBuilder) {}
 
 
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
+        $myChart = new MyChart($this->chartBuilder, 'line');
         return $this->render('admin/dashboard.html.twig', [
-            'chart' => 'test'
+            'chart' => $myChart->getChart()
         ]);
     }
 

@@ -2,4 +2,6 @@
 {% block page_title %}
 	Dashboard
 {% endblock %}
-{% block main %}{% endblock main %}
+{% block main %}
+	{{ render_chart(chart, {'class': 'my-chart'}) }}
+{% endblock main %}

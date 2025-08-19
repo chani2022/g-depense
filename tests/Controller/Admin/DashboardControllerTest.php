@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use PHPUnit\Framework\MockObject\MockObject;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 
 class DashboardControllerTest extends WebTestCase
 {
@@ -35,8 +36,8 @@ class DashboardControllerTest extends WebTestCase
         $this->all_fixtures = $this->getFixtures();
 
         $uploaderHelper = $this->getContainer()->get(UploaderHelper::class);
-        $myChart = $this->getContainer()->get(MyChart::class);
-        $this->dashboardController = new DashboardController($uploaderHelper, $myChart);
+        $chartBuilder = $this->getContainer()->get(ChartBuilderInterface::class);
+        $this->dashboardController = new DashboardController($uploaderHelper, $chartBuilder);
         $this->userSimpleAuthenticated = $this->getSimpeUserAuthenticated();
         $this->adminAuthenticated = $this->getAdminAuthenticated();
     }
