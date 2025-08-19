@@ -136,11 +136,49 @@ class EasyAdminSubscriberTest extends TestCase
         $eventDispatcher = new EventDispatcher();
         $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
 
+        $this->mockCompteSalaireRepository
+            ->expects($this->once())
+            ->method('getCompteSalaireWithDateNow')
+            ->with(new User())
+            ->willReturn(new CompteSalaire());
+
         $depense = new Depense();
         $event = new BeforeEntityPersistedEvent($depense);
         $eventDispatcher->dispatch($event, BeforeEntityPersistedEvent::class);
 
         $this->assertInstanceOf(CompteSalaire::class, $depense->getCompteSalaire());
+    }
+
+    public function testNeverCallCompteSalaireWithDateNowMethodIfObjectNotDepense(): void
+    {
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
+
+        $this->mockCompteSalaireRepository
+            ->expects($this->never())
+            ->method('getCompteSalaireWithDateNow');
+
+        $user = new User();
+        $event = new BeforeEntityPersistedEvent($user);
+        $eventDispatcher->dispatch($event, BeforeEntityPersistedEvent::class);
+    }
+
+    public function testCompteSalaireNullIfCompteSalaireRepositoryReturnNull(): void
+    {
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
+
+        $this->mockCompteSalaireRepository
+            ->expects($this->once())
+            ->method('getCompteSalaireWithDateNow')
+            ->with(new User())
+            ->willReturn(null);
+
+        $depense = new Depense();
+        $event = new BeforeEntityPersistedEvent($depense);
+        $eventDispatcher->dispatch($event, BeforeEntityPersistedEvent::class);
+
+        $this->assertNull($depense->getCompteSalaire());
     }
 
     protected function tearDown(): void

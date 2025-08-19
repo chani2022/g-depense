@@ -5,6 +5,7 @@ namespace App\EventSubscriber;
 use App\Entity\Capital;
 use App\Entity\Category;
 use App\Entity\CompteSalaire;
+use App\Entity\Depense;
 use App\Entity\Unite;
 use App\Repository\CompteSalaireRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
@@ -60,6 +61,18 @@ class EasyAdminSubscriber implements EventSubscriberInterface
         $object->setOwner($this->tokenStorage->getToken()->getUser());
     }
 
+    public function setCompteSalaireForDepense(BeforeEntityPersistedEvent $event): void
+    {
+        $object = $event->getEntityInstance();
+
+        if (!$object instanceof Depense) return;
+
+        $compteSalaire = $this->compteSalaireRepository->getCompteSalaireWithDateNow($this->tokenStorage->getToken()->getUser());
+        if ($compteSalaire) {
+            $object->setCompteSalaire($compteSalaire);
+        }
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -68,7 +81,7 @@ class EasyAdminSubscriber implements EventSubscriberInterface
                 ['setCompteSalaireForCapital'],
                 ['setOwnerForCategory'],
                 ['setOwnerForEntityUnite'],
-                ['SetCompteSalaireForDepense']
+                ['setCompteSalaireForDepense']
             ]
         ];
     }
