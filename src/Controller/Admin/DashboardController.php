@@ -11,6 +11,7 @@ use App\Entity\User;
 use App\Form\ChangePasswordType;
 use App\Form\ProfilType;
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Locale;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -130,5 +131,11 @@ class DashboardController extends AbstractDashboardController
         return $this->render('change_password/change-password.html.twig', [
             'form' => $form->createView()
         ]);
+    }
+
+    public function configureAssets(): Assets
+    {
+        $assets = parent::configureAssets();
+        return $assets->addWebpackEncoreEntry('app');
     }
 }

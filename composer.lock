@@ -7010,16 +7010,16 @@
         },
         {
             "name": "symfony/ux-chartjs",
-            "version": "v2.29.1",
+            "version": "v2.29.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/ux-chartjs.git",
-                "reference": "9d3bb03fbad4d6cd9894fbf52eaf38bd848c0563"
+                "reference": "7d8e34888cd19d10583edf0329a3503c699007f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/ux-chartjs/zipball/9d3bb03fbad4d6cd9894fbf52eaf38bd848c0563",
-                "reference": "9d3bb03fbad4d6cd9894fbf52eaf38bd848c0563",
+                "url": "https://api.github.com/repos/symfony/ux-chartjs/zipball/7d8e34888cd19d10583edf0329a3503c699007f8",
+                "reference": "7d8e34888cd19d10583edf0329a3503c699007f8",
                 "shasum": ""
             },
             "require": {
@@ -7070,7 +7070,7 @@
                 "symfony-ux"
             ],
             "support": {
-                "source": "https://github.com/symfony/ux-chartjs/tree/v2.29.1"
+                "source": "https://github.com/symfony/ux-chartjs/tree/v2.29.2"
             },
             "funding": [
                 {
@@ -7090,7 +7090,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-08T11:38:41+00:00"
+            "time": "2025-08-18T20:25:45+00:00"
         },
         {
             "name": "symfony/ux-twig-component",
