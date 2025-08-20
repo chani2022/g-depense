@@ -103,15 +103,30 @@ class DepenseRepositoryTest extends KernelTestCase
         return [
             [
                 'user' => 'user',
-                'expected' => []
+                'expected' => [
+                    [
+                        'total_depense_general' => 40.50,
+                        'total_capital_general' => 1516.0
+                    ]
+                ]
             ],
             [
-                'user' => 'user-other',
-                'expected' => []
+                'user' => 'other-user',
+                'expected' => [
+                    [
+                        'total_depense_general' => 100.25,
+                        'total_capital_general' => 200.75
+                    ]
+                ]
             ],
             [
                 'user' => 'admin',
-                'expected' => []
+                'expected' => [
+                    [
+                        'total_depense_general' => null,
+                        'total_capital_general' => null
+                    ]
+                ]
             ],
         ];
     }
