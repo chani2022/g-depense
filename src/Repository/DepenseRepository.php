@@ -27,20 +27,25 @@ class DepenseRepository extends ServiceEntityRepository
         parent::__construct($registry, Depense::class);
     }
 
-    //    /**
-    //     * @return Depense[] Returns an array of Depense objects
-    //     */
-    public function getDepenseBetweenDateWithCapital(User $user, ?array $dates = null)
+    /**
+     * Permet de recuperer le total de depense et capital par utilisateur
+     * et par compte salaire.
+     * 
+     * @param User $user                 utilisateur authentifié
+     * @param string[]|null $dates       date de recherche
+     * @return array<int, array{string, string|int}>
+     */
+    public function findDepensesWithCapital(User $user, ?array $dates = null)
     {
         $qb = $this->createQueryBuilder('d')
             ->select("
             ow.id,
             CONCAT(DATE_FORMAT(cs.dateDebutCompte, '%d/%m/%Y'),  ' - ' , DATE_FORMAT(cs.dateFinCompte, '%d/%m/%Y')) AS label,
             SUM(d.prix) AS total_depense, 
-            (COALESCE(cap.montant,0) + COALESCE(cap.ajout, 0)) AS total_capital")
-            ->join('d.compteSalaire', 'cs')
-            ->join('cs.capitals', 'cap')
-            ->join('cs.owner', 'ow')
+            SUM(COALESCE(cap.montant,0) + COALESCE(cap.ajout, 0)) AS total_capital")
+            ->leftJoin('d.compteSalaire', 'cs')
+            ->leftJoin('cs.capitals', 'cap')
+            ->leftJoin('cs.owner', 'ow')
             ->andWhere('ow = :user');
 
         $this->parameters['user'] = $user;
@@ -57,7 +62,14 @@ class DepenseRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
+    /**
+     * Permet de recuperer le total de depense et capital
+     * d'une date donnée.
+     * 
+     * @param User $user                        utilisateur authentifié
+     * @param string[]|null $dates              date de recherche
+     * @return array<int, array{string, float|null}>
+     */
     public function getTotalDepenseAndCapitalInDateGivingByUser(User $user, ?array $dates = null): array
     {
         return $this->createQueryBuilder('d')
@@ -65,9 +77,9 @@ class DepenseRepository extends ServiceEntityRepository
                 SUM(d.prix) AS total_depense_general,
                 SUM(COALESCE(cap.montant,0) + COALESCE(cap.ajout, 0)) AS total_capital_general
             ')
-            ->join('d.compteSalaire', 'cs')
-            ->join('cs.owner', 'ow')
-            ->join('cs.capitals', 'cap')
+            ->leftJoin('d.compteSalaire', 'cs')
+            ->leftJoin('cs.owner', 'ow')
+            ->leftJoin('cs.capitals', 'cap')
             ->andWhere('ow = :user')
             ->andWhere('cs.dateDebutCompte BETWEEN :debut AND :fin')
             ->setParameters([

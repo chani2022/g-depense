@@ -2,7 +2,6 @@
 
 namespace App\Tests\Repository;
 
-use App\Entity\depense;
 use App\Entity\User;
 use App\Repository\DepenseRepository;
 use App\Tests\Trait\UserAuthenticatedTrait;
@@ -29,13 +28,25 @@ class DepenseRepositoryTest extends KernelTestCase
         parent::tearDown();
         $this->depenseRepository = null;
     }
+
+    /**
+     * @dataProvider providerTotalDepenseAndCapitalByWithoutDate
+     */
+    public function testGetTotalDepenseAndCapitalNotDateGiving(string $roles, array $expected): void
+    {
+        $userAuthenticated = $this->mockUserAuthenticated($roles);
+        $depensesActual = $this->depenseRepository->findDepensesWithCapital($userAuthenticated);
+
+        $this->assertSame($expected, $depensesActual);
+    }
+
     /**
      * @dataProvider providerTotalDepenseAndCapitalByUserAuthenticated
      */
-    public function testGetTotalDepenseAndCapitalByForEveryCompteSalaire(string $roles, array $expected): void
+    public function testGetTotalDepenseAndCapitalForEveryCompteSalaire(string $roles, array $expected): void
     {
         $userAuthenticated = $this->mockUserAuthenticated($roles);
-        $depensesActual = $this->depenseRepository->getDepenseBetweenDateWithCapital($userAuthenticated, ['2024-01-01', (new DateTime('+ 20 days'))->format('Y-m-d')]);
+        $depensesActual = $this->depenseRepository->findDepensesWithCapital($userAuthenticated, ['2024-01-01', (new DateTime('+ 20 days'))->format('Y-m-d')]);
 
         $this->assertSame($expected, $depensesActual);
     }
@@ -129,5 +140,31 @@ class DepenseRepositoryTest extends KernelTestCase
                 ]
             ],
         ];
+    }
+
+    public function providerTotalDepenseAndCapitalByWithoutDate(): array
+    {
+        return
+            [
+                [
+                    'user' => 'user',
+                    'expected' => [
+                        [
+                            "id" => 1,
+                            "label" => (new DateTime('-7 days'))->format('d/m/Y') . ' - ' . (new DateTime('+7 days'))->format('d/m/Y'),
+                            "total_depense" => 25.25,
+                            "total_capital" => 15.25,
+                        ],
+                    ],
+                ],
+                [
+                    'user' => 'other-user',
+                    'expected' => [],
+                ],
+                [
+                    'user' => 'admin',
+                    'expected' => []
+                ]
+            ];
     }
 }
