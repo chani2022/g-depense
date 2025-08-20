@@ -29,20 +29,57 @@ class DepenseRepositoryTest extends KernelTestCase
         parent::tearDown();
         $this->depenseRepository = null;
     }
-
-    public function testGetDepenseBetweenDateWithCapital(): void
+    /**
+     * @dataProvider providerTotalDepenseAndCapitalByUserAuthenticated
+     */
+    public function testGetTotalDepenseAndCapitalByUserAndBetweenDate(string $roles, array $expected): void
     {
-        $depenses = $this->depenseRepository->getDepenseBetweenDateWithCapital($this->getSimpeUserAuthenticated(), ['2024-01-01', (new DateTime('+ 20 days'))->format('Y-m-d')]);
-        dd($depenses);
+        $userAuthenticated = match ($roles) {
+            'user' => $this->getSimpeUserAuthenticated(),
+            'other-user' => $this->getSimpeOtherUserAuthenticated(),
+            'admin' => $this->getAdminAuthenticated()
+        };
+        $depensesActual = $this->depenseRepository->getDepenseBetweenDateWithCapital($userAuthenticated, ['2024-01-01', (new DateTime('+ 20 days'))->format('Y-m-d')]);
+
+        $this->assertSame($expected, $depensesActual);
     }
 
-    public  function providerTotalDepenseAndCapitalByUserAuthenticated(): array
+    public static function providerTotalDepenseAndCapitalByUserAuthenticated(): array
     {
-        return [
-            'user' => [
-                $this->getSimpeUserAuthenticated(),
-                'total_depense' => null
-            ]
-        ];
+        return
+            [
+                [
+                    'user' => 'user',
+                    'expected' => [
+                        [
+                            "id" => 1,
+                            "label" => "01/01/2024 - 15/01/2024",
+                            "total_depense" => 15.25,
+                            "total_capital" => 1500.75,
+                        ],
+                        [
+                            "id" => 1,
+                            "label" => "13/08/2025 - 27/08/2025",
+                            "total_depense" => 25.25,
+                            "total_capital" => 15.25,
+                        ]
+                    ],
+                ],
+                [
+                    'user' => 'other-user',
+                    'expected' => [
+                        [
+                            "id" => 2,
+                            "label" => "16/02/2024 - 01/03/2024",
+                            "total_depense" => 100.25,
+                            "total_capital" => 200.75,
+                        ]
+                    ],
+                ],
+                [
+                    'user' => 'admin',
+                    'expected' => []
+                ]
+            ];
     }
 }

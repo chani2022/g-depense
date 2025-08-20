@@ -17,5 +17,5 @@ App\Entity\CompteSalaire:
     owner: '@user_credentials_ok'
   compte_salaire_user_credentials_other:
     dateDebutCompte: <(new \DateTime("2024-02-16"))>
-    dateFinCompte: <(new DateTime("2024-02-30"))>
+    dateFinCompte: <(new \DateTime("2024-03-01"))>
     owner: '@user_credentials_other'

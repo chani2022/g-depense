@@ -68,19 +68,39 @@ class DepenseRepository extends ServiceEntityRepository
             $qb->andWhere(':date BETWEEN cs.dateDebutCompte AND cs.dateFinCompte');
             $this->parameters['date'] = new DateTime();
         } else {
-            $idsCompteSalaireBetweenDate = $this->_em->createQueryBuilder()
-                ->select('cs1.id')
-                ->from(CompteSalaire::class, 'cs1')
-                ->join('cs1.owner', 'ow1')
-                ->where('cs1.dateDebutCompte BETWEEN :debut AND :fin')
-                ->andWhere('ow1 = :user')
-                ->getDQL();
+            $idsCompteSalaireBetweenDate = $this->createSubQuery(
+                CompteSalaire::class,
+                'cs1',
+                '(cs1.dateDebutCompte BETWEEN :debut AND :fin) AND (ow1 = :user)',
+                'cs1.id',
+                [
+                    [
+                        'join' => 'cs1.owner',
+                        'alias' => 'ow1'
+                    ]
+                ]
+            );
 
             $qb->andWhere('cs.id IN (' . $idsCompteSalaireBetweenDate . ')');
             $this->parameters['debut'] = $dates[0];
             $this->parameters['fin'] = $dates[1];
         }
         return $qb;
+    }
+
+    private function createSubQuery(string $from, string $alias, string $where, ?string $select = null, ?array $joins = null): string
+    {
+        $qb = $this->_em->createQueryBuilder()
+            ->select($select)
+            ->from($from, $alias);
+        if ($joins) {
+            foreach ($joins as $join) {
+                $qb->join($join['join'], $join['alias']);
+            }
+        }
+
+        return $qb->andWhere($where)
+            ->getDQL();
     }
 
     //    public function findOneBySomeField($value): ?Depense
