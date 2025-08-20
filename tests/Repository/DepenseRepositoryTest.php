@@ -32,7 +32,17 @@ class DepenseRepositoryTest extends KernelTestCase
 
     public function testGetDepenseBetweenDateWithCapital(): void
     {
-        $depenses = $this->depenseRepository->getDepenseBetweenDateWithCapital();
+        $depenses = $this->depenseRepository->getDepenseBetweenDateWithCapital($this->getSimpeUserAuthenticated(), ['2024-01-01', (new DateTime('+ 20 days'))->format('Y-m-d')]);
         dd($depenses);
+    }
+
+    public  function providerTotalDepenseAndCapitalByUserAuthenticated(): array
+    {
+        return [
+            'user' => [
+                $this->getSimpeUserAuthenticated(),
+                'total_depense' => null
+            ]
+        ];
     }
 }
