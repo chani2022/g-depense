@@ -32,16 +32,31 @@ class DepenseRepositoryTest extends KernelTestCase
     /**
      * @dataProvider providerTotalDepenseAndCapitalByUserAuthenticated
      */
-    public function testGetTotalDepenseAndCapitalByUserAndBetweenDate(string $roles, array $expected): void
+    public function testGetTotalDepenseAndCapitalByForEveryCompteSalaire(string $roles, array $expected): void
     {
-        $userAuthenticated = match ($roles) {
+        $userAuthenticated = $this->mockUserAuthenticated($roles);
+        $depensesActual = $this->depenseRepository->getDepenseBetweenDateWithCapital($userAuthenticated, ['2024-01-01', (new DateTime('+ 20 days'))->format('Y-m-d')]);
+
+        $this->assertSame($expected, $depensesActual);
+    }
+    /**
+     * @dataProvider providerTotalDepenseAndCapitalInDateGiving
+     */
+    public function testGetTotalDepenseAndCapitalForDateGiving(string $roles, array $expected): void
+    {
+        $userAuthenticated = $this->mockUserAuthenticated($roles);
+        $totalDepenseCapitalGeneralActual = $this->depenseRepository->getTotalDepenseAndCapitalInDateGivingByUser($userAuthenticated, ['2024-01-01', (new DateTime('+ 20 days'))->format('Y-m-d')]);
+
+        $this->assertSame($totalDepenseCapitalGeneralActual, $expected);
+    }
+
+    private function mockUserAuthenticated(string $roles): User
+    {
+        return match ($roles) {
             'user' => $this->getSimpeUserAuthenticated(),
             'other-user' => $this->getSimpeOtherUserAuthenticated(),
             'admin' => $this->getAdminAuthenticated()
         };
-        $depensesActual = $this->depenseRepository->getDepenseBetweenDateWithCapital($userAuthenticated, ['2024-01-01', (new DateTime('+ 20 days'))->format('Y-m-d')]);
-
-        $this->assertSame($expected, $depensesActual);
     }
 
     public static function providerTotalDepenseAndCapitalByUserAuthenticated(): array
@@ -81,5 +96,23 @@ class DepenseRepositoryTest extends KernelTestCase
                     'expected' => []
                 ]
             ];
+    }
+
+    public static function providerTotalDepenseAndCapitalInDateGiving(): array
+    {
+        return [
+            [
+                'user' => 'user',
+                'expected' => []
+            ],
+            [
+                'user' => 'user-other',
+                'expected' => []
+            ],
+            [
+                'user' => 'admin',
+                'expected' => []
+            ],
+        ];
     }
 }

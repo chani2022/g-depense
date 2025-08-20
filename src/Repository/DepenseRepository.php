@@ -68,7 +68,7 @@ class DepenseRepository extends ServiceEntityRepository
             $qb->andWhere(':date BETWEEN cs.dateDebutCompte AND cs.dateFinCompte');
             $this->parameters['date'] = new DateTime();
         } else {
-            $idsCompteSalaireBetweenDate = $this->createSubQuery(
+            $dqlIdsCompteSalaireBetweenDate = $this->createSubQuery(
                 CompteSalaire::class,
                 'cs1',
                 '(cs1.dateDebutCompte BETWEEN :debut AND :fin) AND (ow1 = :user)',
@@ -81,7 +81,7 @@ class DepenseRepository extends ServiceEntityRepository
                 ]
             );
 
-            $qb->andWhere('cs.id IN (' . $idsCompteSalaireBetweenDate . ')');
+            $qb->andWhere('cs.id IN (' . $dqlIdsCompteSalaireBetweenDate . ')');
             $this->parameters['debut'] = $dates[0];
             $this->parameters['fin'] = $dates[1];
         }
