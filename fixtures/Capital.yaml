@@ -4,7 +4,7 @@ App\Entity\Capital:
     compteSalaire: '@compte_salaire_user_credentials_ok_1'
   capital_user_credentials_ok_1_without_montant:
     ajout: 15.25
-    compteSalaire: '@compte_salaire_user_credentials_ok_1'
+    compteSalaire: '@compte_salaire_user_credentials_with_date_now'
   capital_user_credentials_ok_other:
     montant: 200.75
     compteSalaire: '@compte_salaire_user_credentials_other'
