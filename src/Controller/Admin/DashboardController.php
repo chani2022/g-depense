@@ -38,13 +38,12 @@ class DashboardController extends AbstractDashboardController
         private ChartData $chartData
     ) {}
 
-
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
         $depenses = $this->chartData->getDepenses();
         $data = $this->chartData->handleDepense($depenses);
-        $labels = $data['label'];
+        $labels = $data['labels'];
         $datasets = $data['datasets'];
 
         $myChart = (new MyChart($this->chartBuilder, Chart::TYPE_LINE))

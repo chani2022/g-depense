@@ -75,7 +75,10 @@ class ChartData
         $depenses = $this->depenseRepository->findDepensesWithCapital($user, $dates);
         $depensesTotal = $this->depenseRepository->getTotalDepenseAndCapitalInDateGivingByUser($user, $dates);
 
-        $mergeDepenses = $this->arrayHelper->merge($depenses, $depensesTotal);
+        $mergeDepenses = [];
+        foreach ($depensesTotal as $depenseTotal) {
+            $mergeDepenses = $this->arrayHelper->merge($depenses, $depenseTotal);
+        }
 
         return $mergeDepenses;
     }
@@ -87,6 +90,7 @@ class ChartData
      */
     public function handleDepense(array $depenses): array
     {
+
         $labels = [];
         $datasets = [];
         foreach ($depenses as $depense) {
