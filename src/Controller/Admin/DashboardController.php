@@ -55,28 +55,33 @@ class DashboardController extends AbstractDashboardController
                 'labels' => $labels,
                 'datasets' => $datasets
             ])
-            ->setOptions([
-                'indexAxis' => 'y', // 👉 rend les barres horizontales
-                'responsive' => true,
-                'plugins' => [
-                    'title' =>  [
-                        'display' => true,
-                        'text' =>  'Comparaison de depense et recette'
-                    ]
-                ],
-                'scales' =>  [
-                    'x' =>  [
-                        'beginAtZero' =>  true,
-                        'barPercentage' => 0.2, // Largeur des barres (0 à 1)
-                        'categoryPercentage' => 0.5, // Espace entre les catégories,
-                    ]
-                ]
-
-            ]);
+            ->setOptions(self::getOptionsChart());
 
         return $this->render('admin/dashboard.html.twig', [
             'chart' => $myChart->getChart()
         ]);
+    }
+
+    private static function getOptionsChart(): array
+    {
+        return [
+            'indexAxis' => 'y', // 👉 rend les barres horizontales
+            'responsive' => true,
+            'plugins' => [
+                'title' =>  [
+                    'display' => true,
+                    'text' =>  'Comparaison de depense et recette'
+                ]
+            ],
+            'scales' =>  [
+                'x' =>  [
+                    'beginAtZero' =>  true,
+                    'barPercentage' => 0.2, // Largeur des barres (0 à 1)
+                    'categoryPercentage' => 0.5, // Espace entre les catégories,
+                ]
+            ]
+
+        ];
     }
 
     public function configureDashboard(): Dashboard
