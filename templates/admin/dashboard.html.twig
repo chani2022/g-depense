@@ -3,5 +3,23 @@
 	Dashboard
 {% endblock %}
 {% block main %}
-	{{ render_chart(chart, {'class': 'my-chart'}) }}
+	<div class='row'>
+		<h3 class='text-secondary text-center'>Révue de depense</h3>
+		<div class="col-6">
+			<div class="card">
+				<div class="card-header">
+					<h5 class='title-card'>
+						<strong>
+							Par compte salaire
+						</strong>
+					</h5>
+				</div>
+				<div class="card-body">
+					{{ render_chart(chart, {'class': 'my-chart'}) }}
+				</div>
+			</div>
+		</div>
+		<div class="col-6"></div>
+	</div>
+
 {% endblock main %}
