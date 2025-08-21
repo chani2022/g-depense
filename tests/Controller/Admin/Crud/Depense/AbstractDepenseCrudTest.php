@@ -5,13 +5,13 @@ namespace App\Tests\Controller\Admin\Crud\Depense;
 use App\Controller\Admin\DashboardController;
 use App\Controller\Admin\DepenseCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
-use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use App\Tests\Trait\UserAuthenticatedTrait;
+use Hautelook\AliceBundle\PhpUnit\ReloadDatabaseTrait;
 use Symfony\Component\DomCrawler\Crawler;
 
 abstract class AbstractDepenseCrudTest extends AbstractCrudTestCase
 {
-    use RefreshDatabaseTrait;
+    use ReloadDatabaseTrait;
     use UserAuthenticatedTrait;
 
     protected ?Crawler $crawler;
