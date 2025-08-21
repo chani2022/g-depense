@@ -10,6 +10,7 @@ use App\Entity\Unite;
 use App\Entity\User;
 use App\Form\ChangePasswordType;
 use App\Form\ProfilType;
+use App\Ux\ChartData;
 use App\Ux\MyChart;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
@@ -33,14 +34,33 @@ class DashboardController extends AbstractDashboardController
 {
     public function __construct(
         private UploaderHelper $uploaderHelper,
-        private ChartBuilderInterface $chartBuilder
+        private ChartBuilderInterface $chartBuilder,
+        private ChartData $chartData
     ) {}
 
 
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-        $myChart = new MyChart($this->chartBuilder, Chart::TYPE_LINE);
+        $depenses = $this->chartData->getDepenses();
+        $data = $this->chartData->handleDepense($depenses);
+        $labels = $data['label'];
+        $datasets = $data['datasets'];
+
+        $myChart = (new MyChart($this->chartBuilder, Chart::TYPE_LINE))
+            ->setData([
+                'labels' => $labels,
+                'datasets' => $datasets
+            ])
+            ->setOptions([
+                'scales' => [
+                    'y' => [
+                        'suggestedMin' => 0,
+                        'suggestedMax' => 100,
+                    ],
+                ],
+            ]);
+
         return $this->render('admin/dashboard.html.twig', [
             'chart' => $myChart->getChart()
         ]);
