@@ -36,12 +36,20 @@ class ChartDataTest extends TestCase
     public function testGetLabels(): void
     {
         $depenses = ['test'];
+        $depensesTotal = ['depenseTotal'];
+
         $dates = [new DateTime('- 7 days'), new DateTime('+ 7 days')];
         $this->depenseRepository
             ->expects($this->once())
             ->method('findDepensesWithCapital')
             ->with(new User, $dates)
             ->willReturn($depenses);
+
+        $this->depenseRepository
+            ->expects($this->once())
+            ->method('getTotalDepenseAndCapitalInDateGivingByUser')
+            ->with(new User, $dates)
+            ->willReturn($depensesTotal);
 
         $this->chartData->getLabels($dates);
     }
