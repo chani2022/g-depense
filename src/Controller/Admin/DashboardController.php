@@ -66,7 +66,9 @@ class DashboardController extends AbstractDashboardController
                 ],
                 'scales' =>  [
                     'x' =>  [
-                        'beginAtZero' =>  true
+                        'beginAtZero' =>  true,
+                        'barPercentage' => 0.2, // Largeur des barres (0 à 1)
+                        'categoryPercentage' => 0.5, // Espace entre les catégories,
                     ]
                 ]
 
