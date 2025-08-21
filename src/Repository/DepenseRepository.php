@@ -72,7 +72,7 @@ class DepenseRepository extends ServiceEntityRepository
      */
     public function getTotalDepenseAndCapitalInDateGivingByUser(User $user, ?array $dates = null): array
     {
-        return $this->createQueryBuilder('d')
+        $qb =  $this->createQueryBuilder('d')
             ->select('
                 SUM(d.prix) AS total_depense_general,
                 SUM(COALESCE(cap.montant,0) + COALESCE(cap.ajout, 0)) AS total_capital_general
@@ -81,12 +81,17 @@ class DepenseRepository extends ServiceEntityRepository
             ->leftJoin('cs.owner', 'ow')
             ->leftJoin('cs.capitals', 'cap')
             ->andWhere('ow = :user')
-            ->andWhere('cs.dateDebutCompte BETWEEN :debut AND :fin')
-            ->setParameters([
-                'user' => $user,
-                'debut' => $dates[0],
-                'fin' => $dates[1]
-            ])
+            ->setParameter('user', $user);
+
+        if ($dates) {
+            $qb->andWhere('cs.dateDebutCompte BETWEEN :debut AND :fin')
+                ->setParameter('debut', $dates[0])
+                ->setParameter('fin', $dates[1]);
+        } else {
+            $qb->andWhere(':date BETWEEN cs.dateDebutCompte AND cs.dateFinCompte')
+                ->setParameter('date', new DateTime());
+        };
+        return $qb
             ->getQuery()
             ->getScalarResult();
     }
@@ -135,14 +140,4 @@ class DepenseRepository extends ServiceEntityRepository
         return $qb->andWhere($where)
             ->getDQL();
     }
-
-    //    public function findOneBySomeField($value): ?Depense
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }
