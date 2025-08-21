@@ -12,8 +12,8 @@ class ChartData
         private TokenStorageInterface $tokenStorage
     ) {}
 
-    public function getLabels(array $dates)
+    public function getLabels(?array $dates = null)
     {
-        $depenses = $this->depenseRepository->getDepenseBetweenDateWithCapital($dates, $this->tokenStorage->getToken()->getUser());
+        $depenses = $this->depenseRepository->findDepensesWithCapital($this->tokenStorage->getToken()->getUser(), $dates);
     }
 }

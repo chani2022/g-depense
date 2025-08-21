@@ -39,8 +39,8 @@ class ChartDataTest extends TestCase
         $dates = [new DateTime('- 7 days'), new DateTime('+ 7 days')];
         $this->depenseRepository
             ->expects($this->once())
-            ->method('getDepenseBetweenDateWithCapital')
-            ->with($dates, new User)
+            ->method('findDepensesWithCapital')
+            ->with(new User, $dates)
             ->willReturn($depenses);
 
         $this->chartData->getLabels($dates);

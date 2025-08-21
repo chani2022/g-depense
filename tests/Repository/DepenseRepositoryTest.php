@@ -85,7 +85,7 @@ class DepenseRepositoryTest extends KernelTestCase
                         ],
                         [
                             "id" => 1,
-                            "label" => "13/08/2025 - 27/08/2025",
+                            "label" => (new DateTime('-7 days'))->format('d/m/Y') . ' - ' . (new DateTime('+7 days'))->format('d/m/Y'),
                             "total_depense" => 25.25,
                             "total_capital" => 15.25,
                         ]
