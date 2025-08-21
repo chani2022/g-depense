@@ -6,6 +6,7 @@
 	{# <html> #}
 	<head>
 		{% block head_metas %}
+
 			<meta charset="utf-8">
 			<meta http-equiv="X-UA-Compatible" content="IE=edge">
 			<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate, nocache"/>
@@ -21,6 +22,7 @@
 		<title>{{ page_title_block_output|striptags|raw }}</title>
 
 		{% block head_stylesheets %}
+			{{ encore_entry_link_tags('app') }}
 			<link rel="stylesheet" href="{{ asset('app.css', ea.assets.defaultAssetPackageName) }}">
 		{% endblock %}
 
@@ -35,7 +37,7 @@
 
 		{% block head_javascript %}
 			<script src="{{ asset('app.js', ea.assets.defaultAssetPackageName) }}"></script>
-
+			{{ encore_entry_script_tags('app') }}
 			{% block importmap %}
 				{{ include('@EasyAdmin/includes/_importmap.html.twig', { assets: ea.assets.assetMapperAssets ?? [] }, with_context = false) }}
 			{% endblock %}
@@ -187,7 +189,7 @@
 									<a
 										class="user-details" type="button" data-bs-toggle="dropdown" data-bs-offset="0,5" aria-expanded="false">
 										{# to make the site design consistent, always display the user avatar in responsive header
-																																								                                   and hide the user name (because there's no space left) regardless of the user config #}
+																																																												                                   and hide the user name (because there's no space left) regardless of the user config #}
 										{% if ea.userMenu.avatarDisplayed %}
 											{{ user_menu_avatar }}
 										{% else %}

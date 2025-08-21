@@ -91,11 +91,13 @@ class ChartDataTest extends TestCase
         ];
 
         $depensesTotal = [
-            'total_depense_general' => 20.10,
-            'total_capital_general' => 100.20
+            [
+                'total_depense_general' => 20.10,
+                'total_capital_general' => 100.20
+            ]
         ];
 
-        $depenseExpected = array_merge($depenses, $depensesTotal);
+        $depenseExpected = array_merge($depenses, $depensesTotal[0]);
         $dates = [new DateTime('- 7 days'), new DateTime('+ 7 days')];
 
         $this->depenseRepository
@@ -113,7 +115,7 @@ class ChartDataTest extends TestCase
         $this->arrayHelper
             ->expects($this->once())
             ->method('merge')
-            ->with($depenses, $depensesTotal)
+            ->with($depenses, $depensesTotal[0])
             ->willReturn($depenseExpected);
 
         $depenseActual = $this->chartData->getDepenses($dates);

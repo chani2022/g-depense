@@ -64,7 +64,7 @@ class DepenseRepository extends ServiceEntityRepository
     }
     /**
      * Permet de recuperer le total de depense et capital
-     * d'une date donnée.
+     * d'une date donnée sinon date d'aujourd'hui (defaut)
      * 
      * @param User $user                        utilisateur authentifié
      * @param string[]|null $dates              date de recherche

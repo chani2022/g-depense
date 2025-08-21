@@ -38,6 +38,10 @@ class DashboardController extends AbstractDashboardController
         private ChartData $chartData
     ) {}
 
+    /**
+     * Representation graphique du depense par rapport au capital pour 
+     * chaque compte salaire d'un utilisateur
+     */
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
@@ -46,18 +50,26 @@ class DashboardController extends AbstractDashboardController
         $labels = $data['labels'];
         $datasets = $data['datasets'];
 
-        $myChart = (new MyChart($this->chartBuilder, Chart::TYPE_LINE))
+        $myChart = (new MyChart($this->chartBuilder, Chart::TYPE_BAR))
             ->setData([
                 'labels' => $labels,
                 'datasets' => $datasets
             ])
             ->setOptions([
-                'scales' => [
-                    'y' => [
-                        'suggestedMin' => 0,
-                        'suggestedMax' => 100,
-                    ],
+                'indexAxis' => 'y', // 👉 rend les barres horizontales
+                'responsive' => true,
+                'plugins' => [
+                    'title' =>  [
+                        'display' => true,
+                        'text' =>  'Comparaison de depense et recette'
+                    ]
                 ],
+                'scales' =>  [
+                    'x' =>  [
+                        'beginAtZero' =>  true
+                    ]
+                ]
+
             ]);
 
         return $this->render('admin/dashboard.html.twig', [
@@ -100,15 +112,15 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('User', 'fa fa-users', User::class)
                 ->setCssClass('crud-user')
                 ->setPermission('ROLE_ADMIN'),
-            MenuItem::linkToCrud('Compte salaire', 'fa fa-users', CompteSalaire::class)
+            MenuItem::linkToCrud('Compte salaire', 'fa fa-calendar', CompteSalaire::class)
                 ->setCssClass('compte-salaire'),
-            MenuItem::linkToCrud('Capital', 'fa fa-users', Capital::class)
+            MenuItem::linkToCrud('Capital', 'fa fa-money', Capital::class)
                 ->setCssClass('capital'),
-            MenuItem::linkToCrud('Categories', 'fa fa-users', Category::class)
+            MenuItem::linkToCrud('Categories', 'fa fa-list', Category::class)
                 ->setCssClass('categories'),
-            MenuItem::linkToCrud('Unite', 'fa fa-users', Unite::class)
+            MenuItem::linkToCrud('Unite', 'fa fa-icons', Unite::class)
                 ->setCssClass('unite'),
-            MenuItem::linkToCrud('Depense', 'fa fa-users', Depense::class)
+            MenuItem::linkToCrud('Depense', 'fa fa-comments-dollar', Depense::class)
                 ->setCssClass('depense')
         ];
     }
@@ -163,7 +175,7 @@ class DashboardController extends AbstractDashboardController
 
     public function configureAssets(): Assets
     {
-        $assets = parent::configureAssets();
-        return $assets->addWebpackEncoreEntry('app');
+        return (Assets::new())
+            ->addWebpackEncoreEntry('app');
     }
 }
