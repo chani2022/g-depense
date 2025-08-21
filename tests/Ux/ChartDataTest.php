@@ -51,6 +51,9 @@ class ChartDataTest extends TestCase
             ->with(new User, $dates)
             ->willReturn($depensesTotal);
 
-        $this->chartData->getLabels($dates);
+        $labelsExpected = array_merge($depenses, $depensesTotal);
+        $labelsActual = $this->chartData->getLabels($dates);
+
+        $this->assertSame($labelsExpected, $labelsActual);
     }
 }
