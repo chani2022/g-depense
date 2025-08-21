@@ -132,72 +132,85 @@ class ChartDataTest extends TestCase
 
     public static function provideDepenses(): array
     {
-        $depenses = [
-            'total_depense_general' => 20.10,
-            'total_capital_general' => 100.20,
-            [
-                'id' => 1,
-                'label' => 'label',
-                'total_capital' => 15.20,
-                'total_depense' => 5.20
-            ],
-            [
-                'id' => 1,
-                'label' => 'label2',
-                'total_capital' => 15.20,
-                'total_depense' => 5.20
-            ]
-        ];
         return [
             [
-                'only label' => [
-                    'test' => 1,
-                    'test2' => 2,
-                    [
-                        'label' => 'label1'
-                    ],
-                    [
-                        'label' => 'label2'
-                    ]
-                ],
-                'expected' => [
-                    'labels' => ['label1', 'label2'],
-                    'datasets' => []
-                ]
-            ],
-            [
-                'only datasets' => [
+                '2 data ' => [
                     'total_depense_general' => 20.10,
                     'total_capital_general' => 100.20,
                     [
                         'id' => 1,
-                        'total_capital' => 15.20,
-                        'total_depense' => 5.20
+                        'label' => 'label1',
+                        'total_capital' => 15.2,
+                        'total_depense' => 5.2
                     ],
                     [
                         'id' => 1,
-                        'total_capital' => 100.20,
+                        'label' => 'label2',
+                        'total_capital' => 100.2,
                         'total_depense' => 8
                     ]
                 ],
                 'expected' => [
-                    'labels' => [],
+                    'labels' => ['label1', 'label2'],
                     'datasets' => [
                         [
-                            'label' => 'depense',
-                            'data' => [5.20, 8],
+                            'label' => 'Depense mensuel',
+                            'data' => [5.2, 8],
                             'borderColor' => ChartData::STYLE['depense']['border'],
-                            'backgroundColr' => ChartData::STYLE['depense']['background'],
+                            'backgroundColor' => ChartData::STYLE['depense']['background'],
                         ],
                         [
-                            'label' => 'capital',
-                            'data' => [15.20, 100.20],
+                            'label' => 'Capital mensuel',
+                            'data' => [15.2, 100.2],
                             'borderColor' => ChartData::STYLE['capital']['border'],
-                            'backgroundColr' => ChartData::STYLE['capital']['background'],
+                            'backgroundColor' => ChartData::STYLE['capital']['background'],
+                        ],
+                    ]
+                ]
+            ],
+
+            [
+                '3 data ' => [
+                    'total_depense_general' => 20.10,
+                    'total_capital_general' => 100.20,
+                    [
+                        'id' => 1,
+                        'label' => 'label1',
+                        'total_capital' => 15.2,
+                        'total_depense' => 5.2
+                    ],
+                    [
+                        'id' => 1,
+                        'label' => 'label2',
+                        'total_capital' => 100.2,
+                        'total_depense' => 8
+                    ],
+                    [
+                        'id' => 1,
+                        'label' => 'label3',
+                        'total_capital' => 45.2,
+                        'total_depense' => 8.25
+                    ]
+                ],
+                'expected' => [
+                    'labels' => ['label1', 'label2', 'label3'],
+                    'datasets' => [
+                        [
+                            'label' => 'Depense mensuel',
+                            'data' => [5.2, 8, 8.25],
+                            'borderColor' => ChartData::STYLE['depense']['border'],
+                            'backgroundColor' => ChartData::STYLE['depense']['background'],
+                        ],
+                        [
+                            'label' => 'Capital mensuel',
+                            'data' => [15.2, 100.2, 45.2],
+                            'borderColor' => ChartData::STYLE['capital']['border'],
+                            'backgroundColor' => ChartData::STYLE['capital']['background'],
                         ],
                     ]
                 ]
             ]
+
         ];
     }
 }
