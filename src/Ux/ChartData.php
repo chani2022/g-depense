@@ -14,6 +14,8 @@ class ChartData
 
     public function getLabels(?array $dates = null)
     {
-        $depenses = $this->depenseRepository->findDepensesWithCapital($this->tokenStorage->getToken()->getUser(), $dates);
+        $user = $this->tokenStorage->getToken()->getUser();
+        $depenses = $this->depenseRepository->findDepensesWithCapital($user, $dates);
+        $depensesTotal = $this->depenseRepository->getTotalDepenseAndCapitalInDateGivingByUser($user, $dates);
     }
 }
