@@ -3,29 +3,29 @@
 namespace App\Tests\Ux;
 
 use App\Ux\MyChart;
-use PHPUnit\Framework\MockObject\MockObject;
+use Doctrine\Common\Cache\Psr6\InvalidArgument;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
 class MyChartTest extends TestCase
 {
-    private ?MyChart $myChart;
+    protected function setUp(): void {}
 
-    protected function setUp(): void
-    {
-        $this->myChart = new MyChart('line');
-    }
+    protected function tearDown(): void {}
 
-    protected function tearDown(): void
+    public function testTypeThrowException(): void
     {
-        $this->myChart = null;
+        $this->expectException(InvalidArgumentException::class);
+
+        $myChart = new MyChart('exception');
     }
 
     public function testGetType(): void
     {
         $typeExpected = 'line';
-        $typeActual = $this->myChart->getType();
+        $myChart = new MyChart($typeExpected);
+        $typeActual = $myChart->getType();
 
         $this->assertSame($typeExpected, $typeActual);
     }
@@ -33,10 +33,12 @@ class MyChartTest extends TestCase
     public function testSetDataChart(): void
     {
         $data = ['test'];
+        $typeExpected = 'line';
+        $myChart = new MyChart($typeExpected);
 
-        $this->myChart->setData($data);
+        $myChart->setData($data);
 
-        $this->assertSame($data, $this->myChart->getData());
+        $this->assertSame($data, $myChart->getData());
     }
     /**
      * @dataProvider providerGetType
@@ -45,7 +47,7 @@ class MyChartTest extends TestCase
     {
         $myChart = new MyChart($type);
         $optionsActual = $myChart->getOptions();
-        $this->assertSame($optionsExpected, $optionsActual);
+        $this->assertEquals($optionsExpected, $optionsActual);
     }
 
     public static function providerGetType(): array
@@ -62,7 +64,8 @@ class MyChartTest extends TestCase
                         'responsive' => true
                     ],
                 ]
-            ]
+            ],
+            []
         ];
     }
 }

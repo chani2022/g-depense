@@ -15,6 +15,8 @@ class MyChart
     public function __construct(string $type)
     {
         $this->chart = new Chart($type);
+
+        $this->setOptionsByType($type);
     }
 
     /**
@@ -46,13 +48,27 @@ class MyChart
     }
 
     /**
-     * @return self
+     * @return void
      */
-    public function setOptions(array $options): self
+    private function setOptionsByType(string $type): void
     {
-        $this->chart->setOptions($options);
+        $defaultOptions = [
+            'scales' => [
+                'responsive' => true
+            ]
+        ];
+        $options = [];
+        switch ($type) {
+            case Chart::TYPE_LINE:
+                $defaultOptions['scales']['y'] = [
+                    'suggestedMin' => 0,
+                    'suggestedMax' => 100,
+                ];
+                $options = $defaultOptions;
+                break;
+        }
 
-        return $this;
+        $this->chart->setOptions($options);
     }
 
     public function getOptions(): array
