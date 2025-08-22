@@ -40,6 +40,14 @@ class MyChartTest extends TestCase
 
         $this->assertSame($data, $myChart->getData());
     }
+
+    public function testSetTitle(): void
+    {
+        $myChart = new MyChart('line');
+        $myChart->setTitle('my title');
+
+        $this->assertSame('my title', $myChart->getTitle());
+    }
     /**
      * @dataProvider providerGetType
      */

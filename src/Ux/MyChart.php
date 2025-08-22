@@ -11,7 +11,7 @@ class MyChart
 
     /**
      * initialisation de mychart
-     * @param string $type   type de chart non standard
+     * @param string $typeNotStandard   type de chart non standard e.g: line, horizontal-bar, vertical-bar etc
      */
     public function __construct(string $typeNotStandard)
     {
