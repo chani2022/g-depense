@@ -8,6 +8,7 @@ use Symfony\UX\Chartjs\Model\Chart;
 class MyChart
 {
     private Chart $chart;
+    private string $title = '';
 
     /**
      * initialisation de mychart
@@ -42,6 +43,18 @@ class MyChart
             'vertical-bar' => Chart::TYPE_BAR,
             'horizontal-bar' => Chart::TYPE_BAR
         };
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): static
+    {
+        $this->title = $title;
+
+        return $this;
     }
 
     /**
