@@ -51,9 +51,19 @@ class MyChartTest extends TestCase
     /**
      * @dataProvider providerGetType
      */
-    public function testSetOptions(string $type, array $optionsExpected): void
+    public function testSetOptionsWithoutTitle(string $type, array $optionsExpected): void
     {
         $myChart = new MyChart($type);
+        $optionsActual = $myChart->getOptions();
+        $this->assertEquals($optionsExpected, $optionsActual);
+    }
+
+    /**
+     * @dataProvider providerGetType
+     */
+    public function testSetOptionsWithTitle(string $typeNotStandard, $optionsExpected): void
+    {
+        $myChart = (new MyChart($typeNotStandard, 'title'));
         $optionsActual = $myChart->getOptions();
         $this->assertEquals($optionsExpected, $optionsActual);
     }

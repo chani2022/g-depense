@@ -8,18 +8,20 @@ use Symfony\UX\Chartjs\Model\Chart;
 class MyChart
 {
     private Chart $chart;
-    private string $title = '';
+    private ?string $title;
 
     /**
      * initialisation de mychart
      * @param string $typeNotStandard   type de chart non standard e.g: line, horizontal-bar, vertical-bar etc
      */
-    public function __construct(string $typeNotStandard)
+    public function __construct(string $typeNotStandard, ?string $title = null)
     {
         $this->typethrowException($typeNotStandard);
 
         $typeStandard = $this->setTypeToStandard($typeNotStandard);
-        $this->chart = new Chart($typeStandard);
+
+        $this->setTitle($title);
+        $this->chart = (new Chart($typeStandard));
         $this->setOptionsByType($typeNotStandard);
     }
     /**
@@ -44,13 +46,19 @@ class MyChart
             'horizontal-bar' => Chart::TYPE_BAR
         };
     }
-
-    public function getTitle(): string
+    /**
+     * @return string|null
+     */
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    /**
+     * @param string|null $title titre du chart
+     * @return static
+     */
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
 
@@ -90,10 +98,19 @@ class MyChart
      */
     private function setOptionsByType(string $type): void
     {
+
         $options = [
             'responsive' => true,
             'scales' => []
         ];
+
+        if ($this->title) {
+            $options['plugins']['title'] = [
+                'display' => true,
+                'text' => $this->title
+            ];
+        }
+
         switch ($type) {
             case 'line':
                 $options['scales']['y'] = [
