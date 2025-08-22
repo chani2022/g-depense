@@ -4,6 +4,7 @@ namespace App\Tests\Controller\Admin;
 
 use App\Controller\Admin\DashboardController;
 use App\Entity\User;
+use App\Repository\DepenseRepository;
 use App\Tests\Trait\LoadFixtureTrait;
 use App\Tests\Trait\UserAuthenticatedTrait;
 use App\Ux\ChartData;
@@ -38,8 +39,8 @@ class DashboardControllerTest extends WebTestCase
 
         $uploaderHelper = $this->getContainer()->get(UploaderHelper::class);
         // $chartBuilder = $this->getContainer()->get(ChartBuilderInterface::class);
-        $chartData = $this->getContainer()->get(ChartData::class);
-        $this->dashboardController = new DashboardController($uploaderHelper, $chartData);
+        $depenseRepository = $this->getContainer()->get(DepenseRepository::class);
+        $this->dashboardController = new DashboardController($uploaderHelper, $depenseRepository);
 
         $this->userSimpleAuthenticated = $this->getSimpeUserAuthenticated();
         $this->adminAuthenticated = $this->getAdminAuthenticated();

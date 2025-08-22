@@ -10,6 +10,7 @@ use App\Entity\Unite;
 use App\Entity\User;
 use App\Form\ChangePasswordType;
 use App\Form\ProfilType;
+use App\Repository\DepenseRepository;
 use App\Ux\ChartData;
 use App\Ux\MyChart;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,9 +31,21 @@ use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 #[IsGranted('ROLE_USER')]
 class DashboardController extends AbstractDashboardController
 {
+    const STYLE = [
+        'depense' => [
+            'border' => 'rgb(255, 99, 132)',
+            'background' => 'rgb(255, 99, 132)'
+        ],
+        'capital' => [
+            'border' => 'rgb(22, 157, 150)',
+            'background' => 'rgb(22, 157, 150)'
+        ],
+    ];
+
     public function __construct(
         private UploaderHelper $uploaderHelper,
-        private ChartData $chartData
+        private DepenseRepository $depenseRepository
+        // private ChartData $chartData
     ) {}
 
     /**
@@ -42,12 +55,40 @@ class DashboardController extends AbstractDashboardController
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-        $depenses = $this->chartData->getDepenses();
-        $data = $this->chartData->handleDepense($depenses);
-        $labels = $data['labels'];
-        $datasets = $data['datasets'];
+        $labels = [];
+        $datasets = [];
+        $depenseAndCapitalMensuels = $this->depenseRepository->findDepensesWithCapital($this->getUser());
 
-        $myChart = (new MyChart('line'))
+        foreach ($depenseAndCapitalMensuels as $depenseAndCapitalMensuel) {
+            $labels[] = $depenseAndCapitalMensuel['label'];
+            $dataDepense = [
+                'label' => 'Depense mensuel',
+                'data' => [$depenseAndCapitalMensuel['total_depense']],
+                'borderColor' => self::STYLE['depense']['border'],
+                'backgroundColor' => self::STYLE['depense']['background'],
+            ];
+            $dataCapital = [
+                'label' => 'Capital mensuel',
+                'data' => [$depenseAndCapitalMensuel['total_capital']],
+                'borderColor' => self::STYLE['capital']['border'],
+                'backgroundColor' => self::STYLE['capital']['background'],
+            ];
+
+            if (count($datasets) == 0) {
+                $datasets[] = $dataDepense;
+                $datasets[] = $dataCapital;
+            } else {
+                foreach ($datasets as $i => $dataset) {
+                    if ($dataset['label'] == 'Depense mensuel') {
+                        $datasets[$i]['data'][] = $depenseAndCapitalMensuel['total_depense'];
+                    } else {
+                        $datasets[$i]['data'][] = $depenseAndCapitalMensuel['total_capital'];
+                    }
+                }
+            }
+        }
+
+        $myChart = (new MyChart('horizontal-bar', 'Comparaison de depense et capital.'))
             ->setData([
                 'labels' => $labels,
                 'datasets' => $datasets

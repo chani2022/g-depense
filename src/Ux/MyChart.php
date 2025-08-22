@@ -18,9 +18,7 @@ class MyChart
     public function __construct(string $typeNotStandard, ?string $title = null)
     {
         $this->typethrowException($typeNotStandard);
-
         $typeStandard = $this->setTypeToStandard($typeNotStandard);
-
         $this->setTitle($title);
         $this->chart = (new Chart($typeStandard));
         $this->setOptionsByType($typeNotStandard);
@@ -48,7 +46,7 @@ class MyChart
         };
     }
     /**
-     * @return string|null
+     * @return string|null  titre du chart
      */
     public function getTitle(): ?string
     {
@@ -67,6 +65,8 @@ class MyChart
     }
 
     /**
+     * Type de chart
+     * 
      * @return string
      */
     public function getType(): string
