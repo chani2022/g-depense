@@ -13,6 +13,7 @@ class MyChart
     /**
      * initialisation de mychart
      * @param string $typeNotStandard   type de chart non standard e.g: line, horizontal-bar, vertical-bar etc
+     * @param string $title             titre du chart
      */
     public function __construct(string $typeNotStandard, ?string $title = null)
     {
@@ -98,39 +99,31 @@ class MyChart
      */
     private function setOptionsByType(string $type): void
     {
+        $plugins = [
+            'title' => [
+                'display' => true,
+                'text' => $this->title
+            ]
+        ];
+
+        $suggest = [
+            'suggestedMin' => 0,
+            'suggestedMax' => 100
+        ];
+
+        $scales = $type == 'line' ? ['y' => $suggest] : ['x' => $suggest];
 
         $options = [
             'responsive' => true,
-            'scales' => []
+            'scales' => $scales
         ];
 
-        if ($this->title) {
-            $options['plugins']['title'] = [
-                'display' => true,
-                'text' => $this->title
-            ];
+        if ($type == 'horizontal-bar') {
+            $options['indexAxis'] = 'y';
         }
 
-        switch ($type) {
-            case 'line':
-                $options['scales']['y'] = [
-                    'suggestedMin' => 0,
-                    'suggestedMax' => 100,
-                ];
-                break;
-            case 'vertical-bar':
-                $options['scales']['x'] = [
-                    'suggestedMin' => 0,
-                    'suggestedMax' => 100,
-                ];
-                break;
-            case 'horizontal-bar':
-                $options['indexAxis'] = 'y';
-                $options['scales']['x'] = [
-                    'suggestedMin' => 0,
-                    'suggestedMax' => 100,
-                ];
-                break;
+        if ($this->title) {
+            $options['plugins'] = $plugins;
         }
 
         $this->chart->setOptions($options);

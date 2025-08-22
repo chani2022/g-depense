@@ -25,8 +25,6 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
-use Symfony\UX\Chartjs\Model\Chart;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 #[IsGranted('ROLE_USER')]
@@ -34,7 +32,6 @@ class DashboardController extends AbstractDashboardController
 {
     public function __construct(
         private UploaderHelper $uploaderHelper,
-        // private ChartBuilderInterface $chartBuilder,
         private ChartData $chartData
     ) {}
 
@@ -55,33 +52,10 @@ class DashboardController extends AbstractDashboardController
                 'labels' => $labels,
                 'datasets' => $datasets
             ]);
-        // ->setOptions(self::getOptionsChart());
 
         return $this->render('admin/dashboard.html.twig', [
             'chart' => $myChart->getChart()
         ]);
-    }
-
-    private static function getOptionsChart(): array
-    {
-        return [
-            'indexAxis' => 'y', // 👉 rend les barres horizontales
-            'responsive' => true,
-            'plugins' => [
-                'title' =>  [
-                    'display' => true,
-                    'text' =>  'Comparaison de depense et recette'
-                ]
-            ],
-            'scales' =>  [
-                'x' =>  [
-                    'beginAtZero' =>  true,
-                    'barPercentage' => 0.2, // Largeur des barres (0 à 1)
-                    'categoryPercentage' => 0.5, // Espace entre les catégories,
-                ]
-            ]
-
-        ];
     }
 
     public function configureDashboard(): Dashboard

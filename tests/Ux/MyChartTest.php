@@ -3,10 +3,8 @@
 namespace App\Tests\Ux;
 
 use App\Ux\MyChart;
-use Doctrine\Common\Cache\Psr6\InvalidArgument;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Symfony\UX\Chartjs\Model\Chart;
 
 class MyChartTest extends TestCase
 {
@@ -49,7 +47,7 @@ class MyChartTest extends TestCase
         $this->assertSame('my title', $myChart->getTitle());
     }
     /**
-     * @dataProvider providerGetType
+     * @dataProvider providerOptionsWithoutTitleShow
      */
     public function testSetOptionsWithoutTitle(string $type, array $optionsExpected): void
     {
@@ -59,16 +57,16 @@ class MyChartTest extends TestCase
     }
 
     /**
-     * @dataProvider providerGetType
+     * @dataProvider providerOptionsWithTitleShow
      */
     public function testSetOptionsWithTitle(string $typeNotStandard, $optionsExpected): void
     {
-        $myChart = (new MyChart($typeNotStandard, 'title'));
+        $myChart = (new MyChart($typeNotStandard, $typeNotStandard));
         $optionsActual = $myChart->getOptions();
         $this->assertEquals($optionsExpected, $optionsActual);
     }
 
-    public static function providerGetType(): array
+    public static function providerOptionsWithTitleShow(): array
     {
         return [
             [
@@ -80,7 +78,13 @@ class MyChartTest extends TestCase
                             'suggestedMax' => 100,
                         ],
                     ],
-                    'responsive' => true
+                    'responsive' => true,
+                    'plugins' => [
+                        'title' => [
+                            'display' => true,
+                            'text' => 'line'
+                        ]
+                    ]
                 ]
             ],
             [
@@ -92,7 +96,13 @@ class MyChartTest extends TestCase
                             'suggestedMax' => 100,
                         ]
                     ],
-                    'responsive' => true
+                    'responsive' => true,
+                    'plugins' => [
+                        'title' => [
+                            'display' => true,
+                            'text' => 'vertical-bar'
+                        ]
+                    ]
                 ]
             ],
             [
@@ -105,7 +115,57 @@ class MyChartTest extends TestCase
                             'suggestedMax' => 100,
                         ],
                     ],
-                    'responsive' => true
+                    'responsive' => true,
+                    'plugins' => [
+                        'title' => [
+                            'display' => true,
+                            'text' => 'horizontal-bar'
+                        ]
+                    ]
+                ]
+            ],
+
+        ];
+    }
+
+    public static function providerOptionsWithoutTitleShow(): array
+    {
+        return [
+            [
+                'line',
+                [
+                    'scales' => [
+                        'y' => [
+                            'suggestedMin' => 0,
+                            'suggestedMax' => 100,
+                        ],
+                    ],
+                    'responsive' => true,
+                ]
+            ],
+            [
+                'vertical-bar',
+                [
+                    'scales' => [
+                        'x' => [
+                            'suggestedMin' => 0,
+                            'suggestedMax' => 100,
+                        ]
+                    ],
+                    'responsive' => true,
+                ]
+            ],
+            [
+                'horizontal-bar',
+                [
+                    'indexAxis' => 'y',
+                    'scales' => [
+                        'x' => [
+                            'suggestedMin' => 0,
+                            'suggestedMax' => 100,
+                        ],
+                    ],
+                    'responsive' => true,
                 ]
             ],
 
