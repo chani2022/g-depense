@@ -10,52 +10,59 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 class MyChartTest extends TestCase
 {
-    /** @var MockObject|ChartBuilderInterface|null */
-    private  $chartBuilder;
     private ?MyChart $myChart;
 
     protected function setUp(): void
     {
-        /** @var MockObject|ChartBuilderInterface|null */
-        $this->chartBuilder = $this->createMock(ChartBuilderInterface::class);
-        $this->myChart = new MyChart($this->chartBuilder, 'line');
+        $this->myChart = new MyChart('line');
     }
 
     protected function tearDown(): void
     {
-        $this->chartBuilder = null;
         $this->myChart = null;
     }
 
     public function testGetType(): void
     {
         $typeExpected = 'line';
-        $chart = new Chart($typeExpected);
-        $this->myChart->setChart($chart);
         $typeActual = $this->myChart->getType();
 
         $this->assertSame($typeExpected, $typeActual);
     }
 
-    public function testSetData(): void
+    public function testSetDataChart(): void
     {
         $data = ['test'];
-        $mockChart = new Chart('line');
-        $this->myChart->setChart($mockChart);
+
         $this->myChart->setData($data);
 
         $this->assertSame($data, $this->myChart->getData());
     }
-
-    public function testSetOptions(): void
+    /**
+     * @dataProvider providerGetType
+     */
+    public function testSetOptions(string $type, array $optionsExpected): void
     {
-        $options = ['options'];
-        $chart = new Chart('line');
-        $this->myChart->setChart($chart);
+        $myChart = new MyChart($type);
+        $optionsActual = $myChart->getOptions();
+        $this->assertSame($optionsExpected, $optionsActual);
+    }
 
-        $this->myChart->setOptions($options);
-
-
-        $this->assertSame($options, $this->myChart->getOptions());
+    public static function providerGetType(): array
+    {
+        return [
+            [
+                Chart::TYPE_LINE,
+                [
+                    'scales' => [
+                        'y' => [
+                            'suggestedMin' => 0,
+                            'suggestedMax' => 100,
+                        ],
+                        'responsive' => true
+                    ],
+                ]
+            ]
+        ];
     }
 }

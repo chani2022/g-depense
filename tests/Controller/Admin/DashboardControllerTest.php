@@ -56,6 +56,8 @@ class DashboardControllerTest extends WebTestCase
     public function testIndexDashboardSuccessfully(): void
     {
         $this->simulateAccessPageDashboardWithUser();
+
+        $this->assertSelectorExists('.my-chart');
     }
 
     /**
@@ -121,7 +123,6 @@ class DashboardControllerTest extends WebTestCase
         $this->crawler = $this->client->request('GET', '/admin');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('.my-chart');
     }
 
     private function assertUserMenuContaintsMenuItems(array $menuItems): void

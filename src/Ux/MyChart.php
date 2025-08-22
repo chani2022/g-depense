@@ -2,7 +2,6 @@
 
 namespace App\Ux;
 
-use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
 class MyChart
@@ -11,12 +10,11 @@ class MyChart
 
     /**
      * initialisation de mychart
-     * @param ChartBuilderInterface $chartBuilder       constructeur de chart
      * @param string $type                              type de chart
      */
-    public function __construct(private ChartBuilderInterface $chartBuilder, string $type)
+    public function __construct(string $type)
     {
-        $this->chart = $this->chartBuilder->createChart($type);
+        $this->chart = new Chart($type);
     }
 
     /**
