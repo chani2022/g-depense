@@ -34,7 +34,7 @@ class DashboardController extends AbstractDashboardController
 {
     public function __construct(
         private UploaderHelper $uploaderHelper,
-        private ChartBuilderInterface $chartBuilder,
+        // private ChartBuilderInterface $chartBuilder,
         private ChartData $chartData
     ) {}
 
@@ -50,12 +50,12 @@ class DashboardController extends AbstractDashboardController
         $labels = $data['labels'];
         $datasets = $data['datasets'];
 
-        $myChart = (new MyChart($this->chartBuilder, Chart::TYPE_BAR))
+        $myChart = (new MyChart('line'))
             ->setData([
                 'labels' => $labels,
                 'datasets' => $datasets
-            ])
-            ->setOptions(self::getOptionsChart());
+            ]);
+        // ->setOptions(self::getOptionsChart());
 
         return $this->render('admin/dashboard.html.twig', [
             'chart' => $myChart->getChart()

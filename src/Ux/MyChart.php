@@ -2,6 +2,7 @@
 
 namespace App\Ux;
 
+use InvalidArgumentException;
 use Symfony\UX\Chartjs\Model\Chart;
 
 class MyChart
@@ -10,13 +11,37 @@ class MyChart
 
     /**
      * initialisation de mychart
-     * @param string $type                              type de chart
+     * @param string $type   type de chart non standard
      */
-    public function __construct(string $type)
+    public function __construct(string $typeNotStandard)
     {
-        $this->chart = new Chart($type);
+        $this->typethrowException($typeNotStandard);
 
-        $this->setOptionsByType($type);
+        $typeStandard = $this->setTypeToStandard($typeNotStandard);
+        $this->chart = new Chart($typeStandard);
+        $this->setOptionsByType($typeNotStandard);
+    }
+    /**
+     * @throws InvalidException
+     */
+    private function typeThrowException(string $typeNotStandard): void
+    {
+        $listTypeValid = ['line', 'vertical-bar', 'horizontal-bar'];
+
+        if (!in_array($typeNotStandard, $listTypeValid)) {
+            throw new InvalidArgumentException(sprintf('Invalid type for "%s", availables type are %s', $typeNotStandard, implode(', ', $listTypeValid)));
+        }
+    }
+    /**
+     * @param string $type  type non standard e.g: line, vertical-bar etc
+     */
+    private function setTypeToStandard(string $typeNotStandard): string
+    {
+        return match ($typeNotStandard) {
+            'line' => Chart::TYPE_LINE,
+            'vertical-bar' => Chart::TYPE_BAR,
+            'horizontal-bar' => Chart::TYPE_BAR
+        };
     }
 
     /**
@@ -52,19 +77,29 @@ class MyChart
      */
     private function setOptionsByType(string $type): void
     {
-        $defaultOptions = [
-            'scales' => [
-                'responsive' => true
-            ]
+        $options = [
+            'responsive' => true,
+            'scales' => []
         ];
-        $options = [];
         switch ($type) {
-            case Chart::TYPE_LINE:
-                $defaultOptions['scales']['y'] = [
+            case 'line':
+                $options['scales']['y'] = [
                     'suggestedMin' => 0,
                     'suggestedMax' => 100,
                 ];
-                $options = $defaultOptions;
+                break;
+            case 'vertical-bar':
+                $options['scales']['x'] = [
+                    'suggestedMin' => 0,
+                    'suggestedMax' => 100,
+                ];
+                break;
+            case 'horizontal-bar':
+                $options['indexAxis'] = 'y';
+                $options['scales']['x'] = [
+                    'suggestedMin' => 0,
+                    'suggestedMax' => 100,
+                ];
                 break;
         }
 

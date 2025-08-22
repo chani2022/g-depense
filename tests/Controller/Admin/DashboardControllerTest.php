@@ -37,9 +37,9 @@ class DashboardControllerTest extends WebTestCase
         $this->all_fixtures = $this->getFixtures();
 
         $uploaderHelper = $this->getContainer()->get(UploaderHelper::class);
-        $chartBuilder = $this->getContainer()->get(ChartBuilderInterface::class);
+        // $chartBuilder = $this->getContainer()->get(ChartBuilderInterface::class);
         $chartData = $this->getContainer()->get(ChartData::class);
-        $this->dashboardController = new DashboardController($uploaderHelper, $chartBuilder, $chartData);
+        $this->dashboardController = new DashboardController($uploaderHelper, $chartData);
 
         $this->userSimpleAuthenticated = $this->getSimpeUserAuthenticated();
         $this->adminAuthenticated = $this->getAdminAuthenticated();

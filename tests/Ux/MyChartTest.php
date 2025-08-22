@@ -54,18 +54,43 @@ class MyChartTest extends TestCase
     {
         return [
             [
-                Chart::TYPE_LINE,
+                'line',
                 [
                     'scales' => [
                         'y' => [
                             'suggestedMin' => 0,
                             'suggestedMax' => 100,
                         ],
-                        'responsive' => true
                     ],
+                    'responsive' => true
                 ]
             ],
-            []
+            [
+                'vertical-bar',
+                [
+                    'scales' => [
+                        'x' => [
+                            'suggestedMin' => 0,
+                            'suggestedMax' => 100,
+                        ]
+                    ],
+                    'responsive' => true
+                ]
+            ],
+            [
+                'horizontal-bar',
+                [
+                    'indexAxis' => 'y',
+                    'scales' => [
+                        'x' => [
+                            'suggestedMin' => 0,
+                            'suggestedMax' => 100,
+                        ],
+                    ],
+                    'responsive' => true
+                ]
+            ],
+
         ];
     }
 }
