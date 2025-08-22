@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SearchDepenseTypeTest extends TestCase
 {
@@ -38,5 +39,14 @@ class SearchDepenseTypeTest extends TestCase
             ->willReturnSelf();
 
         $this->searchDepenseType->buildForm($formBuilder, $options);
+    }
+
+    public function testConfigureOptionsSearchDepense(): void
+    {
+        $optionsResolver = new OptionsResolver();
+
+        $this->searchDepenseType->configureOptions($optionsResolver);
+
+        $this->assertSame([], $optionsResolver->getDefinedOptions());
     }
 }
