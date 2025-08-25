@@ -11,7 +11,6 @@ use App\Entity\User;
 use App\Form\ChangePasswordType;
 use App\Form\ProfilType;
 use App\Repository\DepenseRepository;
-use App\Ux\ChartData;
 use App\Ux\MyChart;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
@@ -45,7 +44,6 @@ class DashboardController extends AbstractDashboardController
     public function __construct(
         private UploaderHelper $uploaderHelper,
         private DepenseRepository $depenseRepository
-        // private ChartData $chartData
     ) {}
 
     /**

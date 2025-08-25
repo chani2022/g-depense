@@ -7,15 +7,12 @@ use App\Entity\User;
 use App\Repository\DepenseRepository;
 use App\Tests\Trait\LoadFixtureTrait;
 use App\Tests\Trait\UserAuthenticatedTrait;
-use App\Ux\ChartData;
-use App\Ux\MyChart;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use PHPUnit\Framework\MockObject\MockObject;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 use Symfony\Component\DomCrawler\Crawler;
-use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 
 class DashboardControllerTest extends WebTestCase
 {
@@ -38,7 +35,6 @@ class DashboardControllerTest extends WebTestCase
         $this->all_fixtures = $this->getFixtures();
 
         $uploaderHelper = $this->getContainer()->get(UploaderHelper::class);
-        // $chartBuilder = $this->getContainer()->get(ChartBuilderInterface::class);
         $depenseRepository = $this->getContainer()->get(DepenseRepository::class);
         $this->dashboardController = new DashboardController($uploaderHelper, $depenseRepository);
 
@@ -58,7 +54,7 @@ class DashboardControllerTest extends WebTestCase
     {
         $this->simulateAccessPageDashboardWithUser();
 
-        $this->assertSelectorExists('.my-chart');
+        $this->assertSelectorExists('.depense-compte-salaire');
     }
 
     /**
