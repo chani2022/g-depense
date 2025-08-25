@@ -36,7 +36,7 @@ class SearchDepenseTypeTest extends TestCase
                 'required' => true,
                 'disabled' => true,
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control search-depense'
                 ]
             ])
             ->willReturnSelf();

@@ -16,7 +16,7 @@ class SearchDepenseType extends AbstractType
                 'required' => true,
                 'disabled' => true,
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control search-depense'
                 ]
             ]);
     }
