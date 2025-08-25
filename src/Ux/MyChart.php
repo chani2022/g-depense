@@ -28,7 +28,7 @@ class MyChart
      */
     private function typeThrowException(string $typeNotStandard): void
     {
-        $listTypeValid = ['line', 'vertical-bar', 'horizontal-bar'];
+        $listTypeValid = ['line', 'vertical-bar', 'horizontal-bar', 'pie'];
 
         if (!in_array($typeNotStandard, $listTypeValid)) {
             throw new InvalidArgumentException(sprintf('Invalid type for "%s", availables type are %s', $typeNotStandard, implode(', ', $listTypeValid)));
@@ -42,7 +42,8 @@ class MyChart
         return match ($typeNotStandard) {
             'line' => Chart::TYPE_LINE,
             'vertical-bar' => Chart::TYPE_BAR,
-            'horizontal-bar' => Chart::TYPE_BAR
+            'horizontal-bar' => Chart::TYPE_BAR,
+            'pie' => Chart::TYPE_PIE
         };
     }
     /**
