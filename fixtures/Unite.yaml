@@ -1,0 +1,7 @@
+App\Entity\Unite:
+  unite_user_credentials_ok:
+    unite: 'alreadyExist'
+    owner: '@user_credentials_ok'
+  unite_user_credentials_ok_other:
+    unite: 'Pièce'
+    owner: '@user_credentials_other'

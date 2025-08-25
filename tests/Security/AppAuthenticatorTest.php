@@ -73,8 +73,8 @@ class AppAuthenticatorTest extends TestCase
         $session = new Session(new MockArraySessionStorage());
         $request->setSession($session);
 
-        $route_name = 'app_dashboard';
-        $expected = '/dashboard';
+        $route_name = 'admin';
+        $expected = '/admin';
         $this->urlGenerator->expects($this->once())
             ->method('generate')
             ->with($route_name)

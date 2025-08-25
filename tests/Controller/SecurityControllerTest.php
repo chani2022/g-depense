@@ -92,7 +92,7 @@ class SecurityControllerTest extends WebTestCase
         $this->client->getCookieJar()->set($cookie); // injecte le cookie REMEMBERME
 
         // 5) Accès à une page protégée sans se loguer explicitement
-        $this->client->request('GET', '/dashboard');
+        $this->client->request('GET', '/admin');
         $this->assertResponseIsSuccessful();
     }
 
@@ -102,6 +102,21 @@ class SecurityControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/');
         $filter_link = $crawler->filter('#forgot-password');
         $number_link = $filter_link->count();
+        $link = $filter_link->link();
+
+        $this->assertEquals($number_link, 1);
+        $this->client->click($link);
+
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testClinkLinkInscriptionSuccess(): void
+    {
+        /** @var Crawler */
+        $crawler = $this->client->request('GET', '/');
+        $filter_link = $crawler->filter('#inscription');
+        $number_link = $filter_link->count();
+
         $link = $filter_link->link();
 
         $this->assertEquals($number_link, 1);

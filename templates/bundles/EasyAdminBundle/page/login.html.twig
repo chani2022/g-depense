@@ -75,8 +75,14 @@
 							<a href="{{ forgot_password_path|default('#') }}" class="forgot-password" id="{{ id_forgot_password }}">{{ _forgot_password_label }}</a>
 						</div>
 					{% endif %}
-				</div>
+					{% if sign_up_enabled|default(false) %}
+						<div class="form-text">
+							<a href="{{ sign_up_path|default('#') }}" id="{{ sign_up_id_attribut }}">{{ sign_up_label}}</a>
+						</div>
+					{% endif %}
 
+
+				</div>
 				{% if remember_me_enabled|default(false) %}
 					<div class="form-group">
 						<input class="form-check-input" type="checkbox" id="remember_me" name="{{ remember_me_parameter|default('remember_me') }}" {{ remember_me_checked|default(false) ? 'checked' }}>

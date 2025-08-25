@@ -1,5 +1,43 @@
 {% extends '@EasyAdmin/layout.html.twig' %}
+{% block head_javascript %}
+	{{ parent() }}
+	{{ encore_entry_script_tags('chart') }}
+{% endblock %}
 {% block page_title %}
 	Dashboard
 {% endblock %}
-{% block main %}{% endblock main %}
+{% block main %}
+	<div class='row'>
+		<h3 class='text-secondary text-center'>Révue de depense</h3>
+		<div class="row">
+			<div class="col-12">
+				{{ form_start(form, {'attr': {'class': 'form-inline'}})}}
+				<div class="form-group me-2">
+					{{ form_row(form.dates)}}
+				</div>
+				<button type="submit" class="btn btn-primary btn-search-depense">
+					<i class='fas fa-search'></i>
+				</button>
+				{{ form_end(form)}}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-6">
+				<div class="card">
+					<div class="card-header">
+						<h5 class='title-card'>
+							<strong>
+								Par compte salaire
+							</strong>
+						</h5>
+					</div>
+					<div class="card-body">
+						{{ render_chart(chart_depense_compte_salaire, {'class': 'depense-compte-salaire'}) }}
+					</div>
+				</div>
+			</div>
+			<div class="col-6"></div>
+		</div>
+	</div>
+
+{% endblock main %}

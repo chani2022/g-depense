@@ -12,10 +12,6 @@ class SecurityController extends AbstractController
     #[Route(path: '/', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        if ($this->getUser()) {
-            return $this->redirectToRoute('app_dashboard');
-        }
-
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
@@ -50,7 +46,7 @@ class SecurityController extends AbstractController
             'csrf_token_intention' => 'authenticate',
 
             // the URL users are redirected to after the login (default: '/admin')
-            'target_path' => $this->generateUrl('app_dashboard'),
+            'target_path' => $this->generateUrl('admin'),
 
             // the label displayed for the username form field (the |trans filter is applied to it)
             'username_label' => 'Nom d\'utilisateur',
@@ -89,6 +85,12 @@ class SecurityController extends AbstractController
 
             // the label displayed for the remember me checkbox (the |trans filter is applied to it)
             'remember_me_label' => 'Se souvenir de moi',
+
+            //sign up
+            'sign_up_enabled' => true,
+            'sign_up_label' => 'S\'inscrire',
+            'sign_up_path' => $this->generateUrl('app_register'),
+            'sign_up_id_attribut' => 'inscription'
         ]);
     }
 

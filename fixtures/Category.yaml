@@ -1,0 +1,12 @@
+App\Entity\Category:
+  category_vital:
+    nom: 'riz'
+    owner: '@user_credentials_ok'
+  category_facultatif:
+    nom: 'jean'
+    owner: '@user_credentials_other'
+  category_already_exist:
+    nom: 'alreadyExist'
+    owner: '@user_credentials_ok'
+
+    

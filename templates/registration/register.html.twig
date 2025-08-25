@@ -1,0 +1,60 @@
+{% extends '@EasyAdmin/page/login_minimal.html.twig' %}
+
+{% block body_class 'page-login' %}
+{% block page_title 'Inscription' %}
+
+{% block head_favicon %}
+	{% if favicon_path|default(false) %}
+		<link rel="shortcut icon" href="{{ favicon_path }}">
+	{% else %}
+		{{ parent() }}
+	{% endif %}
+{% endblock %}
+
+{% block wrapper_wrapper %}
+	{% set page_title = block('page_title') %}
+	{% include '@EasyAdmin/flash_messages.html.twig' %}
+
+	<div class="login-wrapper">
+		<header class="main-header">
+			<div id="header-logo">
+				{% block header_logo %}
+					{% if page_title %}
+						{% if ea.hasContext %}
+							<a class="logo {{ page_title|length > 14 ? 'logo-long' }}" title="{{ page_title|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
+								{{ page_title|raw }}
+							</a>
+						{% else %}
+							<div class="logo {{ page_title|length > 14 ? 'logo-long' }}">
+								{{ page_title|raw }}
+							</div>
+						{% endif %}
+					{% endif %}
+				{% endblock header_logo %}
+			</div>
+		</header>
+
+		<section class="content">
+			{% form_theme registrationForm 'bootstrap_5_layout.html.twig' %}
+			{{ form_start(registrationForm) }}
+			<div class="form-group">
+				<div class="form-widget">
+					{{ form_row(registrationForm.username, {'attr': {'class': 'form-control'} }) }}
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-widget">
+					{{ form_row(registrationForm.password.first, {'attr': {'class':'form-control'}}) }}
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="form-widget">
+					{{ form_row(registrationForm.password.second, {'attr':{'class':'form-control'}}) }}
+				</div>
+			</div>
+
+			<button type="submit" class="btn btn-primary btn-lg btn-block">Enregistrer</button>
+			{{ form_end(registrationForm) }}
+		</section>
+	</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+App\Entity\Depense:
+  depense_user_crendentials_ok_1:
+    nomDepense: 'depense 1'
+    prix: 15.25
+    vital: true
+    category: '@category_vital'
+    compteSalaire: '@compte_salaire_user_credentials_ok_1'
+    unite: '@unite_user_credentials_ok'
+    quantite: 15.20
+  depense_user_crendentials_ok_2:
+    nomDepense: 'depense 2'
+    prix: 25.25
+    vital: false
+    category: '@category_already_exist'
+    compteSalaire: '@compte_salaire_user_credentials_with_date_now'
+    unite: '@unite_user_credentials_ok'
+    quantite: 15.20
+  depense_user_crendentials_other_1:
+    nomDepense: '<sentences(0,4)>'
+    prix: 100.25
+    vital: true
+    category: '@category_facultatif'
+    compteSalaire: '@compte_salaire_user_credentials_other'
+    unite: '@unite_user_credentials_ok_other'
+    quantite: 15.20
