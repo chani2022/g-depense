@@ -5,12 +5,28 @@ namespace App\Tests\Ux;
 use App\Ux\MyChart;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use Symfony\UX\Chartjs\Model\Chart;
 
 class MyChartTest extends TestCase
 {
     protected function setUp(): void {}
 
     protected function tearDown(): void {}
+
+    public function testStyleByCompteSalaireValid(): void
+    {
+        $styleExpected = [
+            'depense' => [
+                'border' => 'rgb(255, 99, 132)',
+                'background' => 'rgb(255, 99, 132)'
+            ],
+            'capital' => [
+                'border' => 'rgb(22, 157, 150)',
+                'background' => 'rgb(22, 157, 150)'
+            ],
+        ];
+        $this->assertSame($styleExpected, MyChart::STYLE_BY_COMPTE_SALAIRE);
+    }
 
     public function testTypeThrowException(): void
     {
@@ -205,6 +221,24 @@ class MyChartTest extends TestCase
             ['vertical-bar'],
             ['horizontal-bar'],
             ['pie']
+        ];
+    }
+
+    public static function providerStyleByCompteSalaire(): array
+    {
+        return [
+            [
+                [
+                    'depense' => [
+                        'border' => 'rgb(255, 99, 132)',
+                        'background' => 'rgb(255, 99, 132)'
+                    ],
+                    'capital' => [
+                        'border' => 'rgb(22, 157, 150)',
+                        'background' => 'rgb(22, 157, 150)'
+                    ],
+                ]
+            ]
         ];
     }
 }

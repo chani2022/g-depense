@@ -7,6 +7,17 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 class MyChart
 {
+    const STYLE_BY_COMPTE_SALAIRE = [
+        'depense' => [
+            'border' => 'rgb(255, 99, 132)',
+            'background' => 'rgb(255, 99, 132)'
+        ],
+        'capital' => [
+            'border' => 'rgb(22, 157, 150)',
+            'background' => 'rgb(22, 157, 150)'
+        ],
+    ];
+
     private Chart $chart;
     private ?string $title;
 
@@ -105,7 +116,14 @@ class MyChart
             'title' => [
                 'display' => true,
                 'text' => $this->title
-            ]
+            ],
+            // 'zoom' => [
+            //     'zoom' => [
+            //         'wheel' => ['enabled' => true],
+            //         'pinch' => ['enabled' => true],
+            //         'mode' => 'xy',
+            //     ],
+            // ],
         ];
         if ($typeNotStandard != 'pie') {
             $suggest = [

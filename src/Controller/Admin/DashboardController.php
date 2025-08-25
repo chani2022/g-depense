@@ -32,16 +32,6 @@ use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 #[IsGranted('ROLE_USER')]
 class DashboardController extends AbstractDashboardController
 {
-    const STYLE = [
-        'depense' => [
-            'border' => 'rgb(255, 99, 132)',
-            'background' => 'rgb(255, 99, 132)'
-        ],
-        'capital' => [
-            'border' => 'rgb(22, 157, 150)',
-            'background' => 'rgb(22, 157, 150)'
-        ],
-    ];
 
     public function __construct(
         private UploaderHelper $uploaderHelper,
@@ -58,26 +48,29 @@ class DashboardController extends AbstractDashboardController
     {
         $labels = [];
         $datasets = [];
+        $dates = [];
         $formSearch = $this->createForm(SearchDepenseType::class);
-
+        $formSearch->handleRequest($this->requestStack->getCurrentRequest());
         if ($formSearch->isSubmitted()) {
+            $dates = $formSearch->get('dates')->getData();
+            $dates = explode(' - ', $dates);
         }
 
-        $depenseAndCapitalMensuels = $this->depenseRepository->findDepensesWithCapital($this->getUser());
+        $depenseAndCapitalMensuels = $this->depenseRepository->findDepensesWithCapital($this->getUser(), $dates);
 
         foreach ($depenseAndCapitalMensuels as $depenseAndCapitalMensuel) {
             $labels[] = $depenseAndCapitalMensuel['label'];
             $dataDepense = [
                 'label' => 'Depense mensuel',
                 'data' => [$depenseAndCapitalMensuel['total_depense']],
-                'borderColor' => self::STYLE['depense']['border'],
-                'backgroundColor' => self::STYLE['depense']['background'],
+                'borderColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['depense']['border'],
+                'backgroundColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['depense']['background'],
             ];
             $dataCapital = [
                 'label' => 'Capital mensuel',
                 'data' => [$depenseAndCapitalMensuel['total_capital']],
-                'borderColor' => self::STYLE['capital']['border'],
-                'backgroundColor' => self::STYLE['capital']['background'],
+                'borderColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['capital']['border'],
+                'backgroundColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['capital']['background'],
             ];
 
             if (count($datasets) == 0) {

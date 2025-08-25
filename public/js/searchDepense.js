@@ -1,3 +1,7 @@
 $(function () {
-    $('.search-depense').daterangepicker();
+    $('.search-depense').daterangepicker({
+        locale: {
+            format: 'YYYY-MM-DD'
+        }
+    });
 })
