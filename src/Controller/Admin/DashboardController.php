@@ -93,7 +93,7 @@ class DashboardController extends AbstractDashboardController
             ]);
 
         return $this->render('admin/dashboard.html.twig', [
-            'chart' => $myChart->getChart()
+            'chart_depense_compte_salaire' => $myChart->getChart()
         ]);
     }
 
