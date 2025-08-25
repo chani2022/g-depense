@@ -1,29 +1,28 @@
 # 🚀 Fonctionnalités principales
 
-- 🏦 **Gestion des comptes**  
-  Créez et administrez vos comptes bancaires ou caisses.
+- 🏦 **Gestion des comptes salaire**  
+  Créez et administrez vos comptes salaire.
 
 - 💸 **Gestion des dépenses**  
-Suivez vos dépenses quotidiennes avec détails, filtres et historique.
+  Suivez vos dépenses quotidiennes avec détails, filtres et historique.
 
 - 👥 **Gestion des utilisateurs**  
-Gérez plusieurs utilisateurs avec rôles et permissions.
+  Gérez plusieurs utilisateurs avec rôles et permissions.
 
 - 🏷️ **Gestion des catégories**  
-Classez vos dépenses par catégories (Alimentation, Transport, etc.).
+  Classez vos dépenses par catégories (Alimentation, Transport, etc.).
 
 - ⚖️ **Gestion des unités**  
-Associez des unités (kg, litre, pièce…) à vos dépenses.
+  Associez des unités (kg, litre, pièce…) à vos dépenses.
 
 - 📈 **Gestion du capital**  
-Visualisez l’évolution de votre capital disponible.
+  Créer et administrer vos capital.
 
 - 📊 **Tableaux de bord graphiques**  
   - Représentation graphique des dépenses par compte salaire  
   - Suivi du capital par compte  
   - histogramme interactifs  
 # 🛠️ Technologies utilisées
-
 - **Symfony**  
  ⚡ Framework backend
 
