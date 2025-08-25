@@ -86,14 +86,14 @@ class DashboardController extends AbstractDashboardController
             }
         }
 
-        $myChart = (new MyChart('horizontal-bar', 'Comparaison de depense et capital.'))
+        $depenseByCompteSalaire = (new MyChart('horizontal-bar', 'Comparaison de depense et capital.'))
             ->setData([
                 'labels' => $labels,
                 'datasets' => $datasets
             ]);
 
         return $this->render('admin/dashboard.html.twig', [
-            'chart_depense_compte_salaire' => $myChart->getChart()
+            'chart_depense_compte_salaire' => $depenseByCompteSalaire->getChart()
         ]);
     }
 
