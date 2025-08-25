@@ -134,6 +134,17 @@ class MyChartTest extends TestCase
                     ]
                 ]
             ],
+            [
+                'pie',
+                [
+                    'plugins' => [
+                        'title' => [
+                            'display' => true,
+                            'text' => 'pie'
+                        ]
+                    ]
+                ]
+            ]
 
         ];
     }
@@ -178,7 +189,10 @@ class MyChartTest extends TestCase
                     'responsive' => true,
                 ]
             ],
-
+            [
+                'pie',
+                []
+            ]
         ];
     }
     /**

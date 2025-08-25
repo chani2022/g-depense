@@ -98,29 +98,33 @@ class MyChart
     /**
      * @return void
      */
-    private function setOptionsByType(string $type): void
+    private function setOptionsByType(string $typeNotStandard): void
     {
+        $options = [];
         $plugins = [
             'title' => [
                 'display' => true,
                 'text' => $this->title
             ]
         ];
+        if ($typeNotStandard != 'pie') {
+            $suggest = [
+                'suggestedMin' => 0,
+                'suggestedMax' => 100
+            ];
 
-        $suggest = [
-            'suggestedMin' => 0,
-            'suggestedMax' => 100
-        ];
+            $scales = $typeNotStandard == 'line' ? ['y' => $suggest] : ['x' => $suggest];
 
-        $scales = $type == 'line' ? ['y' => $suggest] : ['x' => $suggest];
+            $options = [
+                'responsive' => true,
+                'scales' => $scales
+            ];
 
-        $options = [
-            'responsive' => true,
-            'scales' => $scales
-        ];
-
-        if ($type == 'horizontal-bar') {
-            $options['indexAxis'] = 'y';
+            switch ($typeNotStandard) {
+                case 'horizontal-bar':
+                    $options['indexAxis'] = 'y';
+                    break;
+            }
         }
 
         if ($this->title) {
