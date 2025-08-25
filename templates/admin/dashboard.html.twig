@@ -5,21 +5,31 @@
 {% block main %}
 	<div class='row'>
 		<h3 class='text-secondary text-center'>Révue de depense</h3>
-		<div class="col-6">
-			<div class="card">
-				<div class="card-header">
-					<h5 class='title-card'>
-						<strong>
-							Par compte salaire
-						</strong>
-					</h5>
-				</div>
-				<div class="card-body">
-					{{ render_chart(chart_depense_compte_salaire, {'class': 'depense-compte-salaire'}) }}
+		<div class="row">
+			{{ form_start(form)}}
+			{{ form_row(form.dates)}}
+			<button type="submit" class="btn btn-primary">
+				<i class='fas fa-search'></i>
+			</button>
+			{{ form_end(form)}}
+		</div>
+		<div class="row">
+			<div class="col-6">
+				<div class="card">
+					<div class="card-header">
+						<h5 class='title-card'>
+							<strong>
+								Par compte salaire
+							</strong>
+						</h5>
+					</div>
+					<div class="card-body">
+						{{ render_chart(chart_depense_compte_salaire, {'class': 'depense-compte-salaire'}) }}
+					</div>
 				</div>
 			</div>
+			<div class="col-6"></div>
 		</div>
-		<div class="col-6"></div>
 	</div>
 
 {% endblock main %}

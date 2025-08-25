@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use PHPUnit\Framework\MockObject\MockObject;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class DashboardControllerTest extends WebTestCase
 {
@@ -36,7 +37,8 @@ class DashboardControllerTest extends WebTestCase
 
         $uploaderHelper = $this->getContainer()->get(UploaderHelper::class);
         $depenseRepository = $this->getContainer()->get(DepenseRepository::class);
-        $this->dashboardController = new DashboardController($uploaderHelper, $depenseRepository);
+        $requestStack = $this->getContainer()->get(RequestStack::class);
+        $this->dashboardController = new DashboardController($uploaderHelper, $depenseRepository, $requestStack);
 
         $this->userSimpleAuthenticated = $this->getSimpeUserAuthenticated();
         $this->adminAuthenticated = $this->getAdminAuthenticated();
@@ -55,7 +57,8 @@ class DashboardControllerTest extends WebTestCase
         $this->simulateAccessPageDashboardWithUser();
 
         $this->assertSelectorExists('.depense-compte-salaire');
-        $this->assertSelectorExists('form[name=searchDepense]');
+
+        $this->assertSelectorExists('form[name=search_depense]');
     }
 
     /**

@@ -10,6 +10,7 @@ use App\Entity\Unite;
 use App\Entity\User;
 use App\Form\ChangePasswordType;
 use App\Form\ProfilType;
+use App\Form\SearchDepenseType;
 use App\Repository\DepenseRepository;
 use App\Ux\MyChart;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,6 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -43,7 +45,8 @@ class DashboardController extends AbstractDashboardController
 
     public function __construct(
         private UploaderHelper $uploaderHelper,
-        private DepenseRepository $depenseRepository
+        private DepenseRepository $depenseRepository,
+        private RequestStack $requestStack
     ) {}
 
     /**
@@ -55,6 +58,11 @@ class DashboardController extends AbstractDashboardController
     {
         $labels = [];
         $datasets = [];
+        $formSearch = $this->createForm(SearchDepenseType::class);
+
+        if ($formSearch->isSubmitted()) {
+        }
+
         $depenseAndCapitalMensuels = $this->depenseRepository->findDepensesWithCapital($this->getUser());
 
         foreach ($depenseAndCapitalMensuels as $depenseAndCapitalMensuel) {
@@ -93,7 +101,8 @@ class DashboardController extends AbstractDashboardController
             ]);
 
         return $this->render('admin/dashboard.html.twig', [
-            'chart_depense_compte_salaire' => $depenseByCompteSalaire->getChart()
+            'chart_depense_compte_salaire' => $depenseByCompteSalaire->getChart(),
+            'form' => $formSearch->createView()
         ]);
     }
 

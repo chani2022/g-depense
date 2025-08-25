@@ -14,7 +14,10 @@ class SearchDepenseType extends AbstractType
         $builder
             ->add('dates', TextType::class, [
                 'required' => true,
-                'disabled' => true
+                'disabled' => true,
+                'attr' => [
+                    'class' => 'form-control'
+                ]
             ]);
     }
 
