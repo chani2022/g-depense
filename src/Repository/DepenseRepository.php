@@ -43,9 +43,9 @@ class DepenseRepository extends ServiceEntityRepository
             CONCAT(DATE_FORMAT(cs.dateDebutCompte, '%d/%m/%Y'),  ' - ' , DATE_FORMAT(cs.dateFinCompte, '%d/%m/%Y')) AS label,
             SUM(d.prix) AS total_depense, 
             SUM(COALESCE(cap.montant,0) + COALESCE(cap.ajout, 0)) AS total_capital")
-            ->leftJoin('d.compteSalaire', 'cs')
+            ->join('d.compteSalaire', 'cs')
             ->leftJoin('cs.capitals', 'cap')
-            ->leftJoin('cs.owner', 'ow')
+            ->join('cs.owner', 'ow')
             ->andWhere('ow = :user');
 
         $this->parameters['user'] = $user;
