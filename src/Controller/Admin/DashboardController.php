@@ -205,8 +205,6 @@ class DashboardController extends AbstractDashboardController
     public function configureAssets(): Assets
     {
         return (Assets::new())
-            ->addWebpackEncoreEntry('app')
-            ->addJsFile('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.js')
-            ->addJsFile('/js/searchDate.js');
+            ->addWebpackEncoreEntry('app');
     }
 }

@@ -1,5 +1,6 @@
 import $ from 'jquery';
 
 $(function () {
-    $('.search-depense').daterangepicker();
+    alert("ok");
+    // $('.search-depense').daterangepicker();
 })
