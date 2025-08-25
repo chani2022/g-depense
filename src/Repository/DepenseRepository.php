@@ -84,7 +84,7 @@ class DepenseRepository extends ServiceEntityRepository
             ->setParameter('user', $user);
 
         if ($dates) {
-            $qb->andWhere('cs.dateDebutCompte BETWEEN :debut AND :fin')
+            $qb->andWhere('(cs.dateDebutCompte BETWEEN :debut AND :fin) OR (cs.dateFinCompte BETWEEN :debut AND :fin)')
                 ->setParameter('debut', $dates[0])
                 ->setParameter('fin', $dates[1]);
         } else {
@@ -109,7 +109,9 @@ class DepenseRepository extends ServiceEntityRepository
             $dqlIdsCompteSalaireBetweenDate = $this->createSubQuery(
                 CompteSalaire::class,
                 'cs1',
-                '(cs1.dateDebutCompte BETWEEN :debut AND :fin) AND (ow1 = :user)',
+                '((cs1.dateDebutCompte BETWEEN :debut AND :fin)
+                 OR (cs1.dateFinCompte BETWEEN :debut AND :fin))
+                 AND (ow1 = :user)',
                 'cs1.id',
                 [
                     [
