@@ -33,10 +33,10 @@ class SearchDepenseTypeTest extends TestCase
             ->expects($this->once())
             ->method('add')
             ->with('dates', TextType::class, [
-                'required' => true,
-                'disabled' => true,
+                'label' => 'Recherche',
                 'attr' => [
-                    'class' => 'form-control search-depense'
+                    'class' => 'form-control search-depense',
+                    'readonly' => true
                 ]
             ])
             ->willReturnSelf();
