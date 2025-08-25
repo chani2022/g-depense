@@ -1,4 +1,8 @@
 {% extends '@EasyAdmin/layout.html.twig' %}
+{% block head_javascript %}
+	{{ parent() }}
+	{{ encore_entry_script_tags('chart') }}
+{% endblock %}
 {% block page_title %}
 	Dashboard
 {% endblock %}
@@ -6,14 +10,16 @@
 	<div class='row'>
 		<h3 class='text-secondary text-center'>Révue de depense</h3>
 		<div class="row">
-			{{ form_start(form, {'attr': {'class': 'form-inline'}})}}
-			<div class="form-group mb-2">
-				{{ form_row(form.dates)}}
+			<div class="col-12">
+				{{ form_start(form, {'attr': {'class': 'form-inline'}})}}
+				<div class="form-group me-2">
+					{{ form_row(form.dates)}}
+				</div>
+				<button type="submit" class="btn btn-primary btn-search-depense">
+					<i class='fas fa-search'></i>
+				</button>
+				{{ form_end(form)}}
 			</div>
-			<button type="submit" class="btn btn-primary mb-2">
-				<i class='fas fa-search'></i>
-			</button>
-			{{ form_end(form)}}
 		</div>
 		<div class="row">
 			<div class="col-6">

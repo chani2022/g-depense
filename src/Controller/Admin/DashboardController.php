@@ -205,6 +205,14 @@ class DashboardController extends AbstractDashboardController
     public function configureAssets(): Assets
     {
         return (Assets::new())
-            ->addWebpackEncoreEntry('app');
+            ->addCssFile('https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css')
+            ->addHtmlContentToHead(
+                '
+                    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js" defer></script>
+                    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js" defer></script>
+                    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js" defer></script>
+                    <script type="text/javascript" src="js/searchDepense.js" defer></script>
+                '
+            );
     }
 }
