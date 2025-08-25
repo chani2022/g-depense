@@ -19,6 +19,16 @@ class MyChartTest extends TestCase
         $myChart = new MyChart('exception');
     }
 
+    /**
+     * @dataProvider providerTypeValid
+     */
+    public function testTypeValid(string $typeNotStandard): void
+    {
+        $myChart = new MyChart($typeNotStandard);
+
+        $this->assertTrue(true);
+    }
+
     public function testGetType(): void
     {
         $typeExpected = 'line';
@@ -169,6 +179,18 @@ class MyChartTest extends TestCase
                 ]
             ],
 
+        ];
+    }
+    /**
+     * @return array<int, array{int, string}>
+     */
+    public static function providerTypeValid(): array
+    {
+        return [
+            ['line'],
+            ['vertical-bar'],
+            ['horizontal-bar'],
+            ['pie']
         ];
     }
 }
