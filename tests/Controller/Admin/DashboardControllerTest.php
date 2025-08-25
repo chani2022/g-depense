@@ -55,6 +55,7 @@ class DashboardControllerTest extends WebTestCase
         $this->simulateAccessPageDashboardWithUser();
 
         $this->assertSelectorExists('.depense-compte-salaire');
+        $this->assertSelectorExists('form[name=searchDepense]');
     }
 
     /**
