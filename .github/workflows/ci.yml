@@ -87,20 +87,21 @@ jobs:
     runs-on: ubuntu-latest
     if: success()
     steps:
-      - name: Vérifier les branches
-        run: git branch -a
       - name: Checkout du code
         uses: actions/checkout@v4
         with:
             fetch-depth: 0   # récupère tout l’historique et les refs
+
+      - name: Vérifier les branches
+        run: git branch -a
+      
       - name: Créer une Pull Request vers main
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: test
           base: main
+          commit-message: "Update test branch after tests"
           title: "Merge test into main"
-          body: |
-            Cette PR a été créée automatiquement après que les tests ont réussi.
-            Merci de la réviser et de la merger manuellement si tout est OK.
+          body: "PR automatique après CI"
           draft: false
