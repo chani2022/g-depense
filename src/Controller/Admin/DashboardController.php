@@ -12,6 +12,7 @@ use App\Form\ChangePasswordType;
 use App\Form\ProfilType;
 use App\Form\SearchDepenseType;
 use App\Repository\DepenseRepository;
+use App\Ux\HandleDepense;
 use App\Ux\MyChart;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
@@ -35,7 +36,8 @@ class DashboardController extends AbstractDashboardController
     public function __construct(
         private UploaderHelper $uploaderHelper,
         private DepenseRepository $depenseRepository,
-        private RequestStack $requestStack
+        private RequestStack $requestStack,
+        private HandleDepense $handleDepense
     ) {}
 
     /**
@@ -46,8 +48,8 @@ class DashboardController extends AbstractDashboardController
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-        $labels = [];
-        $datasets = [];
+        // $labels = [];
+        // $datasets = [];
         $dates = [];
         $formSearch = $this->createForm(SearchDepenseType::class);
         $formSearch->handleRequest($this->requestStack->getCurrentRequest());
@@ -58,34 +60,36 @@ class DashboardController extends AbstractDashboardController
 
         $depenseAndCapitalMensuels = $this->depenseRepository->findDepensesWithCapital($this->getUser(), $dates);
 
-        foreach ($depenseAndCapitalMensuels as $depenseAndCapitalMensuel) {
-            $labels[] = $depenseAndCapitalMensuel['label'];
-            $dataDepense = [
-                'label' => 'Depense mensuel',
-                'data' => [$depenseAndCapitalMensuel['total_depense']],
-                'borderColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['depense']['border'],
-                'backgroundColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['depense']['background'],
-            ];
-            $dataCapital = [
-                'label' => 'Capital mensuel',
-                'data' => [$depenseAndCapitalMensuel['total_capital']],
-                'borderColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['capital']['border'],
-                'backgroundColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['capital']['background'],
-            ];
+        $labels = $this->handleDepense->getLabels($depenseAndCapitalMensuels);
+        $datasets = $this->handleDepense->getDatasets($depenseAndCapitalMensuels);
+        // foreach ($depenseAndCapitalMensuels as $depenseAndCapitalMensuel) {
+        //     $labels[] = $depenseAndCapitalMensuel['label'];
+        //     $dataDepense = [
+        //         'label' => 'Depense mensuel',
+        //         'data' => [$depenseAndCapitalMensuel['total_depense']],
+        //         'borderColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['depense']['border'],
+        //         'backgroundColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['depense']['background'],
+        //     ];
+        //     $dataCapital = [
+        //         'label' => 'Capital mensuel',
+        //         'data' => [$depenseAndCapitalMensuel['total_capital']],
+        //         'borderColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['capital']['border'],
+        //         'backgroundColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['capital']['background'],
+        //     ];
 
-            if (count($datasets) == 0) {
-                $datasets[] = $dataDepense;
-                $datasets[] = $dataCapital;
-            } else {
-                foreach ($datasets as $i => $dataset) {
-                    if ($dataset['label'] == 'Depense mensuel') {
-                        $datasets[$i]['data'][] = $depenseAndCapitalMensuel['total_depense'];
-                    } else {
-                        $datasets[$i]['data'][] = $depenseAndCapitalMensuel['total_capital'];
-                    }
-                }
-            }
-        }
+        //     if (count($datasets) == 0) {
+        //         $datasets[] = $dataDepense;
+        //         $datasets[] = $dataCapital;
+        //     } else {
+        //         foreach ($datasets as $i => $dataset) {
+        //             if ($dataset['label'] == 'Depense mensuel') {
+        //                 $datasets[$i]['data'][] = $depenseAndCapitalMensuel['total_depense'];
+        //             } else {
+        //                 $datasets[$i]['data'][] = $depenseAndCapitalMensuel['total_capital'];
+        //             }
+        //         }
+        //     }
+        // }
 
         $depenseByCompteSalaire = (new MyChart('horizontal-bar', 'Comparaison de depense et capital.'))
             ->setData([

@@ -39,8 +39,9 @@ class DashboardControllerTest extends WebTestCase
         $uploaderHelper = $this->getContainer()->get(UploaderHelper::class);
         $depenseRepository = $this->getContainer()->get(DepenseRepository::class);
         $requestStack = $this->getContainer()->get(RequestStack::class);
-        $this->dashboardController = new DashboardController($uploaderHelper, $depenseRepository, $requestStack);
+        $handleDepense = new HandleDepense();
 
+        $this->dashboardController = new DashboardController($uploaderHelper, $depenseRepository, $requestStack, $handleDepense);
         $this->userSimpleAuthenticated = $this->getSimpeUserAuthenticated();
         $this->adminAuthenticated = $this->getAdminAuthenticated();
     }
