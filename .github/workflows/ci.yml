@@ -3,30 +3,70 @@ name: Tests & Create PR
 on:
   push:
     branches:
-      - test   # quand tu pushes sur test
+      - test
 
 jobs:
   tests:
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: depense
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - name: Checkout du code
         uses: actions/checkout@v4
 
-      - name: Setup PHP
+      - name: Setup PHP avec Composer
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
+          tools: composer:v2
 
-      - name: Installer les dépendances
+      - name: Copie .env.test vers .env.test.local
+        run: cp .env.test .env.test.local
+
+      - name: Adapter DATABASE_URL pour CI
+        run: |
+          sed -i 's|127.0.0.1:3307|127.0.0.1:3306|g' .env.test.local
+          sed -i 's|root:@|root:root@|g' .env.test.local
+
+      - name: Installer les dépendances PHP
         run: composer install --no-progress --no-interaction --prefer-dist --optimize-autoloader
 
-      - name: Lancer les tests
+      - name: Attendre que MySQL démarre
+        run: |
+          for i in {1..10}; do
+            if mysql -h 127.0.0.1 -P3306 -uroot -proot -e "SELECT 1;" depense; then
+              echo "MySQL est prêt ✅"
+              break
+            fi
+            echo "⏳ En attente de MySQL..."
+            sleep 5
+          done
+
+      - name: Créer la base + schéma
+        run: |
+          php bin/console doctrine:database:create --env=test --if-not-exists
+          php bin/console doctrine:schema:create --env=test
+
+      - name: Lancer les tests PHPUnit
         run: ./vendor/bin/phpunit --testdox
 
   create-pr:
     needs: tests
     runs-on: ubuntu-latest
-    if: success()   # seulement si les tests passent
+    if: success()
     steps:
       - name: Créer une Pull Request vers main
         uses: peter-evans/create-pull-request@v7
@@ -38,4 +78,4 @@ jobs:
           body: |
             Cette PR a été créée automatiquement après que les tests ont réussi.
             Merci de la réviser et de la merger manuellement si tout est OK.
-          draft: false   # 👈 PR normale (à toi de valider)
+          draft: false
