@@ -32,7 +32,6 @@ use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 #[IsGranted('ROLE_USER')]
 class DashboardController extends AbstractDashboardController
 {
-
     public function __construct(
         private UploaderHelper $uploaderHelper,
         private DepenseRepository $depenseRepository,
@@ -42,6 +41,7 @@ class DashboardController extends AbstractDashboardController
     /**
      * Representation graphique du depense par rapport au capital pour 
      * chaque compte salaire d'un utilisateur
+     * 
      */
     #[Route('/admin', name: 'admin')]
     public function index(): Response
