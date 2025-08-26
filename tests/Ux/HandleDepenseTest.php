@@ -74,7 +74,42 @@ class HandleDepenseTest extends TestCase
                         'backgroundColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['capital']['background'],
                     ],
                 ]
+            ],
+            [
+                'depense' => [
+                    [
+                        'label' => 'label1',
+                        'total_depense' => 15.20,
+                        'total_capital' => 30.50
+                    ],
+                    [
+                        'label' => 'label2',
+                        'total_depense' => 10.25,
+                        'total_capital' => 32.75
+                    ],
+                    [
+                        'label' => 'label3',
+                        'total_depense' => 10.25,
+                        'total_capital' => 32.75
+                    ]
+                ],
+                'expectedLabels' => ['label1', 'label2', 'label3'],
+                'expectedDatasets' => [
+                    [
+                        'label' => 'Depense mensuel',
+                        'data' => [15.2, 10.25, 10.25],
+                        'borderColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['depense']['border'],
+                        'backgroundColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['depense']['background'],
+                    ],
+                    [
+                        'label' => 'Capital mensuel',
+                        'data' => [30.5, 32.75, 32.75],
+                        'borderColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['capital']['border'],
+                        'backgroundColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['capital']['background'],
+                    ],
+                ]
             ]
+
 
         ];
     }
