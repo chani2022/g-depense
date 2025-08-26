@@ -41,6 +41,10 @@ jobs:
           sed -i 's|127.0.0.1:3307|127.0.0.1:3306|g' .env.test.local
           sed -i 's|root:@|root:root@|g' .env.test.local
 
+      - name: Désactiver ONLY_FULL_GROUP_BY
+        run: |
+            mysql -h 127.0.0.1 -uroot -proot -e "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));"
+
       - name: Installer les dépendances
         run: composer install --no-progress --no-interaction --prefer-dist --optimize-autoloader
 
