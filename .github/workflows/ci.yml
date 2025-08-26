@@ -87,12 +87,14 @@ jobs:
     runs-on: ubuntu-latest
     if: success()
     steps:
-      - name: Vérifier les branches
-        run: git branch -a
       - name: Checkout du code
         uses: actions/checkout@v4
         with:
             fetch-depth: 0   # récupère tout l’historique et les refs
+            
+      - name: Vérifier les branches
+        run: git branch -a
+      
       - name: Créer une Pull Request vers main
         uses: peter-evans/create-pull-request@v7
         with:
