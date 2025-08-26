@@ -2,6 +2,7 @@
 
 namespace App\Tests\Ux;
 
+use App\Ux\HandleDepense;
 use PHPUnit\Framework\TestCase;
 
 class HandleDepenseTest extends TestCase
@@ -36,16 +37,19 @@ class HandleDepenseTest extends TestCase
     public static function providerDepenseAndCapital(): array
     {
         return [
-
             [
-                'label' => 'label1',
-                'total_depense' => 15.20,
-                'total_capital' => 30.50
-            ],
-            [
-                'label' => 'label2',
-                'total_depense' => 10.25,
-                'total_capital' => 32.75
+                [
+                    [
+                        'label' => 'label1',
+                        'total_depense' => 15.20,
+                        'total_capital' => 30.50
+                    ],
+                    [
+                        'label' => 'label2',
+                        'total_depense' => 10.25,
+                        'total_capital' => 32.75
+                    ]
+                ]
             ]
 
         ];
