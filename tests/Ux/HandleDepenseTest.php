@@ -3,6 +3,7 @@
 namespace App\Tests\Ux;
 
 use App\Ux\HandleDepense;
+use App\Ux\MyChart;
 use PHPUnit\Framework\TestCase;
 
 class HandleDepenseTest extends TestCase
@@ -22,13 +23,21 @@ class HandleDepenseTest extends TestCase
     /**
      * @dataProvider providerDepenseAndCapital
      */
-    public function testGetLabels(array $depenseCapitalMensuel): void
+    public function testGetLabels(array $depenseCapitalMensuel, array $labelExpected, array $datasetsExpected): void
     {
-        $labelExpected = ['label1', 'label2'];
-
         $labelActual = $this->handleDepense->getLabels($depenseCapitalMensuel);
 
         $this->assertSame($labelExpected, $labelActual);
+    }
+
+    /**
+     * @dataProvider providerDepenseAndCapital
+     */
+    public function testGetDatasets(array $depenseCapitalMensuel, array $labelExpected, array $datasetsExpected): void
+    {
+        $datasetsActual = $this->handleDepense->getDatasets($depenseCapitalMensuel);
+
+        $this->assertSame($datasetsExpected, $datasetsActual);
     }
 
     /**
@@ -38,7 +47,7 @@ class HandleDepenseTest extends TestCase
     {
         return [
             [
-                [
+                'depense' => [
                     [
                         'label' => 'label1',
                         'total_depense' => 15.20,
@@ -49,6 +58,21 @@ class HandleDepenseTest extends TestCase
                         'total_depense' => 10.25,
                         'total_capital' => 32.75
                     ]
+                ],
+                'expectedLabels' => ['label1', 'label2'],
+                'expectedDatasets' => [
+                    [
+                        'label' => 'Depense mensuel',
+                        'data' => [15.2, 10.25],
+                        'borderColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['depense']['border'],
+                        'backgroundColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['depense']['background'],
+                    ],
+                    [
+                        'label' => 'Capital mensuel',
+                        'data' => [30.5, 30.75],
+                        'borderColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['capital']['border'],
+                        'backgroundColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['capital']['background'],
+                    ],
                 ]
             ]
 
