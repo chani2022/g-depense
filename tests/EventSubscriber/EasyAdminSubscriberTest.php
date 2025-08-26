@@ -1,0 +1,202 @@
+<?php
+
+namespace App\Tests\EventSubscriber;
+
+use App\Entity\Capital;
+use App\Entity\Category;
+use App\Entity\CompteSalaire;
+use App\Entity\Depense;
+use App\Entity\Unite;
+use App\Entity\User;
+use App\EventSubscriber\EasyAdminSubscriber;
+use App\Repository\CompteSalaireRepository;
+use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use PHPUnit\Framework\MockObject\MockObject;
+
+class EasyAdminSubscriberTest extends TestCase
+{
+    private ?EasyAdminSubscriber $easyAdminSubscriber;
+    /** @var CompteSalaireRepository&MockObject&null */
+    private $mockCompteSalaireRepository;
+    private ?TokenStorage $tokenStorage;
+
+    protected function setUp(): void
+    {
+        $this->mockCompteSalaireRepository = $this->createMock(CompteSalaireRepository::class);
+        $this->tokenStorage = new TokenStorage();
+        $this->tokenStorage->setToken(
+            new UsernamePasswordToken(new User, 'main')
+        );
+
+        $this->easyAdminSubscriber = new EasyAdminSubscriber($this->tokenStorage, $this->mockCompteSalaireRepository);
+    }
+
+    protected function tearDown(): void
+    {
+        $this->easyAdminSubscriber = null;
+        $this->mockCompteSalaireRepository = null;
+        $this->tokenStorage = null;
+    }
+
+    public function testGetSubscribedEvents(): void
+    {
+        $actualSubscribedEvents = $this->easyAdminSubscriber->getSubscribedEvents();
+        $this->assertArrayHasKey(BeforeEntityPersistedEvent::class, $actualSubscribedEvents);
+    }
+
+    /**
+     * @dataProvider provideSubscribedEvents
+     */
+    public function testMethodExistInSubscribedEventsEasyAdmin(string $method): void
+    {
+        $subscribeEvents = $this->easyAdminSubscriber->getSubscribedEvents();
+
+        $this->assertContains([$method], $subscribeEvents[BeforeEntityPersistedEvent::class]);
+    }
+
+    /**
+     * ----------------------compte salaire --------------
+     */
+    public function testSetOwnerForCompteSalaire(): void
+    {
+        $compteSalaire = new CompteSalaire();
+        $beforeEntityPersistEvent = new BeforeEntityPersistedEvent($compteSalaire);
+
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
+        $eventDispatcher->dispatch($beforeEntityPersistEvent, BeforeEntityPersistedEvent::class);
+
+        $this->assertInstanceOf(User::class, $compteSalaire->getOwner());
+    }
+
+    public function testReturnIfObjectNotCompteSalaire(): void
+    {
+        $compteSalaire = new CompteSalaire();
+        $user = new User();
+        $beforeEntityPersistEvent = new BeforeEntityPersistedEvent($user);
+
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
+        $eventDispatcher->dispatch($beforeEntityPersistEvent, BeforeEntityPersistedEvent::class);
+
+        $this->assertNull($compteSalaire->getOwner());
+    }
+
+    /**
+     * ----------------------capital------------------
+     */
+    public function testSetCompteSalaireForCapital(): void
+    {
+        $compteSalaire = new CompteSalaire();
+        $this->mockCompteSalaireRepository
+            ->expects($this->once())
+            ->method('getCompteSalaireWithDateNow')
+            ->with($this->tokenStorage->getToken()->getUser())
+            ->willReturn($compteSalaire);
+
+        $capital = new Capital();
+        $beforeEntityPersistEvent = new BeforeEntityPersistedEvent($capital);
+
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
+        $eventDispatcher->dispatch($beforeEntityPersistEvent, BeforeEntityPersistedEvent::class);
+
+        $this->assertInstanceOf(CompteSalaire::class, $capital->getCompteSalaire());
+    }
+
+    /**
+     * -------------------------------------------------------------------------------
+     * ------------------------------category------------------------------------------
+     * -------------------------------------------------------------------------------
+     */
+
+    public function testSetOwnerForEntityCategory(): void
+    {
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
+
+        $category = new Category();
+        $beforeEntityPersistEvent = new BeforeEntityPersistedEvent($category);
+        $eventDispatcher->dispatch($beforeEntityPersistEvent, BeforeEntityPersistedEvent::class);
+
+        $this->assertInstanceOf(User::class, $category->getOwner());
+    }
+    /**
+     * --------------------------unity----------------------
+     */
+    public function testSetOwnerForEntityUnite(): void
+    {
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
+
+        $unite = new Unite();
+        $beforeEntityPersistEvent = new BeforeEntityPersistedEvent($unite);
+        $eventDispatcher->dispatch($beforeEntityPersistEvent, BeforeEntityPersistedEvent::class);
+
+        $this->assertInstanceOf(User::class, $unite->getOwner());
+    }
+    /**
+     * --------------------------depense--------------------
+     */
+    public function testSetCompteSalaireForDepense(): void
+    {
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
+
+        $this->mockCompteSalaireRepository
+            ->expects($this->once())
+            ->method('getCompteSalaireWithDateNow')
+            ->with(new User())
+            ->willReturn(new CompteSalaire());
+
+        $depense = new Depense();
+        $event = new BeforeEntityPersistedEvent($depense);
+        $eventDispatcher->dispatch($event, BeforeEntityPersistedEvent::class);
+
+        $this->assertInstanceOf(CompteSalaire::class, $depense->getCompteSalaire());
+    }
+
+    public function testNeverCallCompteSalaireWithDateNowMethodIfObjectNotDepense(): void
+    {
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
+
+        $this->mockCompteSalaireRepository
+            ->expects($this->never())
+            ->method('getCompteSalaireWithDateNow');
+
+        $user = new User();
+        $event = new BeforeEntityPersistedEvent($user);
+        $eventDispatcher->dispatch($event, BeforeEntityPersistedEvent::class);
+    }
+
+    public function testCompteSalaireNullIfCompteSalaireRepositoryReturnNull(): void
+    {
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addSubscriber($this->easyAdminSubscriber);
+
+        $this->mockCompteSalaireRepository
+            ->expects($this->once())
+            ->method('getCompteSalaireWithDateNow')
+            ->with(new User())
+            ->willReturn(null);
+
+        $depense = new Depense();
+        $event = new BeforeEntityPersistedEvent($depense);
+        $eventDispatcher->dispatch($event, BeforeEntityPersistedEvent::class);
+
+        $this->assertNull($depense->getCompteSalaire());
+    }
+
+    public static function provideSubscribedEvents(): array
+    {
+        return [
+            ['setOwnerForEntityCompteSalaireCategoryUnite'],
+            ['setCompteSalaireForCapitalAndDepense'],
+        ];
+    }
+}
