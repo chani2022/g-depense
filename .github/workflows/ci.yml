@@ -41,7 +41,7 @@ jobs:
           sed -i 's|127.0.0.1:3307|127.0.0.1:3306|g' .env.test.local
           sed -i 's|root:@|root:root@|g' .env.test.local
 
-      - name: Installer les dépendances PHP
+      - name: Installer les dépendances
         run: composer install --no-progress --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Attendre que MySQL démarre
