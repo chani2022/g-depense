@@ -114,7 +114,7 @@ class DashboardControllerTest extends WebTestCase
         $this->crawler = $this->client->request('GET', '/admin');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('.my-chart');
+        $this->assertSelectorExists('.depense-compte-salaire');
     }
 
     private function simulateAccessPageDashboardWithUser(): void
