@@ -91,7 +91,6 @@ jobs:
         uses: actions/checkout@v4
         with:
             fetch-depth: 0   # récupère tout l’historique et les refs
-
       - name: Vérifier les branches
         run: git branch -a
       
