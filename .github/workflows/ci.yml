@@ -33,6 +33,21 @@ jobs:
           php-version: '8.1'
           tools: composer:v2
 
+      # Installer Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.18'   # ou la version que tu utilises
+          cache: 'npm'         # cache npm pour accélérer l'installation
+
+      # Installer dépendances front
+      - name: Installer dépendances front
+        run: npm install
+
+      # Lancer build front
+      - name: Build front
+        run: npm run build
+
       - name: Copie .env.test vers .env.test.local
         run: cp .env.test .env.test.local
 
