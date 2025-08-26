@@ -69,7 +69,7 @@ class HandleDepenseTest extends TestCase
                     ],
                     [
                         'label' => 'Capital mensuel',
-                        'data' => [30.5, 30.75],
+                        'data' => [30.5, 32.75],
                         'borderColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['capital']['border'],
                         'backgroundColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['capital']['background'],
                     ],
