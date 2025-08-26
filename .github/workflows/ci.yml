@@ -1,0 +1,41 @@
+name: Tests & Create PR
+
+on:
+  push:
+    branches:
+      - test   # quand tu pushes sur test
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+
+      - name: Installer les dépendances
+        run: composer install --no-progress --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Lancer les tests
+        run: ./vendor/bin/phpunit --testdox
+
+  create-pr:
+    needs: tests
+    runs-on: ubuntu-latest
+    if: success()   # seulement si les tests passent
+    steps:
+      - name: Créer une Pull Request vers main
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: test
+          base: main
+          title: "Merge test into main"
+          body: |
+            Cette PR a été créée automatiquement après que les tests ont réussi.
+            Merci de la réviser et de la merger manuellement si tout est OK.
+          draft: false   # 👈 PR normale (à toi de valider)
