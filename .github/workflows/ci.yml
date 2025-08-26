@@ -42,7 +42,7 @@ jobs:
 
       # Installer dépendances front
       - name: Installer dépendances front
-        run: npm install
+        run: npm install --force
 
       # Lancer build front
       - name: Build front
