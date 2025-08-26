@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Repository\DepenseRepository;
 use App\Tests\Trait\LoadFixtureTrait;
 use App\Tests\Trait\UserAuthenticatedTrait;
+use App\Ux\HandleDepense;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -38,8 +39,9 @@ class DashboardControllerTest extends WebTestCase
         $uploaderHelper = $this->getContainer()->get(UploaderHelper::class);
         $depenseRepository = $this->getContainer()->get(DepenseRepository::class);
         $requestStack = $this->getContainer()->get(RequestStack::class);
-        $this->dashboardController = new DashboardController($uploaderHelper, $depenseRepository, $requestStack);
+        $handleDepense = new HandleDepense();
 
+        $this->dashboardController = new DashboardController($uploaderHelper, $depenseRepository, $requestStack, $handleDepense);
         $this->userSimpleAuthenticated = $this->getSimpeUserAuthenticated();
         $this->adminAuthenticated = $this->getAdminAuthenticated();
     }
