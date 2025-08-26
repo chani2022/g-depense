@@ -17,6 +17,9 @@ jobs:
         with:
           php-version: '8.1'
 
+      - name: Copie .env.test to .env.test.local
+        run: cp .env.test .env.test.local
+
       - name: Installer les dépendances
         run: composer install --no-progress --no-interaction --prefer-dist --optimize-autoloader
 
