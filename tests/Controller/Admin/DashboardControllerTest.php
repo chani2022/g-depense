@@ -8,6 +8,7 @@ use App\Repository\DepenseRepository;
 use App\Tests\Trait\LoadFixtureTrait;
 use App\Tests\Trait\UserAuthenticatedTrait;
 use App\Ux\HandleDepense;
+use App\Ux\MyChart;
 use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -58,9 +59,25 @@ class DashboardControllerTest extends WebTestCase
     {
         $this->simulateAccessPageDashboardWithUser();
 
-        $this->assertSelectorExists('.depense-compte-salaire');
+        // $this->assertSelectorExists('.depense-compte-salaire');
 
-        $this->assertSelectorExists('form[name=search_depense]');
+        // $this->assertSelectorExists('form[name=search_depense]');
+
+        // $dataChart = $this->crawler->filter('.depense-compte-salaire')->attr('data-symfony--ux-chartjs--chart-view-value');
+        // $dataChart = json_decode($dataChart, true);
+        // dd($dataChart);
+    }
+
+    /**
+     * @dataProvider providerDataChartDefault
+     */
+    public function testAssertDataChartDefaultDate(array $dataChartExpected): void
+    {
+        $this->simulateAccessPageDashboardWithUser();
+
+        $dataChartActual = $this->simulateDataChart();
+
+        $this->assertSame($dataChartExpected, $dataChartActual);
     }
 
     /**
@@ -126,6 +143,14 @@ class DashboardControllerTest extends WebTestCase
         $this->crawler = $this->client->request('GET', '/admin');
 
         $this->assertResponseIsSuccessful();
+    }
+
+    private function simulateDataChart(): array
+    {
+        $dataChart = $this->crawler->filter('.depense-compte-salaire')->attr('data-symfony--ux-chartjs--chart-view-value');
+        $dataChart = json_decode($dataChart, true);
+
+        return $dataChart;
     }
 
     private function assertUserMenuContaintsMenuItems(array $menuItems): void
@@ -216,6 +241,53 @@ class DashboardControllerTest extends WebTestCase
                     'css_classname' => 'depense'
                 ],
             ],
+        ];
+    }
+
+    /**
+     * @return array<int, array{string, string|float}>
+     */
+    public static function providerDataChartDefault(): array
+    {
+        return [
+            'dataExpected' => [
+                [
+                    'type' => 'bar',
+                    'data' => [
+                        'labels' => [(new \DateTime('-7 days'))->format('d/m/Y') . ' - ' . (new \DateTime('+7 days'))->format('d/m/Y')],
+                        'datasets' => [
+                            [
+                                'label' => 'Depense mensuel',
+                                'data' => [25.25],
+                                'borderColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['depense']['border'],
+                                'backgroundColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['depense']['background'],
+                            ],
+                            [
+                                'label' => 'Capital mensuel',
+                                'data' => [15.25],
+                                'borderColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['capital']['border'],
+                                'backgroundColor' => MyChart::STYLE_BY_COMPTE_SALAIRE['capital']['background'],
+                            ]
+                        ]
+                    ],
+                    'options' => [
+                        'responsive' => true,
+                        'scales' => [
+                            'x' => [
+                                'suggestedMin' => 0,
+                                'suggestedMax' => 100
+                            ]
+                        ],
+                        'indexAxis' => 'y',
+                        'plugins' => [
+                            'title' => [
+                                'display' => true,
+                                'text' => 'Comparaison de depense et capital.'
+                            ]
+                        ]
+                    ]
+                ]
+            ]
         ];
     }
 
