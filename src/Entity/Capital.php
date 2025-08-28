@@ -13,11 +13,11 @@ class Capital
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $montant = null;
+    #[ORM\Column(nullable: true, options: ['default' => 0])]
+    private float $montant = 0;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $ajout = null;
+    #[ORM\Column(nullable: true, options: ['default' => 0])]
+    private float $ajout = 0;
 
     #[ORM\ManyToOne(inversedBy: 'capitals')]
     #[ORM\JoinColumn(nullable: false)]
@@ -28,24 +28,24 @@ class Capital
         return $this->id;
     }
 
-    public function getMontant(): ?float
+    public function getMontant(): float
     {
         return $this->montant;
     }
 
-    public function setMontant(?float $montant): static
+    public function setMontant(float $montant): static
     {
         $this->montant = $montant;
 
         return $this;
     }
 
-    public function getAjout(): ?float
+    public function getAjout(): float
     {
         return $this->ajout;
     }
 
-    public function setAjout(?float $ajout): static
+    public function setAjout(float $ajout): static
     {
         $this->ajout = $ajout;
 
