@@ -9,7 +9,7 @@ use App\Tests\Trait\LoadFixtureTrait;
 use App\Tests\Trait\UserAuthenticatedTrait;
 use App\Ux\HandleDepense;
 use App\Ux\MyChart;
-use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
+use Hautelook\AliceBundle\PhpUnit\ReloadDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class DashboardControllerTest extends WebTestCase
 {
-    use RefreshDatabaseTrait;
+    use ReloadDatabaseTrait;
     use LoadFixtureTrait;
     use UserAuthenticatedTrait;
 
@@ -58,14 +58,6 @@ class DashboardControllerTest extends WebTestCase
     public function testIndexDashboardSuccessfully(): void
     {
         $this->simulateAccessPageDashboardWithUser();
-
-        // $this->assertSelectorExists('.depense-compte-salaire');
-
-        // $this->assertSelectorExists('form[name=search_depense]');
-
-        // $dataChart = $this->crawler->filter('.depense-compte-salaire')->attr('data-symfony--ux-chartjs--chart-view-value');
-        // $dataChart = json_decode($dataChart, true);
-        // dd($dataChart);
     }
 
     /**
